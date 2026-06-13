@@ -255,7 +255,7 @@ select option{background:var(--surface2)}
     <div class="form-grid form-grid-4">
       <div class="field"><label>Nome</label><input id="p-name" placeholder="Nick no LoL" onkeydown="if(event.key==='Enter')addPlayer()"/></div>
       <div class="field"><label>Lane</label><select id="p-lane"><option>Top</option><option>Jungle</option><option>Mid</option><option>ADC</option><option>Support</option></select></div>
-      <div class="field"><label>Elo</label><select id="p-elo"><option>Iron</option><option>Bronze</option><option>Silver</option><option>Gold</option><option>Platinum</option><option selected>Emerald</option><option>Diamond</option><option>Master</option><option>Grandmaster</option><option>Challenger</option></select></div>
+      <div class="field"><label>Elo</label><select id="p-elo"><option>Iron</option><option>Bronze</option><option>Silver</option><option>Gold</option><option>Platinum</option><option selected>Esmeralda</option><option>Diamond</option><option>Master</option><option>Grandmaster</option><option>Challenger</option></select></div>
       <div class="field"><label>Divisão</label><select id="p-div"><option>IV</option><option>III</option><option>II</option><option>I</option></select></div>
     </div>
     <div class="form-grid" style="margin-bottom:12px"><div class="field"><label>Melhores campeões (vírgula)</label><input id="p-champs" placeholder="Ex: Jinx, Caitlyn, Tristana"/></div></div>
@@ -325,7 +325,7 @@ select option{background:var(--surface2)}
 
 <script>
 // ===== ELO =====
-const ELO_VALUES={'Iron':100,'Bronze':200,'Silver':300,'Gold':400,'Platinum':500,'Emerald':600,'Diamond':700,'Master':800,'Grandmaster':900,'Challenger':1000};
+const ELO_VALUES={'Iron':100,'Bronze':200,'Silver':300,'Gold':400,'Platinum':500,'Esmeralda':600,'Diamond':700,'Master':800,'Grandmaster':900,'Challenger':1000};
 const DIV_VALUES={'IV':0,'III':25,'II':50,'I':75};
 function eloScore(p){return (ELO_VALUES[p.elo]||400)+(DIV_VALUES[p.div]||0);}
 function teamStrength(members){if(!members||!members.length)return 0;return Math.round(members.reduce((s,m)=>s+eloScore(m),0)/members.length);}
@@ -383,7 +383,8 @@ function sortByLane(arr){
 // ===== REGISTER =====
 function addPlayer(){
   const name=document.getElementById('p-name').value.trim();if(!name)return;
-  players.push({id:Date.now()+Math.random(),name,lane:document.getElementById('p-lane').value,elo:document.getElementById('p-elo').value,div:document.getElementById('p-div').value,champs:document.getElementById('p-champs').value.trim(),captain:false});
+  const eloVal=document.getElementById('p-elo').value;const divVal=NO_DIV_ELOS.has(eloVal)?'':document.getElementById('p-div').value;
+  players.push({id:Date.now()+Math.random(),name,lane:document.getElementById('p-lane').value,elo:eloVal,div:divVal,champs:document.getElementById('p-champs').value.trim(),captain:false});
   document.getElementById('p-name').value='';document.getElementById('p-champs').value='';
   renderPlayers();salvarEstado();
 }
@@ -391,17 +392,19 @@ function removePlayer(id){players=players.filter(p=>p.id!==id);renderPlayers();s
 
 // ===== REGISTRO RÁPIDO (COLAR DO DISCORD) =====
 const ELO_MAP={
-  'ferro':'Iron','iron':'Iron',
-  'bronze':'Bronze',
-  'prata':'Silver','silver':'Silver',
-  'ouro':'Gold','gold':'Gold',
-  'platina':'Platinum','platinum':'Platinum','plat':'Platinum',
-  'esmeralda':'Emerald','emerald':'Emerald',
-  'diamante':'Diamond','diamond':'Diamond',
-  'mestre':'Master','master':'Master',
-  'grao':'Grandmaster','grão':'Grandmaster','grandmestre':'Grandmaster','grandmaster':'Grandmaster','gm':'Grandmaster',
-  'desafiante':'Challenger','challenger':'Challenger'
+  'ferro':'Iron','iron':'Iron','fer':'Iron',
+  'bronze':'Bronze','bro':'Bronze',
+  'prata':'Silver','silver':'Silver','silv':'Silver','prat':'Silver',
+  'ouro':'Gold','gold':'Gold','our':'Gold',
+  'platina':'Platinum','platinum':'Platinum','plat':'Platinum','plata':'Platinum','platino':'Platinum',
+  'esmeralda':'Esmeralda','emerald':'Esmeralda','esmerald':'Esmeralda','emeralda':'Esmeralda','esmeral':'Esmeralda','emeral':'Esmeralda',
+  'diamante':'Diamond','diamond':'Diamond','diam':'Diamond','dia':'Diamond',
+  'mestre':'Master','master':'Master','mstr':'Master',
+  'grao':'Grandmaster','grão':'Grandmaster','grandmestre':'Grandmaster','grandmaster':'Grandmaster','gm':'Grandmaster','grao mestre':'Grandmaster','grao-mestre':'Grandmaster',
+  'desafiante':'Challenger','challenger':'Challenger','chall':'Challenger','chal':'Challenger'
 };
+// Elos sem divisão
+const NO_DIV_ELOS=new Set(['Master','Grandmaster','Challenger']);
 const DIV_MAP={
   'i':'I','1':'I','ii':'II','2':'II','iii':'III','3':'III','iv':'IV','4':'IV'
 };
@@ -414,16 +417,35 @@ const LANE_MAP={
 };
 
 function parseEloString(str){
-  // separa "Esmeralda IV" em base+divisão (divisão é opcional para Master+)
-  const parts=str.trim().split(/\s+/);
-  let div='IV';
-  let baseParts=parts;
-  if(parts.length>1){
-    const last=parts[parts.length-1].toLowerCase();
-    if(DIV_MAP[last]){div=DIV_MAP[last];baseParts=parts.slice(0,-1);}
+  const s=str.trim();
+  // Formato compacto: D3, P4, G1, S2, etc.
+  const compact=s.match(/^([A-Za-z]+)([1-4])$/);
+  if(compact){
+    const COMPACT_ELO={'f':'Iron','b':'Bronze','s':'Silver','g':'Gold','p':'Platinum','e':'Esmeralda','d':'Diamond'};
+    const eloKey=compact[1].toLowerCase();
+    const elo=COMPACT_ELO[eloKey]||'Esmeralda';
+    const div=DIV_MAP[compact[2]]||'IV';
+    return {elo, div: NO_DIV_ELOS.has(elo)?'':div};
   }
-  const baseKey=baseParts.join(' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-  const elo=ELO_MAP[baseKey]||'Emerald';
+  // Pega só a primeira palavra que bate no ELO_MAP (ignora "0 pontos", "LP", etc.)
+  const parts=s.split(/\s+/);
+  let elo='Esmeralda'; let div='IV'; let found=false;
+  for(let i=0;i<parts.length;i++){
+    const k=parts[i].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    if(ELO_MAP[k]){elo=ELO_MAP[k];
+      // próxima parte pode ser a divisão
+      if(i+1<parts.length&&DIV_MAP[parts[i+1].toLowerCase()]){div=DIV_MAP[parts[i+1].toLowerCase()];}
+      found=true;break;
+    }
+  }
+  if(!found){
+    // fallback: tenta juntar todas as partes exceto última se última for div
+    const last=parts[parts.length-1].toLowerCase();
+    if(DIV_MAP[last]){div=DIV_MAP[last];parts.pop();}
+    const baseKey=parts.join(' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    elo=ELO_MAP[baseKey]||'Esmeralda';
+  }
+  if(NO_DIV_ELOS.has(elo)){div='';}
   return {elo,div};
 }
 function parseLaneString(str){
@@ -431,38 +453,97 @@ function parseLaneString(str){
   return LANE_MAP[key]||null;
 }
 
+// Detecta qual campo semântico uma chave representa, de forma fuzzy
+function detectFieldKey(rawKey){
+  const k=rawKey.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  if(/^(nick|nome|jogador|player|ign|id|apelido)/.test(k)) return 'nick';
+  if(/^(elo|rank|ranking|divisao|div|tier)/.test(k)) return 'elo';
+  if(/^(lane|lana|posic|posit|pos|funcao|funcão|papel|role)/.test(k)) return 'lane';
+  if(/^(camp|champ|heroi|hero|pick|personag)/.test(k)) return 'champs';
+  return null;
+}
+
 function addPlayersFromBulk(){
   const raw=document.getElementById('p-bulk').value;
   if(!raw.trim()){return;}
-  const lines=raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+  // Pré-processamento: expande linhas compactas tipo "Nick#tag Elo: X Lane: Y Camps: Z"
+  // Usa regex de palavras-chave conhecidas para encontrar os pontos de corte
+  const KNOWN_FIELDS='(?:nick|nome|elo|rank|lane|lana|pos|camp(?:e(?:o|oe|oes|õ|ões)?)?|champ(?:s|eoes)?|heroi|campeoes|campeões)';
+  const FIELD_START=new RegExp('(?='+KNOWN_FIELDS+'\\s*:)','gi');
+  let rawLines=raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+  let expandedLines=[];
+  rawLines.forEach(line=>{
+    // Conta quantos campos conhecidos existem na linha
+    const knownCount=(line.match(new RegExp(KNOWN_FIELDS+'\\s*:','gi'))||[]).length;
+    if(knownCount>1){
+      // Linha compacta com múltiplos campos
+      const firstField=line.search(new RegExp(KNOWN_FIELDS+'\\s*:','i'));
+      if(firstField>0){
+        // Tudo antes do primeiro campo = nick
+        const nickPart=line.slice(0,firstField).replace(/^nick\s*:\s*/i,'').trim();
+        if(nickPart) expandedLines.push('Nick: '+nickPart);
+        const rest=line.slice(firstField);
+        // Divide nos pontos onde começa um campo conhecido
+        const parts=rest.split(new RegExp('(?='+KNOWN_FIELDS+'\\s*:)','i'));
+        parts.forEach(p=>{if(p.trim())expandedLines.push(p.trim());});
+      } else {
+        const parts=line.split(new RegExp('(?='+KNOWN_FIELDS+'\\s*:)','i'));
+        parts.forEach(p=>{if(p.trim())expandedLines.push(p.trim());});
+      }
+    } else {
+      expandedLines.push(line);
+    }
+  });
+
   let added=0,errors=[];
   let current={};
+  const ORDER=['nick','elo','lane','champs'];
+  let fieldIdx=0;
+
   function flush(){
     if(current.name){
       if(!current.lane){errors.push(`"${current.name}": lane não identificada — jogador não adicionado.`);}
       else{
-        players.push({id:Date.now()+Math.random()+added,name:current.name,lane:current.lane,elo:current.elo||'Emerald',div:current.div||'IV',champs:current.champs||'',captain:false});
+        players.push({id:Date.now()+Math.random()+added,name:current.name,lane:current.lane,elo:current.elo||'Esmeralda',div:current.div!==undefined?current.div:'IV',champs:current.champs||'',captain:false});
         added++;
       }
     }
     current={};
+    fieldIdx=0;
   }
-  lines.forEach(line=>{
+  expandedLines.forEach(line=>{
+    // Linha sem ":" — pode ser nick solto tipo "Merlin#GOAT" ou lixo do Discord (nome de usuário, timestamps)
+    if(!line.includes(':')){
+      // Só considera nick se parecer um nick de LoL (tem # ou é uma palavra simples sem espaços com timestamp típico)
+      // Ignora linhas com padrões de timestamp do Discord: "— Ontem às", "— Hoje às", "— [dia]"
+      if(/—\s*(ontem|hoje|[a-z]{3,}\s+às)/i.test(line)) return;
+      // Se tem # provavelmente é nick
+      if(line.includes('#')){flush();current.name=line.split('#')[0].trim();fieldIdx=1;}
+      return;
+    }
     const m=line.match(/^([^:]+):\s*(.*)$/);
     if(!m){return;}
-    const key=m[1].trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    const rawKey=m[1];
     const val=m[2].trim();
-    if(key==='nick'||key==='nome'){
-      flush(); // novo bloco começa
+    let field=detectFieldKey(rawKey);
+    // Fallback posicional: se a chave não for reconhecida, assume o próximo campo na ordem
+    if(!field && val && fieldIdx<ORDER.length) field=ORDER[fieldIdx];
+    if(!field) return;
+    if(field==='nick'){
+      flush();
       current.name=val.split('#')[0].trim();
-    } else if(key==='elo'){
+      fieldIdx=1;
+    } else if(field==='elo'){
       const {elo,div}=parseEloString(val);
       current.elo=elo;current.div=div;
-    } else if(key==='lane'){
+      fieldIdx=2;
+    } else if(field==='lane'){
       current.lane=parseLaneString(val);
       if(!current.lane)errors.push(`Lane "${val}" não reconhecida para "${current.name||'?'}".`);
-    } else if(key.startsWith('campe')){
+      fieldIdx=3;
+    } else if(field==='champs'){
       current.champs=val;
+      fieldIdx=4;
     }
   });
   flush();
@@ -478,7 +559,7 @@ function renderPlayers(){
   lanes.forEach(lane=>{
     const ps=players.filter(p=>p.lane===lane);if(!ps.length)return;
     html+=`<div class="player-section"><div class="player-section-header">${laneBadge(lane)}<span style="font-size:12px;color:var(--text-muted)">${ps.length} jogador${ps.length>1?'es':''}</span></div>`;
-    ps.forEach(p=>{html+=`<div class="player-row"><span class="player-name">${p.name}</span><span class="elo-badge">${p.elo} ${p.div}</span>${p.captain?'<span class="captain-badge">⚑ Capitão</span>':''}<span class="player-champs">${p.champs||'—'}</span><div class="player-actions"><button class="btn btn-danger btn-sm" onclick="removePlayer(${JSON.stringify(p.id)})">Remover</button></div></div>`;});
+    ps.forEach(p=>{html+=`<div class="player-row"><span class="player-name">${p.name}</span><span class="elo-badge">${p.elo}${p.div ? " " + p.div : ""}</span>${p.captain?'<span class="captain-badge">⚑ Capitão</span>':''}<span class="player-champs">${p.champs||'—'}</span><div class="player-actions"><button class="btn btn-danger btn-sm" onclick="removePlayer(${JSON.stringify(p.id)})">Remover</button></div></div>`;});
     html+='</div>';
   });
   if(!html)html=`<div class="empty"><div class="empty-icon">🎮</div><p>Nenhum jogador registrado ainda.</p></div>`;
@@ -492,7 +573,7 @@ function renderCaptains(){
   lanes.forEach(lane=>{
     const ps=players.filter(p=>p.lane===lane);if(!ps.length)return;
     html+=`<div class="card"><div class="player-section-header" style="margin-bottom:10px">${laneBadge(lane)}</div>`;
-    ps.forEach(p=>{html+=`<div class="player-row" style="cursor:pointer" onclick="toggleCaptain(${JSON.stringify(p.id)})"><input type="checkbox" class="captain-check" ${p.captain?'checked':''} onchange="toggleCaptain(${JSON.stringify(p.id)})" onclick="event.stopPropagation()"/><span class="player-name">${p.name}</span><span class="elo-badge">${p.elo} ${p.div}</span><span class="player-champs">${p.champs||'—'}</span></div>`;});
+    ps.forEach(p=>{html+=`<div class="player-row" style="cursor:pointer" onclick="toggleCaptain(${JSON.stringify(p.id)})"><input type="checkbox" class="captain-check" ${p.captain?'checked':''} onchange="toggleCaptain(${JSON.stringify(p.id)})" onclick="event.stopPropagation()"/><span class="player-name">${p.name}</span><span class="elo-badge">${p.elo}${p.div ? " " + p.div : ""}</span><span class="player-champs">${p.champs||'—'}</span></div>`;});
     html+='</div>';
   });
   if(!html)html=`<div class="empty"><div class="empty-icon">👑</div><p>Registre jogadores primeiro.</p></div>`;
@@ -597,6 +678,7 @@ function renderDraft(){
         <div class="draft-turn-sub">Pick ${Math.min(currentPickIdx+1,totalPicks)} de ${totalPicks}</div>
       </div>
       <div class="draft-progress" style="flex:1"><div class="draft-progress-fill" style="width:${pct}%"></div></div>
+      ${currentPickIdx>0&&!done?'<button class="btn btn-outline btn-sm" onclick="undoPick()" style="white-space:nowrap;flex-shrink:0">↩ Desfazer</button>':''}
     </div>
     <div class="draft-lanes">`;
 
@@ -620,7 +702,7 @@ function renderDraft(){
       html+=`<div class="draft-player-card ${blocked?'dp-blocked':''}" onclick="${blocked||done?'':'pickPlayer('+JSON.stringify(p.id)+')'}">
         ${topTag}
         <div class="dp-name">${p.name}</div>
-        <div class="dp-elo">${p.elo} ${p.div}</div>
+        <div class="dp-elo">${p.elo}${p.div ? " " + p.div : ""}</div>
         ${p.champs?`<div class="dp-champs">${p.champs}</div>`:''}
       </div>`;
     });
@@ -698,6 +780,17 @@ function pickPlayer(pid){
   // Atualiza lista de ordem com progresso
   renderOrderList();
   salvarEstado();
+}
+
+function undoPick(){
+  if(currentPickIdx<=0)return;
+  // Volta o índice
+  currentPickIdx--;
+  // Remove o pick feito nessa posição
+  const pickNum=currentPickIdx+1;
+  const pidToRemove=Object.keys(draftPicks).find(pid=>draftPicks[pid].pickNum===pickNum);
+  if(pidToRemove)delete draftPicks[pidToRemove];
+  renderDraft();renderOrderList();salvarEstado();
 }
 
 // ===== MODAL NOMES =====
