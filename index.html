@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Copa LoL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0B0F1C;--surface:#131929;--surface2:#1A2238;--surface3:#212d45;
+  --gold:#C9A84C;--gold-light:#E2C97A;--gold-dim:#7a6430;
+  --teal:#5DCAA5;--teal-dim:#2a6b56;
+  --text:#E8EAED;--text-muted:#7a8499;--text-dim:#3d4a62;
+  --red:#E05252;--border:#232e47;--border-gold:rgba(201,168,76,0.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden}
+
+.topbar{position:sticky;top:0;z-index:100;background:rgba(11,15,28,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;height:56px}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.08em;color:var(--gold);margin-right:2rem;white-space:nowrap}
+.logo span{color:var(--text-muted);font-size:13px;font-family:'Inter',sans-serif;font-weight:400;letter-spacing:normal;margin-left:8px;vertical-align:middle}
+.nav-tabs{display:flex;gap:0;flex:1}
+.nav-tab{padding:0 20px;height:56px;display:flex;align-items:center;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;border:none;background:none;letter-spacing:0.02em}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--gold);border-bottom:2px solid var(--gold)}
+
+.hero{text-align:center;padding:3.5rem 2rem 2.5rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(201,168,76,0.08) 0%,transparent 70%);pointer-events:none}
+.hero-eyebrow{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;margin-bottom:12px}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,8vw,96px);letter-spacing:0.06em;color:var(--text);line-height:1;margin-bottom:8px}
+.hero-title .accent{color:var(--gold)}
+.hero-sub{font-size:14px;color:var(--text-muted);letter-spacing:0.05em}
+.hero-divider{width:80px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);margin:1.5rem auto 0}
+
+.panel{display:none;max-width:1100px;margin:0 auto;padding:2rem 1.5rem 4rem}
+.panel.panel-wide{max-width:1920px;padding-left:1rem;padding-right:1rem}
+.panel.active{display:block}
+
+.section-head{margin-bottom:1.5rem}
+.section-head h2{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;letter-spacing:0.05em;color:var(--text)}
+.section-head p{font-size:13px;color:var(--text-muted);margin-top:4px}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:12px}
+.card-title{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+
+.form-grid{display:grid;gap:10px;margin-bottom:10px}
+.form-grid-4{grid-template-columns:2fr 1fr 1fr 1fr}
+.field label{font-size:11px;font-weight:500;letter-spacing:0.08em;color:var(--text-muted);text-transform:uppercase;display:block;margin-bottom:5px}
+input,select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color .15s}
+input:focus,select:focus{border-color:var(--gold-dim)}
+input::placeholder{color:var(--text-dim)}
+select option{background:var(--surface2)}
+
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;letter-spacing:0.02em;transition:all .15s}
+.btn-gold{background:var(--gold);color:#0B0F1C}.btn-gold:hover{background:var(--gold-light)}
+.btn-outline{background:transparent;color:var(--text-muted);border:1px solid var(--border)}.btn-outline:hover{border-color:var(--text-muted);color:var(--text)}
+.btn-danger{background:rgba(224,82,82,0.12);color:var(--red);border:1px solid rgba(224,82,82,0.2)}.btn-danger:hover{background:rgba(224,82,82,0.2)}
+.btn-sm{padding:5px 12px;font-size:12px;border-radius:6px}
+
+.lane-top{background:rgba(55,138,221,0.12);color:#7ab8f5;border:1px solid rgba(55,138,221,0.2)}
+.lane-jungle{background:rgba(29,158,117,0.12);color:#5DCAA5;border:1px solid rgba(29,158,117,0.2)}
+.lane-mid{background:rgba(212,83,126,0.12);color:#f07eb0;border:1px solid rgba(212,83,126,0.2)}
+.lane-adc{background:rgba(186,117,23,0.12);color:#E2C97A;border:1px solid rgba(186,117,23,0.2)}
+.lane-support{background:rgba(127,119,221,0.12);color:#AFA9EC;border:1px solid rgba(127,119,221,0.2)}
+.lane-badge{font-size:11px;padding:2px 9px;border-radius:6px;font-weight:600;letter-spacing:0.05em;white-space:nowrap}
+
+.elo-badge{font-size:11px;padding:2px 8px;border-radius:6px;background:var(--surface3);color:var(--text-muted);font-weight:500;white-space:nowrap}
+.captain-badge{font-size:11px;padding:2px 9px;border-radius:6px;background:rgba(201,168,76,0.12);color:var(--gold);border:1px solid var(--border-gold);font-weight:600}
+
+.player-section{margin-bottom:16px}
+.player-section-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.player-row{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--surface2);border-radius:8px;margin-bottom:4px;border:1px solid transparent;transition:border-color .15s}
+.player-row:hover{border-color:var(--border)}
+.player-name{font-size:14px;font-weight:500;min-width:130px}
+.player-champs{font-size:12px;color:var(--text-muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.player-actions{display:flex;gap:6px;margin-left:auto}
+.captain-check{width:18px;height:18px;accent-color:var(--gold);cursor:pointer;flex-shrink:0}
+
+/* ORDER LIST */
+.order-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;margin-bottom:6px;border:1px solid var(--border)}
+.order-item.is-current{border-color:var(--gold-dim);background:rgba(201,168,76,0.06)}
+.order-item.is-done{opacity:0.4}
+.order-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--text-dim);min-width:36px;line-height:1}
+.order-num.active{color:var(--gold)}
+.order-info{flex:1}
+.order-name{font-size:15px;font-weight:600}
+.order-tags{display:flex;gap:6px;margin-top:3px;flex-wrap:wrap}
+.tag{font-size:11px;padding:2px 8px;border-radius:6px;font-weight:600}
+.tag-cap{background:rgba(201,168,76,0.12);color:var(--gold)}
+.tag-double{background:rgba(93,202,165,0.12);color:var(--teal);border:1px solid rgba(93,202,165,0.2)}
+.tag-done{background:rgba(255,255,255,0.06);color:var(--text-muted)}
+
+/* DRAFT */
+.draft-area{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.draft-turn{background:linear-gradient(135deg,var(--surface2),var(--surface3));padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px}
+.draft-turn-label{font-size:12px;letter-spacing:0.1em;color:var(--text-muted);text-transform:uppercase;font-weight:500}
+.draft-turn-name{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;color:var(--gold)}
+.draft-turn-sub{font-size:12px;color:var(--text-muted);margin-top:1px}
+.draft-progress{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.draft-progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .3s}
+.draft-lanes{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-bottom:1px solid var(--border)}
+.draft-lane-col{border-right:1px solid var(--border)}
+.draft-lane-col:last-child{border-right:none}
+.draft-lane-header{padding:8px 12px;font-size:11px;font-weight:700;letter-spacing:0.12em;text-align:center;border-bottom:1px solid var(--border);text-transform:uppercase}
+.draft-lane-header.lh-top{background:rgba(55,138,221,0.08);color:#7ab8f5}
+.draft-lane-header.lh-jungle{background:rgba(29,158,117,0.08);color:#5DCAA5}
+.draft-lane-header.lh-mid{background:rgba(212,83,126,0.08);color:#f07eb0}
+.draft-lane-header.lh-adc{background:rgba(186,117,23,0.08);color:#E2C97A}
+.draft-lane-header.lh-support{background:rgba(127,119,221,0.08);color:#AFA9EC}
+.draft-player-card{margin:4px;border-radius:7px;padding:6px 8px;cursor:pointer;transition:all .15s;border:1px solid var(--border);background:var(--surface2)}
+.draft-player-card:hover:not(.dp-blocked){border-color:var(--gold-dim);background:var(--surface3);transform:translateY(-1px)}
+.draft-player-card.dp-blocked{opacity:0.22;cursor:default;filter:grayscale(1)}
+.dp-tag{font-size:9px;letter-spacing:0.05em;font-weight:600;margin-bottom:2px}
+.dp-tag-cap{color:var(--gold)}
+.dp-tag-block{color:var(--red)}
+.dp-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dp-elo{font-size:10px;color:var(--text-muted);margin-top:1px}
+.dp-champs{font-size:9px;color:var(--teal);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.draft-teams{display:grid;border-top:1px solid var(--border)}
+.draft-layout{display:flex;gap:1rem;align-items:flex-start}
+.draft-main{flex:1;min-width:0}
+.draft-sidebar{width:440px;flex-shrink:0;position:sticky;top:72px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem;max-height:calc(100vh - 90px);overflow-y:auto}
+.draft-sidebar-title{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;grid-column:1/-1}
+.sidebar-teams-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.sidebar-team{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px}
+@media(max-width:1100px){
+  .draft-layout{flex-direction:column}
+  .draft-sidebar{width:100%;position:static;max-height:none}
+}
+@media(max-width:480px){
+  .sidebar-teams-grid{grid-template-columns:1fr}
+}
+.draft-team{padding:1rem 1.25rem}
+.dt-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:0.08em;margin-bottom:10px;text-transform:uppercase}
+.dt-t1{color:#7ab8f5}.dt-t2{color:#f07a7a}.dt-t3{color:#5DCAA5}.dt-t4{color:#AFA9EC}
+.dt-pick{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px}
+.dt-pick:last-child{border-bottom:none}
+.dt-pick-right{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal-box{background:var(--surface);border:1px solid var(--border-gold);border-radius:16px;padding:2rem;width:100%;max-width:900px;max-height:88vh;overflow-y:auto;box-shadow:0 0 60px rgba(201,168,76,0.1)}
+.modal-teams-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+@media(max-width:640px){.modal-teams-grid{grid-template-columns:1fr}}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.06em;color:var(--gold);margin-bottom:6px}
+.modal-sub{font-size:13px;color:var(--text-muted);margin-bottom:1.5rem}
+.modal-team-row{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.modal-team-label{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.modal-team-cap{font-size:13px;font-weight:600;margin-bottom:8px}
+.modal-team-input{width:100%;background:var(--surface3);border:1px solid var(--border);border-radius:7px;padding:8px 12px;font-size:14px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color .15s}
+.modal-team-input:focus{border-color:var(--gold-dim)}
+
+/* BRACKET */
+.bracket-wrap{overflow-x:auto;overflow-y:visible;padding-bottom:1rem}
+.bracket{display:flex;gap:0;align-items:stretch;min-width:900px;overflow:visible}
+.bracket-round{display:flex;flex-direction:column;min-width:252px;padding:0 16px;overflow:visible}
+.bracket-round:first-child{padding-left:0}
+.bracket-round:last-child{padding-right:0}
+.round-header{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);padding:0 16px 12px;text-align:center}
+.round-matches{display:flex;flex-direction:column;justify-content:center;flex:1;overflow:visible;position:relative}
+.match-wrap{display:flex;align-items:center;padding:8px 8px;position:relative;flex:1;overflow:visible}
+.match-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;overflow:hidden;width:220px;flex-shrink:0;transition:border-color .2s;position:relative;z-index:1}
+.match-card:hover{border-color:var(--border-gold)}
+.match-team{display:flex;align-items:flex-start;padding:8px 10px;gap:6px;transition:background .15s;border-bottom:1px solid var(--border)}
+.match-team:last-child{border-bottom:none}
+.match-team.winner{background:rgba(201,168,76,0.08)}
+.match-team.loser{opacity:0.45}
+.match-team-name{font-size:13px;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:normal;word-break:break-word;line-height:1.25}
+.match-team-cap{font-size:10px;color:var(--text-muted)}
+.match-score{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;min-width:18px;text-align:center}
+.score-w{color:var(--gold)}.score-l{color:var(--text-dim)}
+.match-label{font-size:10px;color:var(--text-muted);text-align:center;padding:4px 0;background:var(--surface);border-top:1px solid var(--border)}
+.tbd-team{color:var(--text-dim);font-style:italic;font-size:12px}
+.seed-badge{font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;background:rgba(201,168,76,0.12);color:var(--gold);border:1px solid var(--border-gold);white-space:nowrap;flex-shrink:0}
+
+/* Conectores horizontais saindo de cada card */
+.bracket-round:not(:last-child) .match-card::after{
+  content:'';position:absolute;left:100%;top:50%;width:16px;height:1px;background:var(--border);
+}
+.bracket-round:not(:first-child) .match-card::before{
+  content:'';position:absolute;right:100%;top:50%;width:16px;height:1px;background:var(--border);
+}
+/* Conector vertical: desenhado entre cada par de matches, ligando os dois centros */
+.bracket-connector{position:absolute;right:-16px;width:16px;border-right:1px solid var(--border);pointer-events:none}
+
+/* WIN BTN inside match */
+.win-btn{font-size:10px;background:rgba(201,168,76,0.1);border:1px solid var(--border-gold);color:var(--gold);padding:2px 7px;border-radius:5px;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;transition:background .15s}
+.win-btn:hover{background:rgba(201,168,76,0.22)}
+
+/* MD3 score controls */
+.md3-controls{padding:8px 10px;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.md3-score-row{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
+.md3-score-name{font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.md3-score-num{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--gold);min-width:22px;text-align:center}
+.md3-score-btn{background:var(--surface3);border:1px solid var(--border);color:var(--text-muted);border-radius:5px;cursor:pointer;font-size:14px;padding:1px 8px;transition:all .15s;font-family:inherit}
+.md3-score-btn:hover{border-color:var(--gold-dim);color:var(--text)}
+
+.final-match-card{border-color:var(--border-gold)!important;box-shadow:0 0 20px rgba(201,168,76,0.08)}
+.final-label{background:rgba(201,168,76,0.1)!important;color:var(--gold)!important}
+
+.champion-display{text-align:center;padding:2rem;background:linear-gradient(135deg,rgba(201,168,76,0.06),transparent);border:1px solid var(--border-gold);border-radius:14px;margin-top:1.5rem}
+.champ-trophy{font-size:48px;margin-bottom:8px}
+.champ-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:0.1em;color:var(--gold);margin-bottom:4px}
+.champ-name{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:0.06em;color:var(--text)}
+
+.status-bar{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--teal);flex-shrink:0;box-shadow:0 0 6px var(--teal)}
+.status-text{font-size:13px;color:var(--text-muted)}
+.status-text strong{color:var(--text)}
+.elo-strength-bar{height:3px;border-radius:2px;background:linear-gradient(to right,var(--teal),var(--gold));margin-top:2px}
+.balance-info{background:rgba(93,202,165,0.06);border:1px solid rgba(93,202,165,0.2);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--teal)}
+
+.empty{text-align:center;padding:3rem 1rem;color:var(--text-muted)}
+.empty-icon{font-size:36px;margin-bottom:12px;opacity:.4}
+.empty p{font-size:14px}
+.md3-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.1em;padding:2px 8px;border-radius:6px;background:rgba(201,168,76,0.15);color:var(--gold);border:1px solid var(--border-gold);text-transform:uppercase}
+
+@media(max-width:640px){
+  .form-grid-4{grid-template-columns:1fr 1fr}
+  .draft-lanes{grid-template-columns:1fr 1fr}
+  .topbar{padding:0 1rem}
+  .panel{padding:1rem 1rem 3rem}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">Copa LoL <span>League of Legends</span></div>
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="goTab('register')">Registro</button>
+    <button class="nav-tab" onclick="goTab('captains')">Capitães</button>
+    <button class="nav-tab" onclick="goTab('order')">Ordem do Draft</button>
+    <button class="nav-tab" onclick="goTab('draft')">Draft ao Vivo</button>
+    <button class="nav-tab" onclick="goTab('bracket')">Chaves</button>
+    <button class="nav-tab" style="margin-left:auto;color:#E05252" onclick="resetarTudo()">🗑 Resetar</button>
+  </nav>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">Copa LoL • Temporada 2026</div>
+  <h1 class="hero-title">Copa <span class="accent">LoL</span></h1>
+  <p class="hero-sub">Draft · Chaves · Campeão</p>
+  <div class="hero-divider"></div>
+</div>
+
+<!-- REGISTRO -->
+<div id="panel-register" class="panel active">
+  <div class="section-head"><h2>Registro de Jogadores</h2><p>Adicione os jogadores conforme chegam no Discord</p></div>
+  <div class="card">
+    <div class="card-title">Novo jogador</div>
+    <div class="form-grid form-grid-4">
+      <div class="field"><label>Nome</label><input id="p-name" placeholder="Nick no LoL" onkeydown="if(event.key==='Enter')addPlayer()"/></div>
+      <div class="field"><label>Lane</label><select id="p-lane"><option>Top</option><option>Jungle</option><option>Mid</option><option>ADC</option><option>Support</option></select></div>
+      <div class="field"><label>Elo</label><select id="p-elo"><option>Iron</option><option>Bronze</option><option>Silver</option><option>Gold</option><option>Platinum</option><option selected>Emerald</option><option>Diamond</option><option>Master</option><option>Grandmaster</option><option>Challenger</option></select></div>
+      <div class="field"><label>Divisão</label><select id="p-div"><option>IV</option><option>III</option><option>II</option><option>I</option></select></div>
+    </div>
+    <div class="form-grid" style="margin-bottom:12px"><div class="field"><label>Melhores campeões (vírgula)</label><input id="p-champs" placeholder="Ex: Jinx, Caitlyn, Tristana"/></div></div>
+    <button class="btn btn-gold" onclick="addPlayer()">+ Adicionar</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Colar do Discord (registro rápido)</div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px">Cole o(s) bloco(s) no formato abaixo (um jogador por bloco de 3 linhas):<br><span style="color:var(--text-dim)">Nick: Faker#BR1<br>Elo: Esmeralda IV<br>Lane: Mid<br>Campeões: Ahri, Syndra, Orianna</span></p>
+    <textarea id="p-bulk" rows="6" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--text);font-family:'Inter',sans-serif;outline:none;resize:vertical;margin-bottom:10px" placeholder="Cole aqui os blocos copiados do Discord..."></textarea>
+    <button class="btn btn-gold" onclick="addPlayersFromBulk()">📋 Processar e adicionar</button>
+    <div id="bulk-feedback" style="font-size:12px;color:var(--text-muted);margin-top:8px"></div>
+  </div>
+  <div id="player-list-container"></div>
+</div>
+
+<!-- CAPITÃES -->
+<div id="panel-captains" class="panel">
+  <div class="section-head"><h2>Seleção de Capitães</h2><p>Os capitães também jogam e escolhem sua própria lane no draft</p></div>
+  <div id="captain-container"></div>
+</div>
+
+<!-- ORDEM -->
+<div id="panel-order" class="panel">
+  <div class="section-head">
+    <h2>Ordem do Draft</h2>
+    <p>Sistema snake: A→B→C→D→D→C→B→A→A→… Último capitão faz dois picks seguidos ao virar a serpente</p>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-gold" onclick="sortearOrdem()">🎲 Sortear ordem</button>
+      <span style="font-size:13px;color:var(--text-muted)" id="order-cap-count"></span>
+    </div>
+  </div>
+  <div id="order-list-container"></div>
+</div>
+
+<!-- DRAFT -->
+<div id="panel-draft" class="panel panel-wide">
+  <div class="section-head"><h2>Draft ao Vivo</h2><p>Clique no jogador para confirmar o pick. Cada time só pode ter 1 jogador por lane.</p></div>
+  <div id="draft-container"></div>
+</div>
+
+<!-- CHAVES -->
+<div id="panel-bracket" class="panel">
+  <div class="section-head"><h2>Chaves do Torneio</h2><p>Todos os jogos são MD1 · Apenas a grande final é MD3</p></div>
+  <div id="bracket-status-bar"></div>
+  <div style="display:flex;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap">
+    <button class="btn btn-gold" onclick="gerarChaves()">⚡ Gerar chaves</button>
+    <button class="btn btn-outline btn-sm" onclick="resetarChaves()">Resetar chaves</button>
+  </div>
+  <div id="bracket-container"></div>
+  <div id="champion-container"></div>
+</div>
+
+<!-- MODAL NOME DO TIME -->
+<div id="team-name-modal" class="modal-overlay" style="display:none">
+  <div class="modal-box">
+    <div class="modal-title">🏟 Nome dos Times</div>
+    <div class="modal-sub">Draft finalizado! Cada capitão escolhe o nome do seu time antes de ir para as chaves.</div>
+    <div id="modal-teams-list" class="modal-teams-grid"></div>
+    <div style="display:flex;gap:10px;margin-top:1.5rem;justify-content:flex-end">
+      <button class="btn btn-gold" onclick="confirmarNomesTime()">Confirmar nomes →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== ELO =====
+const ELO_VALUES={'Iron':100,'Bronze':200,'Silver':300,'Gold':400,'Platinum':500,'Emerald':600,'Diamond':700,'Master':800,'Grandmaster':900,'Challenger':1000};
+const DIV_VALUES={'IV':0,'III':25,'II':50,'I':75};
+function eloScore(p){return (ELO_VALUES[p.elo]||400)+(DIV_VALUES[p.div]||0);}
+function teamStrength(members){if(!members||!members.length)return 0;return Math.round(members.reduce((s,m)=>s+eloScore(m),0)/members.length);}
+
+// ===== STATE =====
+let players=[], draftOrder=[], draftPicks={}, currentPickIdx=0, bracket=null, teamNames={};
+
+// ===== PERSIST =====
+function salvarEstado(){try{localStorage.setItem('cdF26',JSON.stringify({players,draftOrder,draftPicks,currentPickIdx,bracket,teamNames}));}catch(e){}}
+function carregarEstado(){
+  try{
+    const raw=localStorage.getItem('cdF26');if(!raw)return;
+    const s=JSON.parse(raw);
+    players=s.players||[];draftOrder=s.draftOrder||[];draftPicks=s.draftPicks||{};
+    currentPickIdx=s.currentPickIdx||0;bracket=s.bracket||null;teamNames=s.teamNames||{};
+  }catch(e){}
+}
+function resetarTudo(){
+  if(!confirm('Apagar TUDO e começar do zero?'))return;
+  localStorage.removeItem('cdF26');
+  players=[];draftOrder=[];draftPicks={};currentPickIdx=0;bracket=null;teamNames={};
+  renderPlayers();renderBracket();
+  document.getElementById('order-list-container').innerHTML='';
+  document.getElementById('draft-container').innerHTML='';
+  toast('Estado resetado!');
+}
+function toast(msg){
+  let t=document.getElementById('_toast');
+  if(!t){t=document.createElement('div');t.id='_toast';t.style.cssText='position:fixed;bottom:24px;right:24px;background:#1A2238;border:1px solid rgba(201,168,76,0.4);color:#C9A84C;font-size:13px;padding:10px 18px;border-radius:8px;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';clearTimeout(t._timer);t._timer=setTimeout(()=>{t.style.opacity='0';},2500);
+}
+
+// ===== NAV =====
+function goTab(t){
+  document.querySelectorAll('.nav-tab').forEach((b,i)=>b.classList.toggle('active',['register','captains','order','draft','bracket'][i]===t));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+t).classList.add('active');
+  if(t==='captains')renderCaptains();
+  if(t==='draft')renderDraft();
+  if(t==='bracket')renderBracket();
+}
+
+// ===== HELPERS =====
+const LANE_KEY=l=>l.toLowerCase().replace(' ','');
+function laneBadge(l){return `<span class="lane-badge lane-${LANE_KEY(l)}">${l}</span>`}
+function laneHeaderClass(l){return `lh-${LANE_KEY(l)}`}
+function getTeamDisplayName(capName){return teamNames[capName]||capName;}
+
+
+const LANE_ORDER={Top:1,Jungle:2,Mid:3,ADC:4,Support:5};
+function sortByLane(arr){
+ return [...arr].sort((a,b)=>(LANE_ORDER[a.lane]||99)-(LANE_ORDER[b.lane]||99));
+}
+
+// ===== REGISTER =====
+function addPlayer(){
+  const name=document.getElementById('p-name').value.trim();if(!name)return;
+  players.push({id:Date.now()+Math.random(),name,lane:document.getElementById('p-lane').value,elo:document.getElementById('p-elo').value,div:document.getElementById('p-div').value,champs:document.getElementById('p-champs').value.trim(),captain:false});
+  document.getElementById('p-name').value='';document.getElementById('p-champs').value='';
+  renderPlayers();salvarEstado();
+}
+function removePlayer(id){players=players.filter(p=>p.id!==id);renderPlayers();salvarEstado();}
+
+// ===== REGISTRO RÁPIDO (COLAR DO DISCORD) =====
+const ELO_MAP={
+  'ferro':'Iron','iron':'Iron',
+  'bronze':'Bronze',
+  'prata':'Silver','silver':'Silver',
+  'ouro':'Gold','gold':'Gold',
+  'platina':'Platinum','platinum':'Platinum','plat':'Platinum',
+  'esmeralda':'Emerald','emerald':'Emerald',
+  'diamante':'Diamond','diamond':'Diamond',
+  'mestre':'Master','master':'Master',
+  'grao':'Grandmaster','grão':'Grandmaster','grandmestre':'Grandmaster','grandmaster':'Grandmaster','gm':'Grandmaster',
+  'desafiante':'Challenger','challenger':'Challenger'
+};
+const DIV_MAP={
+  'i':'I','1':'I','ii':'II','2':'II','iii':'III','3':'III','iv':'IV','4':'IV'
+};
+const LANE_MAP={
+  'top':'Top','topo':'Top',
+  'jungle':'Jungle','jg':'Jungle','jungla':'Jungle','floresta':'Jungle','jung':'Jungle',
+  'mid':'Mid','meio':'Mid','midlane':'Mid',
+  'adc':'ADC','adcarry':'ADC','atirador':'ADC','atiradora':'ADC','bot':'ADC',
+  'sup':'Support','suporte':'Support','support':'Support',
+};
+
+function parseEloString(str){
+  // separa "Esmeralda IV" em base+divisão (divisão é opcional para Master+)
+  const parts=str.trim().split(/\s+/);
+  let div='IV';
+  let baseParts=parts;
+  if(parts.length>1){
+    const last=parts[parts.length-1].toLowerCase();
+    if(DIV_MAP[last]){div=DIV_MAP[last];baseParts=parts.slice(0,-1);}
+  }
+  const baseKey=baseParts.join(' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const elo=ELO_MAP[baseKey]||'Emerald';
+  return {elo,div};
+}
+function parseLaneString(str){
+  const key=str.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  return LANE_MAP[key]||null;
+}
+
+function addPlayersFromBulk(){
+  const raw=document.getElementById('p-bulk').value;
+  if(!raw.trim()){return;}
+  const lines=raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+  let added=0,errors=[];
+  let current={};
+  function flush(){
+    if(current.name){
+      if(!current.lane){errors.push(`"${current.name}": lane não identificada — jogador não adicionado.`);}
+      else{
+        players.push({id:Date.now()+Math.random()+added,name:current.name,lane:current.lane,elo:current.elo||'Emerald',div:current.div||'IV',champs:current.champs||'',captain:false});
+        added++;
+      }
+    }
+    current={};
+  }
+  lines.forEach(line=>{
+    const m=line.match(/^([^:]+):\s*(.*)$/);
+    if(!m){return;}
+    const key=m[1].trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    const val=m[2].trim();
+    if(key==='nick'||key==='nome'){
+      flush(); // novo bloco começa
+      current.name=val.split('#')[0].trim();
+    } else if(key==='elo'){
+      const {elo,div}=parseEloString(val);
+      current.elo=elo;current.div=div;
+    } else if(key==='lane'){
+      current.lane=parseLaneString(val);
+      if(!current.lane)errors.push(`Lane "${val}" não reconhecida para "${current.name||'?'}".`);
+    } else if(key.startsWith('campe')){
+      current.champs=val;
+    }
+  });
+  flush();
+  const fb=document.getElementById('bulk-feedback');
+  let msg=`✅ ${added} jogador${added!==1?'es':''} adicionado${added!==1?'s':''}.`;
+  if(errors.length)msg+=` ⚠️ ${errors.join(' ')}`;
+  fb.textContent=msg;
+  fb.style.color=errors.length?'var(--gold)':'var(--teal)';
+  if(added>0){document.getElementById('p-bulk').value='';renderPlayers();salvarEstado();}
+}
+function renderPlayers(){
+  const lanes=['Top','Jungle','Mid','ADC','Support'];let html='';
+  lanes.forEach(lane=>{
+    const ps=players.filter(p=>p.lane===lane);if(!ps.length)return;
+    html+=`<div class="player-section"><div class="player-section-header">${laneBadge(lane)}<span style="font-size:12px;color:var(--text-muted)">${ps.length} jogador${ps.length>1?'es':''}</span></div>`;
+    ps.forEach(p=>{html+=`<div class="player-row"><span class="player-name">${p.name}</span><span class="elo-badge">${p.elo} ${p.div}</span>${p.captain?'<span class="captain-badge">⚑ Capitão</span>':''}<span class="player-champs">${p.champs||'—'}</span><div class="player-actions"><button class="btn btn-danger btn-sm" onclick="removePlayer(${JSON.stringify(p.id)})">Remover</button></div></div>`;});
+    html+='</div>';
+  });
+  if(!html)html=`<div class="empty"><div class="empty-icon">🎮</div><p>Nenhum jogador registrado ainda.</p></div>`;
+  document.getElementById('player-list-container').innerHTML=html;
+}
+
+// ===== CAPTAINS =====
+function toggleCaptain(id){const p=players.find(x=>x.id==id);if(p){p.captain=!p.captain;renderPlayers();renderCaptains();salvarEstado();}}
+function renderCaptains(){
+  const lanes=['Top','Jungle','Mid','ADC','Support'];let html='';
+  lanes.forEach(lane=>{
+    const ps=players.filter(p=>p.lane===lane);if(!ps.length)return;
+    html+=`<div class="card"><div class="player-section-header" style="margin-bottom:10px">${laneBadge(lane)}</div>`;
+    ps.forEach(p=>{html+=`<div class="player-row" style="cursor:pointer" onclick="toggleCaptain(${JSON.stringify(p.id)})"><input type="checkbox" class="captain-check" ${p.captain?'checked':''} onchange="toggleCaptain(${JSON.stringify(p.id)})" onclick="event.stopPropagation()"/><span class="player-name">${p.name}</span><span class="elo-badge">${p.elo} ${p.div}</span><span class="player-champs">${p.champs||'—'}</span></div>`;});
+    html+='</div>';
+  });
+  if(!html)html=`<div class="empty"><div class="empty-icon">👑</div><p>Registre jogadores primeiro.</p></div>`;
+  document.getElementById('captain-container').innerHTML=html;
+  const caps=players.filter(p=>p.captain);
+  document.getElementById('order-cap-count').textContent=caps.length?`${caps.length} capitão${caps.length>1?'s':''} selecionado${caps.length>1?'s':''}` : '';
+}
+
+// ===== ORDER =====
+// Gera sequência snake CORRETA: A B C D | D C B A | A B C D …
+// O "double" não existe mais: a própria serpente gera D D naturalmente na virada
+function sortearOrdem(){
+  const caps=players.filter(p=>p.captain);
+  if(caps.length<2){alert('Selecione ao menos 2 capitães!');return;}
+
+  const nCaps=caps.length;
+
+  // Validação: cada lane precisa ter jogadores suficientes para todos os times (1 por lane por time, incluindo capitães)
+  const lanesCheck=['Top','Jungle','Mid','ADC','Support'];
+  const faltando=lanesCheck.filter(l=>players.filter(p=>p.lane===l).length<nCaps);
+  if(faltando.length>0){
+    alert(`Cada lane precisa ter pelo menos ${nCaps} jogador(es) (1 por time). Faltam jogadores na(s) lane(s): ${faltando.join(', ')}.`);return;
+  }
+
+  const shuffled=[...caps].sort(()=>Math.random()-0.5);
+  const nonCaps=players.filter(p=>!p.captain).length; // picks necessários
+  draftOrder=[];draftPicks={};currentPickIdx=0;
+
+  // Gera sequência snake até cobrir todos os não-capitães
+  let forward=true;
+  while(draftOrder.length<nonCaps){
+    const line=forward?[...shuffled]:[...shuffled].reverse();
+    for(let i=0;i<line.length&&draftOrder.length<nonCaps;i++){
+      draftOrder.push({cap:line[i],team:line[i].name});
+    }
+    forward=!forward;
+  }
+
+  renderOrderList();salvarEstado();
+}
+
+function renderOrderList(){
+  if(!draftOrder.length){document.getElementById('order-list-container').innerHTML='';return;}
+  // Monta display: agrupa picks consecutivos do mesmo cap para mostrar visualmente "2 picks" na virada
+  let html='';
+  draftOrder.forEach((item,i)=>{
+    const isDone=i<currentPickIdx;
+    const isCurrent=i===currentPickIdx;
+    const prevSame=i>0&&draftOrder[i-1].cap.name===item.cap.name;
+    const nextSame=i<draftOrder.length-1&&draftOrder[i+1].cap.name===item.cap.name;
+    const isDouble=prevSame||nextSame; // faz parte de um par (virada da serpente)
+    html+=`<div class="order-item ${isCurrent?'is-current':''} ${isDone?'is-done':''}">
+      <span class="order-num ${isCurrent?'active':''}">${i+1}</span>
+      <div class="order-info">
+        <div class="order-name">${item.cap.name}</div>
+        <div class="order-tags">
+          <span class="tag tag-cap">⚑ Capitão</span>
+          ${isDouble?'<span class="tag tag-double">🔁 virada da serpente</span>':''}
+          ${isDone?'<span class="tag tag-done">✓ concluído</span>':''}
+        </div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('order-list-container').innerHTML=html;
+}
+
+// ===== DRAFT =====
+function buildTeams(){
+  const teams={};
+  players.filter(p=>p.captain).forEach(cap=>{teams[cap.name]=[cap];});
+  Object.entries(draftPicks).forEach(([pid,info])=>{
+    if(!teams[info.team])teams[info.team]=[];
+    const pl=players.find(p=>p.id==pid);
+    if(pl&&!pl.captain)teams[info.team].push(pl);
+  });
+  return teams;
+}
+
+// Retorna as lanes já ocupadas no time do capitão (incluindo a lane do próprio cap)
+function teamLanes(capName,teams){
+  return new Set((teams[capName]||[]).map(m=>m.lane));
+}
+
+function renderDraft(){
+  if(!draftOrder.length){
+    document.getElementById('draft-container').innerHTML=`<div class="empty"><div class="empty-icon">⚔️</div><p>Sorteie a ordem do draft primeiro.</p></div>`;
+    return;
+  }
+  const lanes=['Top','Jungle','Mid','ADC','Support'];
+  const totalPicks=draftOrder.length;
+  const done=currentPickIdx>=totalPicks;
+  const cur=done?null:draftOrder[currentPickIdx];
+  const pct=Math.round(currentPickIdx/totalPicks*100);
+  const allCaps=players.filter(p=>p.captain);
+  const teams=buildTeams();
+
+  let html=`<div class="draft-layout"><div class="draft-main"><div class="draft-area">
+    <div class="draft-turn">
+      <div>
+        <div class="draft-turn-label">Vez de escolher</div>
+        <div class="draft-turn-name">${done?'Draft concluído!':cur.cap.name}</div>
+        <div class="draft-turn-sub">Pick ${Math.min(currentPickIdx+1,totalPicks)} de ${totalPicks}</div>
+      </div>
+      <div class="draft-progress" style="flex:1"><div class="draft-progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="draft-lanes">`;
+
+  lanes.forEach(lane=>{
+    const lps=players.filter(p=>p.lane===lane&&!p.captain);
+    html+=`<div class="draft-lane-col"><div class="draft-lane-header ${laneHeaderClass(lane)}">${lane}</div>`;
+    lps.forEach(p=>{
+      const alreadyPicked=!!draftPicks[p.id];
+
+      // Bloqueio: lane já ocupada no time atual
+      let laneBlocked=false, laneBlockMsg='';
+      if(!done&&cur&&!alreadyPicked){
+        const occupied=teamLanes(cur.cap.name,teams);
+        if(occupied.has(p.lane)){laneBlocked=true;laneBlockMsg='✕ Lane ocupada';}
+      }
+
+      const blocked=alreadyPicked||laneBlocked;
+      let topTag='';
+      if(laneBlocked) topTag=`<div class="dp-tag dp-tag-block">${laneBlockMsg}</div>`;
+
+      html+=`<div class="draft-player-card ${blocked?'dp-blocked':''}" onclick="${blocked||done?'':'pickPlayer('+JSON.stringify(p.id)+')'}">
+        ${topTag}
+        <div class="dp-name">${p.name}</div>
+        <div class="dp-elo">${p.elo} ${p.div}</div>
+        ${p.champs?`<div class="dp-champs">${p.champs}</div>`:''}
+      </div>`;
+    });
+    html+='</div>';
+  });
+  html+='</div></div></div>'; // fecha draft-lanes, draft-area, draft-main
+
+  // Sidebar com times sendo formados em tempo real
+  const capColors=['dt-t1','dt-t2','dt-t3','dt-t4'];
+  if(!done){
+  const ALL_LANES=['Top','Jungle','Mid','ADC','Support'];
+  html+=`<div class="draft-sidebar"><div class="draft-sidebar-title">Times em formação</div><div class="sidebar-teams-grid">`;
+  allCaps.forEach((cap,i)=>{
+    const members=teams[cap.name]||[];
+    const displayName=getTeamDisplayName(cap.name);
+    html+=`<div class="sidebar-team"><div class="dt-title ${capColors[i%capColors.length]}">⚑ ${displayName}</div>`;
+    ALL_LANES.forEach(lane=>{
+      const m=members.find(x=>x.lane===lane);
+      if(m){
+        html+=`<div class="dt-pick"><span>${m.name}${m.captain?' <span style="font-size:10px;color:var(--gold)">(cap)</span>':''}</span><div class="dt-pick-right">${laneBadge(m.lane)}</div></div>`;
+      }else{
+        html+=`<div class="dt-pick" style="opacity:0.35"><span style="font-style:italic">Vazio</span><div class="dt-pick-right">${laneBadge(lane)}</div></div>`;
+      }
+    });
+    html+='</div>';
+  });
+  html+='</div>'; // fecha sidebar-teams-grid
+  html+='</div>';
+  }
+  html+='</div>'; // fecha draft-layout
+
+  if(done){
+    html+=`<div style="margin-top:1rem;text-align:center"><button class="btn btn-gold" onclick="abrirModalNomesTime()">✏️ Definir nomes dos times →</button></div>`;
+    html+=`<div style="margin-top:1.5rem"><div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:0.05em;margin-bottom:1rem;color:var(--text)">Times Formados</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">`;
+    allCaps.forEach((cap,i)=>{
+      const members=sortByLane(teams[cap.name]||[]);
+      const colorVar=['#7ab8f5','#f07a7a','#5DCAA5','#AFA9EC'][i%4];
+      const displayName=getTeamDisplayName(cap.name);
+      const strength=teamStrength(members);
+      const pct2=Math.round(strength/1075*100);
+      html+=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+        <div style="padding:10px 14px;background:var(--surface2);border-bottom:1px solid var(--border)">
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:${colorVar}">⚑ ${displayName}</span><span style="font-size:11px;color:var(--text-muted)">${members.length} jog.</span></div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:4px">Força média: <strong style="color:var(--gold)">${strength}</strong></div>
+          <div class="elo-strength-bar" style="width:${pct2}%;margin-top:2px"></div>
+        </div>`;
+      members.forEach(m=>{html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 14px;border-bottom:1px solid var(--border);font-size:13px"><span style="font-weight:${m.captain?'600':'400'};color:${m.captain?colorVar:'var(--text)'}">  ${m.captain?'⚑ ':''}${m.name}</span><div style="display:flex;align-items:center;gap:6px">${laneBadge(m.lane)}</div></div>`;});
+      html+=`</div>`;
+    });
+    html+=`</div><div style="padding:1.25rem 0;text-align:center"><button class="btn btn-gold" onclick="goTab('bracket');gerarChaves()">⚡ Gerar chaves do torneio →</button></div></div>`;
+  }
+  document.getElementById('draft-container').innerHTML=html;
+}
+
+function pickPlayer(pid){
+  if(currentPickIdx>=draftOrder.length)return;
+  const p=players.find(x=>x.id==pid);
+  if(!p||draftPicks[pid]||p.captain)return;
+  const cur=draftOrder[currentPickIdx];
+  const teams=buildTeams();
+  const occupied=teamLanes(cur.cap.name,teams);
+  if(occupied.has(p.lane))return; // lane já ocupada no time
+  const teamMembers=teams[cur.cap.name]||[];
+  if(teamMembers.length>=5)return;
+  draftPicks[pid]={pickedBy:cur.cap.name,team:cur.team,pickNum:currentPickIdx+1};
+  currentPickIdx++;
+  // Pula se time já cheio
+  while(currentPickIdx<draftOrder.length){
+    const next=draftOrder[currentPickIdx];
+    const nt=buildTeams();
+    if((nt[next.cap.name]||[]).length>=5)currentPickIdx++;
+    else break;
+  }
+  renderDraft();
+  // Atualiza lista de ordem com progresso
+  renderOrderList();
+  salvarEstado();
+}
+
+// ===== MODAL NOMES =====
+function abrirModalNomesTime(){
+  const allCaps=players.filter(p=>p.captain);
+  let html='';
+  allCaps.forEach((cap,i)=>{
+    const colorVar=['#7ab8f5','#f07a7a','#5DCAA5','#AFA9EC'][i%4];
+    html+=`<div class="modal-team-row"><div class="modal-team-label">Time do capitão</div><div class="modal-team-cap" style="color:${colorVar}">⚑ ${cap.name}</div><input class="modal-team-input" id="tn-${i}" placeholder="Nome do time (ex: Os Brabos, Team Flash...)" value="${teamNames[cap.name]||''}"/></div>`;
+  });
+  document.getElementById('modal-teams-list').innerHTML=html;
+  document.getElementById('team-name-modal').style.display='flex';
+}
+function confirmarNomesTime(){
+  const allCaps=players.filter(p=>p.captain);
+  allCaps.forEach((cap,i)=>{const inp=document.getElementById('tn-'+i);if(inp&&inp.value.trim())teamNames[cap.name]=inp.value.trim();});
+  document.getElementById('team-name-modal').style.display='none';
+  salvarEstado();renderDraft();toast('Nomes dos times salvos!');
+}
+
+// ===== BRACKET =====
+function getTeamObjects(){
+  const caps=players.filter(p=>p.captain);
+  const teams=buildTeams();
+  return caps.map((cap,i)=>({id:'t'+i,name:getTeamDisplayName(cap.name),captain:cap.name,players:teams[cap.name]||[],strength:teamStrength(teams[cap.name]||[])}));
+}
+function balancedSeed(teams){
+  if(teams.length<=1)return teams;
+  const sorted=[...teams].sort((a,b)=>b.strength-a.strength);
+  const n=sorted.length;
+  const seeded=new Array(n);
+  let top=0,bot=n-1,goTop=true;
+  for(let i=0;i<n;i++){if(goTop){seeded[top]=sorted[i];top++;}else{seeded[bot]=sorted[i];bot--;}goTop=!goTop;}
+  return seeded;
+}
+function gerarChaves(){
+  const allTeams=getTeamObjects();
+  const filled=allTeams.filter(t=>t.players.length>0);
+  if(!filled.length){alert('Complete o draft primeiro!');return;}
+  const seeded=balancedSeed(filled);
+  let size=1;while(size<seeded.length)size*=2;
+  const padded=[...seeded];while(padded.length<size)padded.push(null);
+
+  const rounds=[];let matchId=0;let currentMatches=[];
+  for(let i=0;i<padded.length/2;i++){
+    const t1=padded[i],t2=padded[padded.length-1-i];
+    const m={id:'m'+(++matchId),team1:t1,team2:t2,score1:null,score2:null,winner:null,seed1:t1?(i+1):null,seed2:t2?(padded.length-i):null};
+    currentMatches.push(m);
+  }
+  const getRoundName=(total,remaining)=>{if(remaining===1)return 'Grande Final';if(remaining===2)return 'Semifinal';if(remaining===4)return 'Quartas de Final';return 'Fase '+Math.round(Math.log2(total/remaining)+1);};
+  rounds.push({name:getRoundName(size,currentMatches.length),isFinal:currentMatches.length===1,matches:currentMatches});
+  while(currentMatches.length>1){
+    const next=[];
+    for(let i=0;i<currentMatches.length;i+=2){
+      next.push({id:'m'+(++matchId),team1:currentMatches[i].winner||null,team2:currentMatches[i+1]?.winner||null,score1:null,score2:null,winner:null,seed1:null,seed2:null});
+    }
+    const isFinal=next.length===1;
+    rounds.push({name:getRoundName(size,next.length),isFinal,matches:next});
+    currentMatches=next;
+  }
+  bracket={rounds,seeded:seeded.filter(Boolean).map(t=>({name:t.name,strength:t.strength}))};
+  renderBracket();salvarEstado();
+}
+function resetarChaves(){if(!confirm('Resetar todas as chaves?'))return;bracket=null;renderBracket();}
+
+// MD3: incrementa score de um time. Vence quem chegar em 2 primeiro.
+function md3AddScore(matchId,roundIdx,slot){
+  if(!bracket)return;
+  const match=bracket.rounds[roundIdx].matches.find(m=>m.id===matchId);
+  if(!match||match.winner)return;
+  if(slot===1){match.score1=(match.score1||0)+1;}else{match.score2=(match.score2||0)+1;}
+  if(match.score1>=2){match.winner=match.team1;}
+  else if(match.score2>=2){match.winner=match.team2;}
+  renderBracket();salvarEstado();
+}
+// MD1: registra vitória direta
+function setWinner(matchId,roundIdx,slot){
+  if(!bracket)return;
+  const match=bracket.rounds[roundIdx].matches.find(m=>m.id===matchId);
+  if(!match)return;
+  const isFinal=bracket.rounds[roundIdx].isFinal;
+  if(isFinal){md3AddScore(matchId,roundIdx,slot);return;}
+  if(slot===1){match.score1=1;match.score2=0;}else{match.score1=0;match.score2=1;}
+  match.winner=slot===1?match.team1:match.team2;
+  propagateWinner(roundIdx,match);
+  renderBracket();salvarEstado();
+}
+function propagateWinner(roundIdx,match){
+  if(!bracket.rounds[roundIdx+1])return;
+  const nextRound=bracket.rounds[roundIdx+1];
+  const mIdx=bracket.rounds[roundIdx].matches.indexOf(match);
+  const nMatch=nextRound.matches[Math.floor(mIdx/2)];
+  if(!nMatch)return;
+  if(mIdx%2===0)nMatch.team1=match.winner;else nMatch.team2=match.winner;
+  // Removido avanço automático. O vencedor só avança após resultado confirmado.
+  if(nMatch.winner)propagateWinner(roundIdx+1,nMatch);
+}
+
+function renderBracket(){
+  const container=document.getElementById('bracket-container');
+  const champContainer=document.getElementById('champion-container');
+  const statusBar=document.getElementById('bracket-status-bar');
+  if(!bracket){
+    container.innerHTML=`<div class="empty"><div class="empty-icon">🏆</div><p>Clique em "Gerar chaves" após o draft.</p></div>`;
+    champContainer.innerHTML='';statusBar.innerHTML='';return;
+  }
+  const totalM=bracket.rounds.reduce((a,r)=>a+r.matches.length,0);
+  const doneM=bracket.rounds.reduce((a,r)=>a+r.matches.filter(m=>m.winner).length,0);
+  let balHtml='';
+  if(bracket.seeded&&bracket.seeded.length){
+    balHtml=`<div class="balance-info">⚖️ <strong>Chaves balanceadas por elo</strong> — Seeds: ${bracket.seeded.map((t,i)=>`<strong>#${i+1}</strong> ${t.name} (${t.strength})`).join(' · ')}</div>`;
+  }
+  statusBar.innerHTML=balHtml+`<div class="status-bar"><span class="status-dot"></span><span class="status-text"><strong>${doneM}/${totalM}</strong> jogo${totalM>1?'s':''} finalizado${doneM!==1?'s':''}</span></div>`;
+
+  const maxMatches=Math.max(...bracket.rounds.map(r=>r.matches.length));
+  const MATCH_MIN_H=148; // altura mínima de um card de partida (nomes podem quebrar em 2 linhas)
+  const bracketMinH=maxMatches*MATCH_MIN_H;
+  let html=`<div class="bracket-wrap"><div class="bracket" style="min-width:${bracket.rounds.length*260}px;min-height:${bracketMinH}px">`;
+  bracket.rounds.forEach((round,rIdx)=>{
+    const growFactor=Math.pow(2,rIdx);
+    html+=`<div class="bracket-round"><div class="round-header">${round.name}</div><div class="round-matches">`;
+    round.matches.forEach(match=>{
+      const cardClass=round.isFinal?'match-card final-match-card':'match-card';
+      const labelClass=round.isFinal?'match-label final-label':'match-label';
+      const t1tbd=!match.team1,t2tbd=!match.team2;
+      const w1=match.winner&&match.winner.id===match.team1?.id;
+      const w2=match.winner&&match.winner.id===match.team2?.id;
+      const s1=match.score1!==null?match.score1:'';
+      const s2=match.score2!==null?match.score2:'';
+      const seed1=match.seed1?`<span class="seed-badge">#${match.seed1}</span>`:'';
+      const seed2=match.seed2?`<span class="seed-badge">#${match.seed2}</span>`:'';
+
+      // Botões de vitória: MD1 mostra "✓ Ganhou" só se não tiver winner; MD3 mostra controles de score enquanto não tiver winner
+      let t1Action='',t2Action='';
+      if(!match.winner){
+        if(round.isFinal){
+          if(!t1tbd)t1Action=`<button class="win-btn" onclick="md3AddScore('${match.id}',${rIdx},1)">+1</button>`;
+          if(!t2tbd)t2Action=`<button class="win-btn" onclick="md3AddScore('${match.id}',${rIdx},2)">+1</button>`;
+        } else {
+          if(!t1tbd)t1Action=`<button class="win-btn" onclick="setWinner('${match.id}',${rIdx},1)">✓ Ganhou</button>`;
+          if(!t2tbd)t2Action=`<button class="win-btn" onclick="setWinner('${match.id}',${rIdx},2)">✓ Ganhou</button>`;
+        }
+      }
+
+      html+=`<div class="match-wrap" style="flex-grow:${growFactor}"><div class="${cardClass}">
+        <div class="match-team ${w1?'winner':''} ${match.winner&&!w1?'loser':''}">
+          <div style="flex:1;min-width:0">
+            <div class="match-team-name ${t1tbd?'tbd-team':''}" style="display:flex;align-items:center;gap:4px">${t1tbd?'A definir':match.team1?.name||'—'}${seed1}</div>
+            <div class="match-team-cap">${t1tbd?'':match.team1?.captain||''}</div>
+          </div>
+          ${t1Action}
+          <span class="match-score ${w1?'score-w':'score-l'}">${s1}</span>
+        </div>
+        <div class="match-team ${w2?'winner':''} ${match.winner&&!w2?'loser':''}" style="border-bottom:none">
+          <div style="flex:1;min-width:0">
+            <div class="match-team-name ${t2tbd?'tbd-team':''}" style="display:flex;align-items:center;gap:4px">${t2tbd?'A definir':match.team2?.name||'—'}${seed2}</div>
+            <div class="match-team-cap">${t2tbd?'':match.team2?.captain||''}</div>
+          </div>
+          ${t2Action}
+          <span class="match-score ${w2?'score-w':'score-l'}">${s2}</span>
+        </div>
+        <div class="${labelClass}">${round.isFinal?`<span class="md3-badge">MD3 — Grande Final</span>${!match.winner?` <span style="font-size:10px;color:var(--text-muted)">Primeiro a 2 vence</span>`:'`'}` : 'MD1'}</div>
+      </div></div>`;
+    });
+    html+='</div>'; // fecha round-matches
+
+    // Conectores verticais ligando pares de matches ao próximo round
+    if(rIdx<bracket.rounds.length-1){
+      const N=round.matches.length;
+      for(let i=0;i<N;i+=2){
+        const top=(i+0.5)/N*100;
+        const bottom=(i+1.5)/N*100;
+        html+=`<div class="bracket-connector" style="top:${top}%;height:${bottom-top}%"></div>`;
+      }
+    }
+    html+='</div>'; // fecha bracket-round
+  });
+  html+='</div></div>';
+  container.innerHTML=html;
+
+  const finalRound=bracket.rounds[bracket.rounds.length-1];
+  const finalMatch=finalRound.matches[0];
+  if(finalMatch?.winner){
+    champContainer.innerHTML=`<div class="champion-display"><div class="champ-trophy">🏆</div><div class="champ-title">Campeã da Copa LoL</div><div class="champ-name">${finalMatch.winner.name}</div><div style="font-size:13px;color:var(--text-muted);margin-top:6px">Capitão: ${finalMatch.winner.captain}</div></div>`;
+  } else {
+    champContainer.innerHTML='';
+  }
+}
+
+// Init
+carregarEstado();renderPlayers();if(bracket)renderBracket();
+</script>
+
+<footer style="text-align:center;padding:1.5rem;margin-top:2rem;border-top:1px solid rgba(200,155,60,0.15);font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.15em;color:var(--text-muted);">
+  Desenvolvido por <span style="color:var(--gold);">Deeh</span>
+</footer>
+</body>
+</html>
