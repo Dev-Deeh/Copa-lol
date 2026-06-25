@@ -140,6 +140,46 @@ select option{background:var(--surface2)}
 .dt-pick:last-child{border-bottom:none}
 .dt-pick-right{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted)}
 
+/* ===== DRAFT DONE - TEAM SHOWCASE ===== */
+.draft-done-header{text-align:center;padding:2.5rem 1rem 2rem;position:relative}
+.draft-done-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(201,168,76,0.07) 0%,transparent 70%);pointer-events:none}
+.draft-done-eyebrow{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.25em;color:var(--gold);text-transform:uppercase;margin-bottom:10px}
+.draft-done-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,64px);letter-spacing:0.06em;color:var(--text);line-height:1;margin-bottom:6px}
+.draft-done-sub{font-size:13px;color:var(--text-muted)}
+.draft-done-divider{width:60px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);margin:1.25rem auto 1.75rem}
+.draft-done-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:1.5rem}
+
+.teams-showcase{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;padding:0 0 2rem}
+
+.team-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform .2s,border-color .2s;position:relative}
+.team-card:hover{transform:translateY(-3px);border-color:var(--border-gold)}
+.team-card-glow{position:absolute;inset:0;border-radius:16px;pointer-events:none;opacity:0;transition:opacity .3s}
+.team-card:hover .team-card-glow{opacity:1}
+
+.team-card-header{padding:16px 18px 14px;position:relative;border-bottom:1px solid var(--border)}
+.team-card-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0}
+.team-card-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.05em;line-height:1;margin-bottom:4px}
+.team-card-cap-row{display:flex;align-items:center;gap:6px;margin-top:6px}
+.team-card-cap-label{font-size:10px;letter-spacing:0.1em;color:var(--text-muted);text-transform:uppercase;font-weight:600}
+
+.team-strength-row{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.team-strength-label{font-size:10px;color:var(--text-muted);letter-spacing:0.06em;text-transform:uppercase}
+.team-strength-val{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--gold)}
+.team-strength-track{height:3px;background:var(--border);border-radius:2px;margin-top:5px;overflow:hidden}
+.team-strength-fill{height:100%;border-radius:2px;transition:width .6s ease}
+
+.team-roster{padding:0}
+.roster-row{display:flex;align-items:center;gap:10px;padding:10px 18px;border-bottom:1px solid var(--border);transition:background .15s}
+.roster-row:last-child{border-bottom:none}
+.roster-row:hover{background:var(--surface2)}
+.roster-row.is-captain{background:rgba(201,168,76,0.04)}
+.roster-row.is-captain:hover{background:rgba(201,168,76,0.08)}
+.roster-star{font-size:14px;flex-shrink:0;width:18px;text-align:center}
+.roster-name{font-size:13px;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.roster-name.cap-name{font-weight:700}
+.roster-lane{flex-shrink:0}
+.roster-elo{font-size:10px;color:var(--text-muted);flex-shrink:0;min-width:68px;text-align:right}
+
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
 .modal-box{background:var(--surface);border:1px solid var(--border-gold);border-radius:16px;padding:2rem;width:100%;max-width:900px;max-height:88vh;overflow-y:auto;box-shadow:0 0 60px rgba(201,168,76,0.1)}
@@ -215,6 +255,7 @@ select option{background:var(--surface2)}
   .draft-lanes{grid-template-columns:1fr 1fr}
   .topbar{padding:0 1rem}
   .panel{padding:1rem 1rem 3rem}
+  .teams-showcase{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -287,7 +328,7 @@ select option{background:var(--surface2)}
 
 <!-- DRAFT -->
 <div id="panel-draft" class="panel panel-wide">
-  <div class="section-head"><h2>Draft ao Vivo</h2><p>Clique no jogador para confirmar o pick. Cada time só pode ter 1 jogador por lane.</p></div>
+  <div id="draft-section-head" class="section-head"><h2>Draft ao Vivo</h2><p>Clique no jogador para confirmar o pick. Cada time só pode ter 1 jogador por lane.</p></div>
   <div id="draft-container"></div>
 </div>
 
@@ -321,6 +362,10 @@ const ELO_VALUES={'Iron':100,'Bronze':200,'Silver':300,'Gold':400,'Platinum':500
 const DIV_VALUES={'IV':0,'III':25,'II':50,'I':75};
 function eloScore(p){return (ELO_VALUES[p.elo]||400)+(DIV_VALUES[p.div]||0);}
 function teamStrength(members){if(!members||!members.length)return 0;return Math.round(members.reduce((s,m)=>s+eloScore(m),0)/members.length);}
+
+// Team accent colors
+const TEAM_COLORS=['#7ab8f5','#f07a7a','#5DCAA5','#AFA9EC','#f0c07a','#f07eb0'];
+const TEAM_GLOWS=['rgba(122,184,245,0.12)','rgba(240,122,122,0.12)','rgba(93,202,165,0.12)','rgba(175,169,236,0.12)','rgba(240,192,122,0.12)','rgba(240,126,176,0.12)'];
 
 // ===== STATE =====
 let players=[], draftOrder=[], draftPicks={}, currentPickIdx=0, bracket=null, teamNames={};
@@ -619,10 +664,20 @@ function renderDraft(){
     document.getElementById('draft-container').innerHTML=`<div class="empty"><div class="empty-icon">⚔️</div><p>Sorteie a ordem do draft primeiro.</p></div>`;
     return;
   }
-  const lanes=['Top','Jungle','Mid','ADC','Support'];
   const totalPicks=draftOrder.length;
   const done=currentPickIdx>=totalPicks;
-  const cur=done?null:draftOrder[currentPickIdx];
+
+  // Hide/show section head depending on state
+  const secHead=document.getElementById('draft-section-head');
+  if(secHead) secHead.style.display=done?'none':'block';
+
+  if(done){
+    renderDraftDone();
+    return;
+  }
+
+  const lanes=['Top','Jungle','Mid','ADC','Support'];
+  const cur=draftOrder[currentPickIdx];
   const pct=Math.round(currentPickIdx/totalPicks*100);
   const allCaps=players.filter(p=>p.captain);
   const teams=buildTeams();
@@ -631,11 +686,11 @@ function renderDraft(){
     <div class="draft-turn">
       <div>
         <div class="draft-turn-label">Vez de escolher</div>
-        <div class="draft-turn-name">${done?'Draft concluído!':cur.cap.name}</div>
-        <div class="draft-turn-sub">Pick ${Math.min(currentPickIdx+1,totalPicks)} de ${totalPicks}</div>
+        <div class="draft-turn-name">${cur.cap.name}</div>
+        <div class="draft-turn-sub">Pick ${currentPickIdx+1} de ${totalPicks}</div>
       </div>
       <div class="draft-progress" style="flex:1"><div class="draft-progress-fill" style="width:${pct}%"></div></div>
-      ${currentPickIdx>0&&!done?'<button class="btn btn-outline btn-sm" onclick="undoPick()" style="white-space:nowrap;flex-shrink:0">↩ Desfazer</button>':''}
+      ${currentPickIdx>0?'<button class="btn btn-outline btn-sm" onclick="undoPick()" style="white-space:nowrap;flex-shrink:0">↩ Desfazer</button>':''}
     </div>
     <div class="draft-lanes">`;
 
@@ -643,21 +698,11 @@ function renderDraft(){
     const lps=players.filter(p=>p.lane===lane&&!p.captain);
     html+=`<div class="draft-lane-col"><div class="draft-lane-header ${laneHeaderClass(lane)}">${lane}</div>`;
     lps.forEach(p=>{
-      // Jogador já draftado → some da lista
       if(draftPicks[p.id]) return;
-      if(!done&&cur&&teamLanes(cur.cap.name,teams).has(p.lane)) return;
-
-      let laneBlocked=false,laneBlockMsg='';
-      if(!done&&cur){
-        const occupied=teamLanes(cur.cap.name,teams);
-        if(occupied.has(p.lane)){laneBlocked=true;laneBlockMsg='✕ Lane ocupada';}
-      }
-
-      let topTag='';
-      if(laneBlocked) topTag=`<div class="dp-tag dp-tag-block">${laneBlockMsg}</div>`;
-
-      html+=`<div class="draft-player-card ${laneBlocked?'dp-blocked':''}" onclick="${laneBlocked||done?'':'pickPlayer('+JSON.stringify(p.id)+')'}">
-        ${topTag}
+      const occupied=teamLanes(cur.cap.name,teams);
+      const laneBlocked=occupied.has(p.lane);
+      if(laneBlocked) return;
+      html+=`<div class="draft-player-card" onclick="pickPlayer(${JSON.stringify(p.id)})">
         <div class="dp-name">${p.name}</div>
         <div class="dp-elo">${p.elo}${p.div?' '+p.div:''}</div>
         ${p.champs?`<div class="dp-champs">${p.champs}</div>`:''}
@@ -666,51 +711,92 @@ function renderDraft(){
     html+='</div>';
   });
 
-  html+='</div></div></div>'; // fecha draft-lanes, draft-area, draft-main
+  html+='</div></div></div>';
 
   // Sidebar
   const capColors=['dt-t1','dt-t2','dt-t3','dt-t4'];
-  if(!done){
-    const ALL_LANES=['Top','Jungle','Mid','ADC','Support'];
-    html+=`<div class="draft-sidebar"><div class="draft-sidebar-title">Times em formação</div><div class="sidebar-teams-grid">`;
-    allCaps.forEach((cap,i)=>{
-      const members=teams[cap.name]||[];
-      const displayName=getTeamDisplayName(cap.name);
-      html+=`<div class="sidebar-team"><div class="dt-title ${capColors[i%capColors.length]}">⚑ ${displayName}</div>`;
-      ALL_LANES.forEach(lane=>{
-        const m=members.find(x=>x.lane===lane);
-        if(m){
-          html+=`<div class="dt-pick"><span>${m.name}${m.captain?' <span style="font-size:10px;color:var(--gold)">(cap)</span>':''}</span><div class="dt-pick-right">${laneBadge(m.lane)}</div></div>`;
-        }else{
-          html+=`<div class="dt-pick" style="opacity:0.35"><span style="font-style:italic">Vazio</span><div class="dt-pick-right">${laneBadge(lane)}</div></div>`;
-        }
-      });
-      html+='</div>';
+  const ALL_LANES=['Top','Jungle','Mid','ADC','Support'];
+  html+=`<div class="draft-sidebar"><div class="draft-sidebar-title">Times em formação</div><div class="sidebar-teams-grid">`;
+  allCaps.forEach((cap,i)=>{
+    const members=teams[cap.name]||[];
+    const displayName=getTeamDisplayName(cap.name);
+    html+=`<div class="sidebar-team"><div class="dt-title ${capColors[i%capColors.length]}">⚑ ${displayName}</div>`;
+    ALL_LANES.forEach(lane=>{
+      const m=members.find(x=>x.lane===lane);
+      if(m){
+        html+=`<div class="dt-pick"><span>${m.name}${m.captain?' <span style="font-size:10px;color:var(--gold)">(cap)</span>':''}</span><div class="dt-pick-right">${laneBadge(m.lane)}</div></div>`;
+      }else{
+        html+=`<div class="dt-pick" style="opacity:0.35"><span style="font-style:italic">Vazio</span><div class="dt-pick-right">${laneBadge(lane)}</div></div>`;
+      }
     });
-    html+='</div></div>';
-  }
-  html+='</div>'; // fecha draft-layout
+    html+='</div>';
+  });
+  html+='</div></div>';
+  html+='</div>';
 
-  if(done){
-    html+=`<div style="margin-top:1rem;text-align:center"><button class="btn btn-gold" onclick="abrirModalNomesTime()">✏️ Definir nomes dos times →</button></div>`;
-    html+=`<div style="margin-top:1.5rem"><div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:0.05em;margin-bottom:1rem;color:var(--text)">Times Formados</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">`;
-    allCaps.forEach((cap,i)=>{
-      const members=sortByLane(teams[cap.name]||[]);
-      const colorVar=['#7ab8f5','#f07a7a','#5DCAA5','#AFA9EC'][i%4];
-      const displayName=getTeamDisplayName(cap.name);
-      const strength=teamStrength(members);
-      const pct2=Math.round(strength/1075*100);
-      html+=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
-        <div style="padding:10px 14px;background:var(--surface2);border-bottom:1px solid var(--border)">
-          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:${colorVar}">⚑ ${displayName}</span><span style="font-size:11px;color:var(--text-muted)">${members.length} jog.</span></div>
-          <div style="font-size:10px;color:var(--text-muted);margin-top:4px">Força média: <strong style="color:var(--gold)">${strength}</strong></div>
-          <div class="elo-strength-bar" style="width:${pct2}%;margin-top:2px"></div>
-        </div>`;
-      members.forEach(m=>{html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 14px;border-bottom:1px solid var(--border);font-size:13px"><span style="font-weight:${m.captain?'600':'400'};color:${m.captain?colorVar:'var(--text)'}">  ${m.captain?'⚑ ':''}${m.name}</span><div style="display:flex;align-items:center;gap:6px">${laneBadge(m.lane)}</div></div>`;});
-      html+=`</div>`;
+  document.getElementById('draft-container').innerHTML=html;
+}
+
+function renderDraftDone(){
+  const allCaps=players.filter(p=>p.captain);
+  const teams=buildTeams();
+
+  let html=`<div class="draft-done-header">
+    <div class="draft-done-eyebrow">Draft Encerrado</div>
+    <div class="draft-done-title">Times Formados</div>
+    <div class="draft-done-sub">${allCaps.length} times prontos para o torneio</div>
+    <div class="draft-done-divider"></div>
+    <div class="draft-done-actions">
+      <button class="btn btn-outline btn-sm" onclick="undoPick()">↩ Desfazer último pick</button>
+      <button class="btn btn-outline" onclick="abrirModalNomesTime()">✏️ Renomear times</button>
+      <button class="btn btn-gold" onclick="goTab('bracket');gerarChaves()">⚡ Gerar chaves →</button>
+    </div>
+  </div>`;
+
+  html+=`<div class="teams-showcase">`;
+
+  allCaps.forEach((cap,i)=>{
+    const color=TEAM_COLORS[i%TEAM_COLORS.length];
+    const glow=TEAM_GLOWS[i%TEAM_GLOWS.length];
+    const members=sortByLane(teams[cap.name]||[]);
+    const displayName=getTeamDisplayName(cap.name);
+    const strength=teamStrength(members);
+    const pct=Math.round(strength/1075*100);
+
+    html+=`<div class="team-card">
+      <div class="team-card-glow" style="box-shadow:inset 0 0 40px ${glow}"></div>
+      <div class="team-card-header">
+        <div class="team-card-accent" style="background:linear-gradient(to right,${color},transparent)"></div>
+        <div class="team-card-name" style="color:${color}">${displayName}</div>
+        <div class="team-card-cap-row">
+          <span style="font-size:14px">⭐</span>
+          <span class="team-card-cap-label">Capitão:</span>
+          <span style="font-size:12px;font-weight:600;color:${color}">${cap.name}</span>
+        </div>
+        <div class="team-strength-row">
+          <span class="team-strength-label">Força média</span>
+          <span class="team-strength-val">${strength}</span>
+        </div>
+        <div class="team-strength-track"><div class="team-strength-fill" style="width:${pct}%;background:linear-gradient(to right,${color}88,${color})"></div></div>
+      </div>
+      <div class="team-roster">`;
+
+    members.forEach(m=>{
+      const isCap=m.captain;
+      html+=`<div class="roster-row ${isCap?'is-captain':''}">
+        <span class="roster-star">${isCap?'⭐':''}</span>
+        <span class="roster-name ${isCap?'cap-name':''}" style="${isCap?`color:${color}`:''}">
+          ${m.name}
+        </span>
+        <span class="roster-lane">${laneBadge(m.lane)}</span>
+        <span class="roster-elo">${m.elo}${m.div?' '+m.div:''}</span>
+      </div>`;
     });
-    html+=`</div><div style="padding:1.25rem 0;text-align:center"><button class="btn btn-gold" onclick="goTab('bracket');gerarChaves()">⚡ Gerar chaves do torneio →</button></div></div>`;
-  }
+
+    html+=`</div></div>`;
+  });
+
+  html+=`</div>`;
   document.getElementById('draft-container').innerHTML=html;
 }
 
@@ -749,8 +835,8 @@ function abrirModalNomesTime(){
   const allCaps=players.filter(p=>p.captain);
   let html='';
   allCaps.forEach((cap,i)=>{
-    const colorVar=['#7ab8f5','#f07a7a','#5DCAA5','#AFA9EC'][i%4];
-    html+=`<div class="modal-team-row"><div class="modal-team-label">Time do capitão</div><div class="modal-team-cap" style="color:${colorVar}">⚑ ${cap.name}</div><input class="modal-team-input" id="tn-${i}" placeholder="Nome do time (ex: Os Brabos, Team Flash...)" value="${teamNames[cap.name]||''}"/></div>`;
+    const color=TEAM_COLORS[i%TEAM_COLORS.length];
+    html+=`<div class="modal-team-row"><div class="modal-team-label">Time do capitão</div><div class="modal-team-cap" style="color:${color}">⭐ ${cap.name}</div><input class="modal-team-input" id="tn-${i}" placeholder="Nome do time (ex: Os Brabos, Team Flash...)" value="${teamNames[cap.name]||''}"/></div>`;
   });
   document.getElementById('modal-teams-list').innerHTML=html;
   document.getElementById('team-name-modal').style.display='flex';
@@ -894,7 +980,7 @@ function renderBracket(){
           ${t2Action}
           <span class="match-score ${w2?'score-w':'score-l'}">${s2}</span>
         </div>
-        <div class="${labelClass}">${round.isFinal?`<span class="md3-badge">MD3 — Grande Final</span>${!match.winner?' <span style="font-size:10px;color:var(--text-muted)">Primeiro a 2 vence</span>':'`'}` : 'MD1'}</div>
+        <div class="${labelClass}">${round.isFinal?`<span class="md3-badge">MD3 — Grande Final</span>${!match.winner?' <span style="font-size:10px;color:var(--text-muted)">Primeiro a 2 vence</span>':''}` : 'MD1'}</div>
       </div></div>`;
     });
     html+='</div>';
