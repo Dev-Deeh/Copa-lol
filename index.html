@@ -176,21 +176,13 @@ select option{background:var(--surface2)}
 .tbd-team{color:var(--text-dim);font-style:italic;font-size:12px}
 .seed-badge{font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;background:rgba(201,168,76,0.12);color:var(--gold);border:1px solid var(--border-gold);white-space:nowrap;flex-shrink:0}
 
-/* Conectores horizontais saindo de cada card */
-.bracket-round:not(:last-child) .match-card::after{
-  content:'';position:absolute;left:100%;top:50%;width:16px;height:1px;background:var(--border);
-}
-.bracket-round:not(:first-child) .match-card::before{
-  content:'';position:absolute;right:100%;top:50%;width:16px;height:1px;background:var(--border);
-}
-/* Conector vertical: desenhado entre cada par de matches, ligando os dois centros */
+.bracket-round:not(:last-child) .match-card::after{content:'';position:absolute;left:100%;top:50%;width:16px;height:1px;background:var(--border);}
+.bracket-round:not(:first-child) .match-card::before{content:'';position:absolute;right:100%;top:50%;width:16px;height:1px;background:var(--border);}
 .bracket-connector{position:absolute;right:-16px;width:16px;border-right:1px solid var(--border);pointer-events:none}
 
-/* WIN BTN inside match */
 .win-btn{font-size:10px;background:rgba(201,168,76,0.1);border:1px solid var(--border-gold);color:var(--gold);padding:2px 7px;border-radius:5px;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;transition:background .15s}
 .win-btn:hover{background:rgba(201,168,76,0.22)}
 
-/* MD3 score controls */
 .md3-controls{padding:8px 10px;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .md3-score-row{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
 .md3-score-name{font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
@@ -374,23 +366,23 @@ function laneBadge(l){return `<span class="lane-badge lane-${LANE_KEY(l)}">${l}<
 function laneHeaderClass(l){return `lh-${LANE_KEY(l)}`}
 function getTeamDisplayName(capName){return teamNames[capName]||capName;}
 
-
 const LANE_ORDER={Top:1,Jungle:2,Mid:3,ADC:4,Support:5};
 function sortByLane(arr){
- return [...arr].sort((a,b)=>(LANE_ORDER[a.lane]||99)-(LANE_ORDER[b.lane]||99));
+  return [...arr].sort((a,b)=>(LANE_ORDER[a.lane]||99)-(LANE_ORDER[b.lane]||99));
 }
 
 // ===== REGISTER =====
 function addPlayer(){
   const name=document.getElementById('p-name').value.trim();if(!name)return;
-  const eloVal=document.getElementById('p-elo').value;const divVal=NO_DIV_ELOS.has(eloVal)?'':document.getElementById('p-div').value;
+  const eloVal=document.getElementById('p-elo').value;
+  const divVal=NO_DIV_ELOS.has(eloVal)?'':document.getElementById('p-div').value;
   players.push({id:Date.now()+Math.random(),name,lane:document.getElementById('p-lane').value,elo:eloVal,div:divVal,champs:document.getElementById('p-champs').value.trim(),captain:false});
   document.getElementById('p-name').value='';document.getElementById('p-champs').value='';
   renderPlayers();salvarEstado();
 }
 function removePlayer(id){players=players.filter(p=>p.id!==id);renderPlayers();salvarEstado();}
 
-// ===== REGISTRO RÁPIDO (COLAR DO DISCORD) =====
+// ===== REGISTRO RÁPIDO =====
 const ELO_MAP={
   'ferro':'Iron','iron':'Iron','fer':'Iron',
   'bronze':'Bronze','bro':'Bronze',
@@ -403,11 +395,8 @@ const ELO_MAP={
   'grao':'Grandmaster','grão':'Grandmaster','grandmestre':'Grandmaster','grandmaster':'Grandmaster','gm':'Grandmaster','grao mestre':'Grandmaster','grao-mestre':'Grandmaster',
   'desafiante':'Challenger','challenger':'Challenger','chall':'Challenger','chal':'Challenger'
 };
-// Elos sem divisão
 const NO_DIV_ELOS=new Set(['Master','Grandmaster','Challenger']);
-const DIV_MAP={
-  'i':'I','1':'I','ii':'II','2':'II','iii':'III','3':'III','iv':'IV','4':'IV'
-};
+const DIV_MAP={'i':'I','1':'I','ii':'II','2':'II','iii':'III','3':'III','iv':'IV','4':'IV'};
 const LANE_MAP={
   'top':'Top','topo':'Top',
   'jungle':'Jungle','jg':'Jungle','jungla':'Jungle','floresta':'Jungle','jung':'Jungle',
@@ -418,28 +407,24 @@ const LANE_MAP={
 
 function parseEloString(str){
   const s=str.trim();
-  // Formato compacto: D3, P4, G1, S2, etc.
   const compact=s.match(/^([A-Za-z]+)([1-4])$/);
   if(compact){
     const COMPACT_ELO={'f':'Iron','b':'Bronze','s':'Silver','g':'Gold','p':'Platinum','e':'Esmeralda','d':'Diamond'};
     const eloKey=compact[1].toLowerCase();
     const elo=COMPACT_ELO[eloKey]||'Esmeralda';
     const div=DIV_MAP[compact[2]]||'IV';
-    return {elo, div: NO_DIV_ELOS.has(elo)?'':div};
+    return {elo,div:NO_DIV_ELOS.has(elo)?'':div};
   }
-  // Pega só a primeira palavra que bate no ELO_MAP (ignora "0 pontos", "LP", etc.)
   const parts=s.split(/\s+/);
-  let elo='Esmeralda'; let div='IV'; let found=false;
+  let elo='Esmeralda';let div='IV';let found=false;
   for(let i=0;i<parts.length;i++){
     const k=parts[i].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
     if(ELO_MAP[k]){elo=ELO_MAP[k];
-      // próxima parte pode ser a divisão
       if(i+1<parts.length&&DIV_MAP[parts[i+1].toLowerCase()]){div=DIV_MAP[parts[i+1].toLowerCase()];}
       found=true;break;
     }
   }
   if(!found){
-    // fallback: tenta juntar todas as partes exceto última se última for div
     const last=parts[parts.length-1].toLowerCase();
     if(DIV_MAP[last]){div=DIV_MAP[last];parts.pop();}
     const baseKey=parts.join(' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
@@ -452,8 +437,6 @@ function parseLaneString(str){
   const key=str.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
   return LANE_MAP[key]||null;
 }
-
-// Detecta qual campo semântico uma chave representa, de forma fuzzy
 function detectFieldKey(rawKey){
   const k=rawKey.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
   if(/^(nick|nome|jogador|player|ign|id|apelido)/.test(k)) return 'nick';
@@ -466,24 +449,17 @@ function detectFieldKey(rawKey){
 function addPlayersFromBulk(){
   const raw=document.getElementById('p-bulk').value;
   if(!raw.trim()){return;}
-  // Pré-processamento: expande linhas compactas tipo "Nick#tag Elo: X Lane: Y Camps: Z"
-  // Usa regex de palavras-chave conhecidas para encontrar os pontos de corte
   const KNOWN_FIELDS='(?:nick|nome|elo|rank|lane|lana|pos|camp(?:e(?:o|oe|oes|õ|ões)?)?|champ(?:s|eoes)?|heroi|campeoes|campeões)';
-  const FIELD_START=new RegExp('(?='+KNOWN_FIELDS+'\\s*:)','gi');
   let rawLines=raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
   let expandedLines=[];
   rawLines.forEach(line=>{
-    // Conta quantos campos conhecidos existem na linha
     const knownCount=(line.match(new RegExp(KNOWN_FIELDS+'\\s*:','gi'))||[]).length;
     if(knownCount>1){
-      // Linha compacta com múltiplos campos
       const firstField=line.search(new RegExp(KNOWN_FIELDS+'\\s*:','i'));
       if(firstField>0){
-        // Tudo antes do primeiro campo = nick
         const nickPart=line.slice(0,firstField).replace(/^nick\s*:\s*/i,'').trim();
         if(nickPart) expandedLines.push('Nick: '+nickPart);
         const rest=line.slice(firstField);
-        // Divide nos pontos onde começa um campo conhecido
         const parts=rest.split(new RegExp('(?='+KNOWN_FIELDS+'\\s*:)','i'));
         parts.forEach(p=>{if(p.trim())expandedLines.push(p.trim());});
       } else {
@@ -508,16 +484,11 @@ function addPlayersFromBulk(){
         added++;
       }
     }
-    current={};
-    fieldIdx=0;
+    current={};fieldIdx=0;
   }
   expandedLines.forEach(line=>{
-    // Linha sem ":" — pode ser nick solto tipo "Merlin#GOAT" ou lixo do Discord (nome de usuário, timestamps)
     if(!line.includes(':')){
-      // Só considera nick se parecer um nick de LoL (tem # ou é uma palavra simples sem espaços com timestamp típico)
-      // Ignora linhas com padrões de timestamp do Discord: "— Ontem às", "— Hoje às", "— [dia]"
       if(/—\s*(ontem|hoje|[a-z]{3,}\s+às)/i.test(line)) return;
-      // Se tem # provavelmente é nick
       if(line.includes('#')){flush();current.name=line.split('#')[0].trim();fieldIdx=1;}
       return;
     }
@@ -526,7 +497,6 @@ function addPlayersFromBulk(){
     const rawKey=m[1];
     const val=m[2].trim();
     let field=detectFieldKey(rawKey);
-    // Fallback posicional: se a chave não for reconhecida, assume o próximo campo na ordem
     if(!field && val && fieldIdx<ORDER.length) field=ORDER[fieldIdx];
     if(!field) return;
     if(field==='nick'){
@@ -535,15 +505,13 @@ function addPlayersFromBulk(){
       fieldIdx=1;
     } else if(field==='elo'){
       const {elo,div}=parseEloString(val);
-      current.elo=elo;current.div=div;
-      fieldIdx=2;
+      current.elo=elo;current.div=div;fieldIdx=2;
     } else if(field==='lane'){
       current.lane=parseLaneString(val);
       if(!current.lane)errors.push(`Lane "${val}" não reconhecida para "${current.name||'?'}".`);
       fieldIdx=3;
     } else if(field==='champs'){
-      current.champs=val;
-      fieldIdx=4;
+      current.champs=val;fieldIdx=4;
     }
   });
   flush();
@@ -554,12 +522,13 @@ function addPlayersFromBulk(){
   fb.style.color=errors.length?'var(--gold)':'var(--teal)';
   if(added>0){document.getElementById('p-bulk').value='';renderPlayers();salvarEstado();}
 }
+
 function renderPlayers(){
   const lanes=['Top','Jungle','Mid','ADC','Support'];let html='';
   lanes.forEach(lane=>{
     const ps=players.filter(p=>p.lane===lane);if(!ps.length)return;
     html+=`<div class="player-section"><div class="player-section-header">${laneBadge(lane)}<span style="font-size:12px;color:var(--text-muted)">${ps.length} jogador${ps.length>1?'es':''}</span></div>`;
-    ps.forEach(p=>{html+=`<div class="player-row"><span class="player-name">${p.name}</span><span class="elo-badge">${p.elo}${p.div ? " " + p.div : ""}</span>${p.captain?'<span class="captain-badge">⚑ Capitão</span>':''}<span class="player-champs">${p.champs||'—'}</span><div class="player-actions"><button class="btn btn-danger btn-sm" onclick="removePlayer(${JSON.stringify(p.id)})">Remover</button></div></div>`;});
+    ps.forEach(p=>{html+=`<div class="player-row"><span class="player-name">${p.name}</span><span class="elo-badge">${p.elo}${p.div?' '+p.div:''}</span>${p.captain?'<span class="captain-badge">⚑ Capitão</span>':''}<span class="player-champs">${p.champs||'—'}</span><div class="player-actions"><button class="btn btn-danger btn-sm" onclick="removePlayer(${JSON.stringify(p.id)})">Remover</button></div></div>`;});
     html+='</div>';
   });
   if(!html)html=`<div class="empty"><div class="empty-icon">🎮</div><p>Nenhum jogador registrado ainda.</p></div>`;
@@ -573,7 +542,7 @@ function renderCaptains(){
   lanes.forEach(lane=>{
     const ps=players.filter(p=>p.lane===lane);if(!ps.length)return;
     html+=`<div class="card"><div class="player-section-header" style="margin-bottom:10px">${laneBadge(lane)}</div>`;
-    ps.forEach(p=>{html+=`<div class="player-row" style="cursor:pointer" onclick="toggleCaptain(${JSON.stringify(p.id)})"><input type="checkbox" class="captain-check" ${p.captain?'checked':''} onchange="toggleCaptain(${JSON.stringify(p.id)})" onclick="event.stopPropagation()"/><span class="player-name">${p.name}</span><span class="elo-badge">${p.elo}${p.div ? " " + p.div : ""}</span><span class="player-champs">${p.champs||'—'}</span></div>`;});
+    ps.forEach(p=>{html+=`<div class="player-row" style="cursor:pointer" onclick="toggleCaptain(${JSON.stringify(p.id)})"><input type="checkbox" class="captain-check" ${p.captain?'checked':''} onchange="toggleCaptain(${JSON.stringify(p.id)})" onclick="event.stopPropagation()"/><span class="player-name">${p.name}</span><span class="elo-badge">${p.elo}${p.div?' '+p.div:''}</span><span class="player-champs">${p.champs||'—'}</span></div>`;});
     html+='</div>';
   });
   if(!html)html=`<div class="empty"><div class="empty-icon">👑</div><p>Registre jogadores primeiro.</p></div>`;
@@ -583,26 +552,18 @@ function renderCaptains(){
 }
 
 // ===== ORDER =====
-// Gera sequência snake CORRETA: A B C D | D C B A | A B C D …
-// O "double" não existe mais: a própria serpente gera D D naturalmente na virada
 function sortearOrdem(){
   const caps=players.filter(p=>p.captain);
   if(caps.length<2){alert('Selecione ao menos 2 capitães!');return;}
-
   const nCaps=caps.length;
-
-  // Validação: cada lane precisa ter jogadores suficientes para todos os times (1 por lane por time, incluindo capitães)
   const lanesCheck=['Top','Jungle','Mid','ADC','Support'];
   const faltando=lanesCheck.filter(l=>players.filter(p=>p.lane===l).length<nCaps);
   if(faltando.length>0){
     alert(`Cada lane precisa ter pelo menos ${nCaps} jogador(es) (1 por time). Faltam jogadores na(s) lane(s): ${faltando.join(', ')}.`);return;
   }
-
   const shuffled=[...caps].sort(()=>Math.random()-0.5);
-  const nonCaps=players.filter(p=>!p.captain).length; // picks necessários
+  const nonCaps=players.filter(p=>!p.captain).length;
   draftOrder=[];draftPicks={};currentPickIdx=0;
-
-  // Gera sequência snake até cobrir todos os não-capitães
   let forward=true;
   while(draftOrder.length<nonCaps){
     const line=forward?[...shuffled]:[...shuffled].reverse();
@@ -611,20 +572,18 @@ function sortearOrdem(){
     }
     forward=!forward;
   }
-
   renderOrderList();salvarEstado();
 }
 
 function renderOrderList(){
   if(!draftOrder.length){document.getElementById('order-list-container').innerHTML='';return;}
-  // Monta display: agrupa picks consecutivos do mesmo cap para mostrar visualmente "2 picks" na virada
   let html='';
   draftOrder.forEach((item,i)=>{
     const isDone=i<currentPickIdx;
     const isCurrent=i===currentPickIdx;
     const prevSame=i>0&&draftOrder[i-1].cap.name===item.cap.name;
     const nextSame=i<draftOrder.length-1&&draftOrder[i+1].cap.name===item.cap.name;
-    const isDouble=prevSame||nextSame; // faz parte de um par (virada da serpente)
+    const isDouble=prevSame||nextSame;
     html+=`<div class="order-item ${isCurrent?'is-current':''} ${isDone?'is-done':''}">
       <span class="order-num ${isCurrent?'active':''}">${i+1}</span>
       <div class="order-info">
@@ -651,8 +610,6 @@ function buildTeams(){
   });
   return teams;
 }
-
-// Retorna as lanes já ocupadas no time do capitão (incluindo a lane do próprio cap)
 function teamLanes(capName,teams){
   return new Set((teams[capName]||[]).map(m=>m.lane));
 }
@@ -686,51 +643,51 @@ function renderDraft(){
     const lps=players.filter(p=>p.lane===lane&&!p.captain);
     html+=`<div class="draft-lane-col"><div class="draft-lane-header ${laneHeaderClass(lane)}">${lane}</div>`;
     lps.forEach(p=>{
-      const alreadyPicked=!!draftPicks[p.id];
+      // Jogador já draftado → some da lista
+      if(draftPicks[p.id]) return;
+      if(!done&&cur&&teamLanes(cur.cap.name,teams).has(p.lane)) return;
 
-      // Bloqueio: lane já ocupada no time atual
-      let laneBlocked=false, laneBlockMsg='';
-      if(!done&&cur&&!alreadyPicked){
+      let laneBlocked=false,laneBlockMsg='';
+      if(!done&&cur){
         const occupied=teamLanes(cur.cap.name,teams);
         if(occupied.has(p.lane)){laneBlocked=true;laneBlockMsg='✕ Lane ocupada';}
       }
 
-      const blocked=alreadyPicked||laneBlocked;
       let topTag='';
       if(laneBlocked) topTag=`<div class="dp-tag dp-tag-block">${laneBlockMsg}</div>`;
 
-      html+=`<div class="draft-player-card ${blocked?'dp-blocked':''}" onclick="${blocked||done?'':'pickPlayer('+JSON.stringify(p.id)+')'}">
+      html+=`<div class="draft-player-card ${laneBlocked?'dp-blocked':''}" onclick="${laneBlocked||done?'':'pickPlayer('+JSON.stringify(p.id)+')'}">
         ${topTag}
         <div class="dp-name">${p.name}</div>
-        <div class="dp-elo">${p.elo}${p.div ? " " + p.div : ""}</div>
+        <div class="dp-elo">${p.elo}${p.div?' '+p.div:''}</div>
         ${p.champs?`<div class="dp-champs">${p.champs}</div>`:''}
       </div>`;
     });
     html+='</div>';
   });
+
   html+='</div></div></div>'; // fecha draft-lanes, draft-area, draft-main
 
-  // Sidebar com times sendo formados em tempo real
+  // Sidebar
   const capColors=['dt-t1','dt-t2','dt-t3','dt-t4'];
   if(!done){
-  const ALL_LANES=['Top','Jungle','Mid','ADC','Support'];
-  html+=`<div class="draft-sidebar"><div class="draft-sidebar-title">Times em formação</div><div class="sidebar-teams-grid">`;
-  allCaps.forEach((cap,i)=>{
-    const members=teams[cap.name]||[];
-    const displayName=getTeamDisplayName(cap.name);
-    html+=`<div class="sidebar-team"><div class="dt-title ${capColors[i%capColors.length]}">⚑ ${displayName}</div>`;
-    ALL_LANES.forEach(lane=>{
-      const m=members.find(x=>x.lane===lane);
-      if(m){
-        html+=`<div class="dt-pick"><span>${m.name}${m.captain?' <span style="font-size:10px;color:var(--gold)">(cap)</span>':''}</span><div class="dt-pick-right">${laneBadge(m.lane)}</div></div>`;
-      }else{
-        html+=`<div class="dt-pick" style="opacity:0.35"><span style="font-style:italic">Vazio</span><div class="dt-pick-right">${laneBadge(lane)}</div></div>`;
-      }
+    const ALL_LANES=['Top','Jungle','Mid','ADC','Support'];
+    html+=`<div class="draft-sidebar"><div class="draft-sidebar-title">Times em formação</div><div class="sidebar-teams-grid">`;
+    allCaps.forEach((cap,i)=>{
+      const members=teams[cap.name]||[];
+      const displayName=getTeamDisplayName(cap.name);
+      html+=`<div class="sidebar-team"><div class="dt-title ${capColors[i%capColors.length]}">⚑ ${displayName}</div>`;
+      ALL_LANES.forEach(lane=>{
+        const m=members.find(x=>x.lane===lane);
+        if(m){
+          html+=`<div class="dt-pick"><span>${m.name}${m.captain?' <span style="font-size:10px;color:var(--gold)">(cap)</span>':''}</span><div class="dt-pick-right">${laneBadge(m.lane)}</div></div>`;
+        }else{
+          html+=`<div class="dt-pick" style="opacity:0.35"><span style="font-style:italic">Vazio</span><div class="dt-pick-right">${laneBadge(lane)}</div></div>`;
+        }
+      });
+      html+='</div>';
     });
-    html+='</div>';
-  });
-  html+='</div>'; // fecha sidebar-teams-grid
-  html+='</div>';
+    html+='</div></div>';
   }
   html+='</div>'; // fecha draft-layout
 
@@ -764,29 +721,23 @@ function pickPlayer(pid){
   const cur=draftOrder[currentPickIdx];
   const teams=buildTeams();
   const occupied=teamLanes(cur.cap.name,teams);
-  if(occupied.has(p.lane))return; // lane já ocupada no time
+  if(occupied.has(p.lane))return;
   const teamMembers=teams[cur.cap.name]||[];
   if(teamMembers.length>=5)return;
   draftPicks[pid]={pickedBy:cur.cap.name,team:cur.team,pickNum:currentPickIdx+1};
   currentPickIdx++;
-  // Pula se time já cheio
   while(currentPickIdx<draftOrder.length){
     const next=draftOrder[currentPickIdx];
     const nt=buildTeams();
     if((nt[next.cap.name]||[]).length>=5)currentPickIdx++;
     else break;
   }
-  renderDraft();
-  // Atualiza lista de ordem com progresso
-  renderOrderList();
-  salvarEstado();
+  renderDraft();renderOrderList();salvarEstado();
 }
 
 function undoPick(){
   if(currentPickIdx<=0)return;
-  // Volta o índice
   currentPickIdx--;
-  // Remove o pick feito nessa posição
   const pickNum=currentPickIdx+1;
   const pidToRemove=Object.keys(draftPicks).find(pid=>draftPicks[pid].pickNum===pickNum);
   if(pidToRemove)delete draftPicks[pidToRemove];
@@ -833,12 +784,10 @@ function gerarChaves(){
   const seeded=balancedSeed(filled);
   let size=1;while(size<seeded.length)size*=2;
   const padded=[...seeded];while(padded.length<size)padded.push(null);
-
   const rounds=[];let matchId=0;let currentMatches=[];
   for(let i=0;i<padded.length/2;i++){
     const t1=padded[i],t2=padded[padded.length-1-i];
-    const m={id:'m'+(++matchId),team1:t1,team2:t2,score1:null,score2:null,winner:null,seed1:t1?(i+1):null,seed2:t2?(padded.length-i):null};
-    currentMatches.push(m);
+    currentMatches.push({id:'m'+(++matchId),team1:t1,team2:t2,score1:null,score2:null,winner:null,seed1:t1?(i+1):null,seed2:t2?(padded.length-i):null});
   }
   const getRoundName=(total,remaining)=>{if(remaining===1)return 'Grande Final';if(remaining===2)return 'Semifinal';if(remaining===4)return 'Quartas de Final';return 'Fase '+Math.round(Math.log2(total/remaining)+1);};
   rounds.push({name:getRoundName(size,currentMatches.length),isFinal:currentMatches.length===1,matches:currentMatches});
@@ -856,7 +805,6 @@ function gerarChaves(){
 }
 function resetarChaves(){if(!confirm('Resetar todas as chaves?'))return;bracket=null;renderBracket();}
 
-// MD3: incrementa score de um time. Vence quem chegar em 2 primeiro.
 function md3AddScore(matchId,roundIdx,slot){
   if(!bracket)return;
   const match=bracket.rounds[roundIdx].matches.find(m=>m.id===matchId);
@@ -866,7 +814,6 @@ function md3AddScore(matchId,roundIdx,slot){
   else if(match.score2>=2){match.winner=match.team2;}
   renderBracket();salvarEstado();
 }
-// MD1: registra vitória direta
 function setWinner(matchId,roundIdx,slot){
   if(!bracket)return;
   const match=bracket.rounds[roundIdx].matches.find(m=>m.id===matchId);
@@ -885,7 +832,6 @@ function propagateWinner(roundIdx,match){
   const nMatch=nextRound.matches[Math.floor(mIdx/2)];
   if(!nMatch)return;
   if(mIdx%2===0)nMatch.team1=match.winner;else nMatch.team2=match.winner;
-  // Removido avanço automático. O vencedor só avança após resultado confirmado.
   if(nMatch.winner)propagateWinner(roundIdx+1,nMatch);
 }
 
@@ -906,8 +852,7 @@ function renderBracket(){
   statusBar.innerHTML=balHtml+`<div class="status-bar"><span class="status-dot"></span><span class="status-text"><strong>${doneM}/${totalM}</strong> jogo${totalM>1?'s':''} finalizado${doneM!==1?'s':''}</span></div>`;
 
   const maxMatches=Math.max(...bracket.rounds.map(r=>r.matches.length));
-  const MATCH_MIN_H=148; // altura mínima de um card de partida (nomes podem quebrar em 2 linhas)
-  const bracketMinH=maxMatches*MATCH_MIN_H;
+  const bracketMinH=maxMatches*148;
   let html=`<div class="bracket-wrap"><div class="bracket" style="min-width:${bracket.rounds.length*260}px;min-height:${bracketMinH}px">`;
   bracket.rounds.forEach((round,rIdx)=>{
     const growFactor=Math.pow(2,rIdx);
@@ -922,8 +867,6 @@ function renderBracket(){
       const s2=match.score2!==null?match.score2:'';
       const seed1=match.seed1?`<span class="seed-badge">#${match.seed1}</span>`:'';
       const seed2=match.seed2?`<span class="seed-badge">#${match.seed2}</span>`:'';
-
-      // Botões de vitória: MD1 mostra "✓ Ganhou" só se não tiver winner; MD3 mostra controles de score enquanto não tiver winner
       let t1Action='',t2Action='';
       if(!match.winner){
         if(round.isFinal){
@@ -934,7 +877,6 @@ function renderBracket(){
           if(!t2tbd)t2Action=`<button class="win-btn" onclick="setWinner('${match.id}',${rIdx},2)">✓ Ganhou</button>`;
         }
       }
-
       html+=`<div class="match-wrap" style="flex-grow:${growFactor}"><div class="${cardClass}">
         <div class="match-team ${w1?'winner':''} ${match.winner&&!w1?'loser':''}">
           <div style="flex:1;min-width:0">
@@ -952,12 +894,10 @@ function renderBracket(){
           ${t2Action}
           <span class="match-score ${w2?'score-w':'score-l'}">${s2}</span>
         </div>
-        <div class="${labelClass}">${round.isFinal?`<span class="md3-badge">MD3 — Grande Final</span>${!match.winner?` <span style="font-size:10px;color:var(--text-muted)">Primeiro a 2 vence</span>`:'`'}` : 'MD1'}</div>
+        <div class="${labelClass}">${round.isFinal?`<span class="md3-badge">MD3 — Grande Final</span>${!match.winner?' <span style="font-size:10px;color:var(--text-muted)">Primeiro a 2 vence</span>':'`'}` : 'MD1'}</div>
       </div></div>`;
     });
-    html+='</div>'; // fecha round-matches
-
-    // Conectores verticais ligando pares de matches ao próximo round
+    html+='</div>';
     if(rIdx<bracket.rounds.length-1){
       const N=round.matches.length;
       for(let i=0;i<N;i+=2){
@@ -966,7 +906,7 @@ function renderBracket(){
         html+=`<div class="bracket-connector" style="top:${top}%;height:${bottom-top}%"></div>`;
       }
     }
-    html+='</div>'; // fecha bracket-round
+    html+='</div>';
   });
   html+='</div></div>';
   container.innerHTML=html;
