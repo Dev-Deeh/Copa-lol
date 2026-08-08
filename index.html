@@ -79,6 +79,16 @@ select option{background:var(--surface2)}
 .player-actions{display:flex;gap:6px;margin-left:auto}
 .captain-check{width:18px;height:18px;accent-color:var(--gold);cursor:pointer;flex-shrink:0}
 
+.captain-entry{margin-bottom:6px;border-radius:8px;overflow:hidden}
+.captain-entry .player-row{margin-bottom:0;transition:background .15s,border-color .15s}
+.captain-entry.is-captain-active{background:rgba(201,168,76,0.05);border:1px solid var(--border-gold)}
+.captain-entry.is-captain-active .player-row{border:1px solid transparent;border-radius:8px 8px 0 0}
+.team-name-field{display:flex;align-items:center;gap:8px;padding:8px 14px 10px 40px;background:rgba(201,168,76,0.03);border-top:1px solid var(--border-gold)}
+.team-name-field-icon{font-size:13px;flex-shrink:0;opacity:.8}
+.team-name-input{flex:1;background:var(--surface3);border:1px solid var(--border);border-radius:7px;padding:6px 10px;font-size:13px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color .15s}
+.team-name-input:focus{border-color:var(--gold-dim)}
+.team-name-input::placeholder{color:var(--text-dim)}
+
 /* ORDER LIST */
 .order-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;margin-bottom:6px;border:1px solid var(--border)}
 .order-item.is-current{border-color:var(--gold-dim);background:rgba(201,168,76,0.06)}
@@ -104,34 +114,92 @@ select option{background:var(--surface2)}
 .draft-lanes{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-bottom:1px solid var(--border)}
 .draft-lane-col{border-right:1px solid var(--border)}
 .draft-lane-col:last-child{border-right:none}
-.draft-lane-header{padding:8px 12px;font-size:11px;font-weight:700;letter-spacing:0.12em;text-align:center;border-bottom:1px solid var(--border);text-transform:uppercase}
+.draft-lane-header{padding:9px 12px;font-size:13px;font-weight:700;letter-spacing:0.12em;text-align:center;border-bottom:1px solid var(--border);text-transform:uppercase}
 .draft-lane-header.lh-top{background:rgba(55,138,221,0.08);color:#7ab8f5}
 .draft-lane-header.lh-jungle{background:rgba(29,158,117,0.08);color:#5DCAA5}
 .draft-lane-header.lh-mid{background:rgba(212,83,126,0.08);color:#f07eb0}
 .draft-lane-header.lh-adc{background:rgba(186,117,23,0.08);color:#E2C97A}
 .draft-lane-header.lh-support{background:rgba(127,119,221,0.08);color:#AFA9EC}
-.draft-player-card{margin:4px;border-radius:7px;padding:6px 8px;cursor:pointer;transition:all .15s;border:1px solid var(--border);background:var(--surface2)}
+.draft-player-card{margin:4px;border-radius:8px;padding:9px 11px;cursor:pointer;transition:all .15s;border:1px solid var(--border);background:var(--surface2)}
 .draft-player-card:hover:not(.dp-blocked){border-color:var(--gold-dim);background:var(--surface3);transform:translateY(-1px)}
 .draft-player-card.dp-blocked{opacity:0.22;cursor:default;filter:grayscale(1)}
-.dp-tag{font-size:9px;letter-spacing:0.05em;font-weight:600;margin-bottom:2px}
+.dp-tag{font-size:11px;letter-spacing:0.05em;font-weight:600;margin-bottom:2px}
 .dp-tag-cap{color:var(--gold)}
 .dp-tag-block{color:var(--red)}
-.dp-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dp-elo{font-size:10px;color:var(--text-muted);margin-top:1px}
-.dp-champs{font-size:9px;color:var(--teal);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dp-name{font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dp-elo{font-size:13px;color:var(--text-muted);margin-top:2px;font-weight:600}
+.dp-champs{font-size:11.5px;color:var(--teal);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .draft-teams{display:grid;border-top:1px solid var(--border)}
 .draft-layout{display:flex;gap:1rem;align-items:flex-start}
 .draft-main{flex:1;min-width:0}
-.draft-sidebar{width:440px;flex-shrink:0;position:sticky;top:72px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem;max-height:calc(100vh - 90px);overflow-y:auto}
-.draft-sidebar-title{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;grid-column:1/-1}
+.draft-sidebar{width:420px;flex-shrink:0;position:sticky;top:72px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem;max-height:calc(100vh - 90px);overflow-y:auto}
+.draft-sidebar-title{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;grid-column:1/-1}
 .sidebar-teams-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.sidebar-team{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px}
+.sidebar-team{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:9px 10px}
+.sidebar-team .dt-title{font-size:12px;margin-bottom:6px}
+.sidebar-team .dt-pick{padding:4px 0;font-size:12.5px;line-height:1.3}
+.sidebar-team .dt-pick-right{font-size:10px}
+.sidebar-team .lane-badge{font-size:10px;padding:2px 7px}
 @media(max-width:1100px){
   .draft-layout{flex-direction:column}
   .draft-sidebar{width:100%;position:static;max-height:none}
+  .sidebar-teams-grid{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
 }
 @media(max-width:480px){
   .sidebar-teams-grid{grid-template-columns:1fr}
+}
+.pick-fly-ghost{font-family:'Inter',sans-serif}
+
+/* ===== EDITAR NOMES ===== */
+.edit-player-row{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.edit-player-row:last-child{border-bottom:none}
+.edit-name-input{flex:1;min-width:140px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:13px;font-weight:600;font-family:inherit;transition:border-color .15s}
+.edit-name-input:focus{outline:none;border-color:var(--gold-dim);background:var(--surface3)}
+.edit-teamname-input{width:220px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--gold);font-size:12.5px;font-family:inherit;transition:border-color .15s}
+.edit-teamname-input:focus{outline:none;border-color:var(--gold-dim);background:var(--surface3)}
+.edit-teamname-input::placeholder{color:var(--text-muted)}
+
+/* ===== TIER LIST ===== */
+.tierlist-wrap{display:flex;flex-direction:column;gap:10px}
+.tier-row{display:flex;align-items:stretch;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:visible;min-height:78px;transition:border-color .15s,background .15s}
+.tier-row.drag-over{border-color:var(--gold-dim);background:rgba(201,168,76,0.04)}
+.tier-label-wrap{position:relative;flex-shrink:0;width:60px;display:flex}
+.tier-label{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:20px;line-height:1.05;color:#0B0F1C;letter-spacing:.03em;padding:6px 4px;white-space:normal;overflow-wrap:anywhere;word-break:break-word;border-radius:12px 0 0 12px;outline:none}
+.tier-label:focus{box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.tier-remove-btn{position:absolute;top:-7px;right:-7px;width:18px;height:18px;border-radius:50%;background:var(--surface3);color:var(--text-muted);border:1px solid var(--border);font-size:10px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s}
+.tier-row:hover .tier-remove-btn{opacity:1}
+.tier-remove-btn:hover{color:var(--red);border-color:var(--red)}
+.tier-slot{flex:1;display:flex;flex-wrap:wrap;gap:8px;padding:11px 14px;align-content:flex-start}
+.tier-pool{border-style:dashed;opacity:.92}
+.tier-pool .tier-label{background:var(--surface3)!important;color:var(--text-muted)!important;font-size:16px;border-radius:12px 0 0 12px}
+.tier-chip{display:flex;flex-direction:column;gap:2px;background:var(--surface2);border:1.5px solid;border-radius:8px;padding:7px 11px;cursor:grab;min-width:118px;transition:box-shadow .15s;user-select:none}
+.tier-chip:active{cursor:grabbing}
+.tier-chip:hover{box-shadow:0 6px 16px rgba(0,0,0,.3)}
+.tier-chip.dragging{opacity:.3}
+.tier-chip-name{font-size:12.5px;font-weight:700}
+.tier-chip-elo{font-size:10px;color:var(--text-muted)}
+.tier-add-btn{align-self:flex-start;padding:9px 18px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s}
+.tier-add-btn:hover{color:var(--gold);border-color:var(--gold-dim);background:rgba(201,168,76,0.05)}
+.tierlist-modes{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.tierlist-mode-btn{padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;letter-spacing:.02em}
+.tierlist-mode-btn:hover{color:var(--text)}
+.tierlist-mode-btn.active{background:var(--gold);color:#0B0F1C;border-color:var(--gold)}
+.tierlist-lane-filters{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.tierlist-lane-btn{padding:5px 13px;border-radius:16px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:11.5px;font-weight:600;cursor:pointer;transition:all .15s;letter-spacing:.03em}
+.tierlist-lane-btn:hover{color:var(--text)}
+.tierlist-lane-btn.active{background:rgba(201,168,76,0.16);color:var(--gold);border-color:var(--gold-dim)}
+.team-opgg-row{display:flex;gap:8px;padding:10px 14px 14px;flex-wrap:wrap}
+.team-opgg-row .btn{flex:1;justify-content:center;min-width:0}
+/* tier list agrupada por lane (jogadores) */
+.tier-row-grouped{min-height:0}
+.tier-slot-grouped{flex-direction:column;gap:0;padding:6px 10px}
+.tier-lane-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px dashed var(--border)}
+.tier-lane-row:last-child{border-bottom:none}
+.tier-lane-tag{flex-shrink:0;width:40px;font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.05em}
+.tier-lane-chips{flex:1;display:flex;flex-wrap:wrap;gap:8px;min-height:32px;align-content:flex-start}
+@media(max-width:640px){
+  .tier-label-wrap{width:44px}
+  .tier-label{font-size:15px}
 }
 .draft-team{padding:1rem 1.25rem}
 .dt-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:0.08em;margin-bottom:10px;text-transform:uppercase}
@@ -151,10 +219,30 @@ select option{background:var(--surface2)}
 
 .teams-showcase{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;padding:0 0 2rem}
 
-.team-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform .2s,border-color .2s;position:relative}
-.team-card:hover{transform:translateY(-3px);border-color:var(--border-gold)}
+.team-card{
+  --tier-border:linear-gradient(135deg,var(--border),var(--border));
+  --tier-glow:rgba(0,0,0,0);
+  background-image:linear-gradient(var(--surface),var(--surface)),var(--tier-border);
+  background-origin:border-box;background-clip:padding-box,border-box;
+  border:2px solid transparent;border-radius:18px;overflow:hidden;
+  transition:transform .2s,box-shadow .35s;position:relative;cursor:pointer;
+  box-shadow:0 6px 26px rgba(0,0,0,.32),0 0 24px var(--tier-glow);
+}
+.team-card:hover{transform:translateY(-4px);box-shadow:0 10px 34px rgba(0,0,0,.4),0 0 34px var(--tier-glow)}
 .team-card-glow{position:absolute;inset:0;border-radius:16px;pointer-events:none;opacity:0;transition:opacity .3s}
 .team-card:hover .team-card-glow{opacity:1}
+
+/* ===== LEAGUE-STYLE RANK BORDERS (per team average elo) ===== */
+.team-card.tier-iron{--tier-border:linear-gradient(135deg,#3c3c3c,#8f8f8f,#3c3c3c);--tier-glow:rgba(150,150,150,.28)}
+.team-card.tier-bronze{--tier-border:linear-gradient(135deg,#6e4321,#d69f6c,#6e4321);--tier-glow:rgba(214,159,108,.3)}
+.team-card.tier-silver{--tier-border:linear-gradient(135deg,#7d8b97,#eef3f6,#7d8b97);--tier-glow:rgba(220,230,238,.3)}
+.team-card.tier-gold{--tier-border:linear-gradient(135deg,#8a611a,#ffdd88,#8a611a);--tier-glow:rgba(255,221,136,.38)}
+.team-card.tier-platinum{--tier-border:linear-gradient(135deg,#187a66,#93f0da,#187a66);--tier-glow:rgba(147,240,218,.35)}
+.team-card.tier-esmeralda{--tier-border:linear-gradient(135deg,#0b6e39,#5cf39a,#0b6e39);--tier-glow:rgba(92,243,154,.35)}
+.team-card.tier-diamond{--tier-border:linear-gradient(135deg,#28489f,#a9e0ff,#28489f);--tier-glow:rgba(169,224,255,.4)}
+.team-card.tier-master{--tier-border:linear-gradient(135deg,#5e1fae,#d7a2ff,#5e1fae);--tier-glow:rgba(215,162,255,.4)}
+.team-card.tier-grandmaster{--tier-border:linear-gradient(135deg,#7f1010,#ff6b6b,#7f1010);--tier-glow:rgba(255,107,107,.4)}
+.team-card.tier-challenger{--tier-border:linear-gradient(135deg,#48c2e0,#fff3a3,#ff9ee2,#48c2e0);--tier-glow:rgba(255,243,163,.45)}
 
 .team-card-header{padding:16px 18px 14px;position:relative;border-bottom:1px solid var(--border)}
 .team-card-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0}
@@ -164,21 +252,22 @@ select option{background:var(--surface2)}
 
 .team-strength-row{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
 .team-strength-label{font-size:10px;color:var(--text-muted);letter-spacing:0.06em;text-transform:uppercase}
-.team-strength-val{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--gold)}
+.team-strength-val{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:5px}
+.team-strength-val .tier-emblem{font-size:13px}
 .team-strength-track{height:3px;background:var(--border);border-radius:2px;margin-top:5px;overflow:hidden}
 .team-strength-fill{height:100%;border-radius:2px;transition:width .6s ease}
 
 .team-roster{padding:0}
-.roster-row{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(--border);transition:background .15s;overflow:hidden}
+.roster-row{display:grid;grid-template-columns:auto 20px minmax(0,1fr) auto;align-items:center;column-gap:9px;padding:9px 14px;border-bottom:1px solid var(--border);transition:background .15s}
 .roster-row:last-child{border-bottom:none}
 .roster-row:hover{background:var(--surface2)}
 .roster-row.is-captain{background:rgba(201,168,76,0.04)}
 .roster-row.is-captain:hover{background:rgba(201,168,76,0.08)}
-.roster-star{font-size:14px;flex-shrink:0;width:18px;text-align:center}
-.roster-name{font-size:13px;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.roster-icon{font-size:14px;text-align:center;line-height:1}
+.roster-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left;min-width:0}
 .roster-name.cap-name{font-weight:700}
-.roster-lane{flex-shrink:0}
-.roster-elo{font-size:10px;color:var(--text-muted);flex-shrink:0;white-space:nowrap}
+.roster-lane{justify-self:start}
+.roster-elo{font-size:10px;color:var(--text-muted);justify-self:end;white-space:nowrap}
 
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
@@ -193,62 +282,92 @@ select option{background:var(--surface2)}
 .modal-team-input{width:100%;background:var(--surface3);border:1px solid var(--border);border-radius:7px;padding:8px 12px;font-size:14px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color .15s}
 .modal-team-input:focus{border-color:var(--gold-dim)}
 
-/* BRACKET */
-.bracket-wrap{overflow-x:auto;overflow-y:visible;padding-bottom:1rem}
-.bracket{display:flex;gap:0;align-items:stretch;min-width:900px;overflow:visible}
-.bracket-round{display:flex;flex-direction:column;min-width:252px;padding:0 16px;overflow:visible}
-.bracket-round:first-child{padding-left:0}
-.bracket-round:last-child{padding-right:0}
-.round-header{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);padding:0 16px 12px;text-align:center}
-.round-matches{display:flex;flex-direction:column;justify-content:center;flex:1;overflow:visible;position:relative}
-.match-wrap{display:flex;align-items:center;padding:8px 8px;position:relative;flex:1;overflow:visible}
-.match-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;overflow:hidden;width:220px;flex-shrink:0;transition:border-color .2s;position:relative;z-index:1}
-.match-card:hover{border-color:var(--border-gold)}
-.match-team{display:flex;align-items:flex-start;padding:8px 10px;gap:6px;transition:background .15s;border-bottom:1px solid var(--border)}
-.match-team:last-child{border-bottom:none}
-.match-team.winner{background:rgba(201,168,76,0.08)}
-.match-team.loser{opacity:0.45}
-.match-team-name{font-size:13px;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:normal;word-break:break-word;line-height:1.25}
-.match-team-cap{font-size:10px;color:var(--text-muted)}
-.match-score{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;min-width:18px;text-align:center}
-.score-w{color:var(--gold)}.score-l{color:var(--text-dim)}
-.match-label{font-size:10px;color:var(--text-muted);text-align:center;padding:4px 0;background:var(--surface);border-top:1px solid var(--border)}
-.tbd-team{color:var(--text-dim);font-style:italic;font-size:12px}
-.seed-badge{font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;background:rgba(201,168,76,0.12);color:var(--gold);border:1px solid var(--border-gold);white-space:nowrap;flex-shrink:0}
+/* ===== CENTERED TEAM NAME/HEADER (kept), ROSTER BACK TO LEFT ===== */
+.team-card-header{text-align:center}
+.team-card-name{display:block}
+.team-card-cap-row{justify-content:center}
+.team-strength-row{flex-direction:column;gap:4px}
+.team-strength-row .team-strength-label{order:1}
+.team-strength-row .team-strength-val{order:2;font-size:20px}
+.team-strength-track{width:100%}
 
-.bracket-round:not(:last-child) .match-card::after{content:'';position:absolute;left:100%;top:50%;width:16px;height:1px;background:var(--border);}
-.bracket-round:not(:first-child) .match-card::before{content:'';position:absolute;right:100%;top:50%;width:16px;height:1px;background:var(--border);}
-.bracket-connector{position:absolute;right:-16px;width:16px;border-right:1px solid var(--border);pointer-events:none}
+/* roster rows: left aligned, nicks always fully visible (no ellipsis cut-off) */
+/* first pick: just a small "1" numeral, no separate tag */
+.roster-row.is-first-pick{background:linear-gradient(90deg,rgba(93,202,165,0.10),rgba(93,202,165,0.02));border-left:2px solid var(--teal)}
+.roster-row.is-first-pick:hover{background:linear-gradient(90deg,rgba(93,202,165,0.16),rgba(93,202,165,0.04))}
+.roster-row.is-first-pick .roster-name{color:var(--teal);font-weight:700}
+.first-pick-num{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:rgba(93,202,165,0.18);border:1px solid rgba(93,202,165,0.45);color:var(--teal);font-size:10px;font-weight:800;line-height:1}
 
-.win-btn{font-size:10px;background:rgba(201,168,76,0.1);border:1px solid var(--border-gold);color:var(--gold);padding:2px 7px;border-radius:5px;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;transition:background .15s}
-.win-btn:hover{background:rgba(201,168,76,0.22)}
+/* ===== STRONGEST (RAIO/LIGHTNING) / WEAKEST (ICE) TEAM HIGHLIGHT — visual only, no discouraging text tags ===== */
+.team-card.is-strongest,.team-card.is-weakest{overflow:visible}
 
-.md3-controls{padding:8px 10px;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.md3-score-row{display:flex;align-items:center;gap:6px;flex:1;min-width:0}
-.md3-score-name{font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-.md3-score-num{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--gold);min-width:22px;text-align:center}
-.md3-score-btn{background:var(--surface3);border:1px solid var(--border);color:var(--text-muted);border-radius:5px;cursor:pointer;font-size:14px;padding:1px 8px;transition:all .15s;font-family:inherit}
-.md3-score-btn:hover{border-color:var(--gold-dim);color:var(--text)}
+.team-card.is-strongest{border-color:rgba(255,225,90,0.5)}
+.team-card.is-strongest .team-card-accent{background:linear-gradient(to right,transparent,#ffe066,transparent)!important}
+.team-card.is-strongest .team-card-name{text-shadow:0 0 14px rgba(255,225,90,0.6),0 0 26px rgba(130,205,255,0.35)}
+.team-card.is-strongest .team-card-glow{background:radial-gradient(circle at 50% 0%,rgba(255,220,90,0.28),transparent 70%)}
+@keyframes boltFlicker{
+  0%,17%,19%,52%,54%,100%{box-shadow:0 0 16px rgba(255,225,90,0.16),inset 0 0 20px rgba(255,225,90,0.04)}
+  18%,53%{box-shadow:0 0 40px rgba(255,235,140,0.6),inset 0 0 34px rgba(160,215,255,0.2)}
+}
+.team-card.is-strongest{animation:boltFlicker 2.6s ease-in-out infinite}
 
-.final-match-card{border-color:var(--border-gold)!important;box-shadow:0 0 20px rgba(201,168,76,0.08)}
-.final-label{background:rgba(201,168,76,0.1)!important;color:var(--gold)!important}
+.team-card.is-weakest{border-color:rgba(120,190,255,0.4)}
+.team-card.is-weakest .team-card-accent{background:linear-gradient(to right,transparent,#6fc1ff,transparent)!important}
+.team-card.is-weakest .team-card-name{text-shadow:0 0 14px rgba(120,190,255,0.45)}
+.team-card.is-weakest .team-card-glow{background:radial-gradient(circle at 50% 0%,rgba(90,180,255,0.24),transparent 70%)}
+@keyframes frostShimmer{0%,100%{box-shadow:0 0 16px rgba(90,180,255,0.16),inset 0 0 20px rgba(90,180,255,0.04)}50%{box-shadow:0 0 28px rgba(130,205,255,0.3),inset 0 0 32px rgba(90,180,255,0.1)}}
+.team-card.is-weakest{animation:frostShimmer 2.6s ease-in-out infinite}
 
-.champion-display{text-align:center;padding:2rem;background:linear-gradient(135deg,rgba(201,168,76,0.06),transparent);border:1px solid var(--border-gold);border-radius:14px;margin-top:1.5rem}
-.champ-trophy{font-size:48px;margin-bottom:8px}
-.champ-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:0.1em;color:var(--gold);margin-bottom:4px}
-.champ-name{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:0.06em;color:var(--text)}
+/* raios crepitando sobre o card do time mais forte */
+.bolt-fx{position:absolute;left:6px;right:6px;top:-19px;height:30px;display:flex;justify-content:space-around;align-items:flex-end;pointer-events:none;z-index:3;overflow:visible}
+.bolt-fx .bolt{display:block;font-size:18px;line-height:1;color:#ffe066;text-shadow:0 0 6px rgba(255,225,90,0.95),0 0 16px rgba(130,205,255,0.7);opacity:.9;transform-origin:bottom center;animation:boltJitter .85s steps(3,end) infinite}
+.bolt-fx .b1{animation-delay:0s;font-size:16px}
+.bolt-fx .b2{animation-delay:.14s;font-size:22px}
+.bolt-fx .b3{animation-delay:.28s;font-size:26px}
+.bolt-fx .b4{animation-delay:.09s;font-size:20px}
+.bolt-fx .b5{animation-delay:.21s;font-size:15px}
+@keyframes boltJitter{
+  0%,100%{opacity:.35;transform:translateY(0) scale(0.9) rotate(-3deg)}
+  35%{opacity:1;transform:translateY(-3px) scale(1.15) rotate(4deg)}
+  70%{opacity:.6;transform:translateY(-1px) scale(0.98) rotate(-2deg)}
+}
 
-.status-bar{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:12px;margin-bottom:16px}
-.status-dot{width:8px;height:8px;border-radius:50%;background:var(--teal);flex-shrink:0;box-shadow:0 0 6px var(--teal)}
-.status-text{font-size:13px;color:var(--text-muted)}
-.status-text strong{color:var(--text)}
-.elo-strength-bar{height:3px;border-radius:2px;background:linear-gradient(to right,var(--teal),var(--gold));margin-top:2px}
-.balance-info{background:rgba(93,202,165,0.06);border:1px solid rgba(93,202,165,0.2);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--teal)}
+/* frost creeping off the weakest team's card */
+.ice-fx{position:absolute;left:6px;right:6px;top:-12px;height:22px;display:flex;justify-content:space-around;align-items:flex-end;pointer-events:none;z-index:3}
+.ice-fx .frost-crystal{font-size:14px;color:#bfe6ff;text-shadow:0 0 8px rgba(150,210,255,0.85);opacity:.85;animation:frostTwinkle 2.3s ease-in-out infinite}
+.ice-fx .c1{animation-delay:0s}
+.ice-fx .c2{animation-delay:.55s;font-size:11px}
+.ice-fx .c3{animation-delay:1.05s;font-size:17px}
+@keyframes frostTwinkle{0%,100%{opacity:.45;transform:translateY(0) scale(1)}50%{opacity:1;transform:translateY(-3px) scale(1.18)}}
+
+/* ===== CINEMATIC REVEAL ===== */
+.reveal-overlay{position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(201,168,76,0.05),transparent 70%),rgba(2,3,7,0.95);backdrop-filter:blur(16px);opacity:0;pointer-events:none;transition:opacity .35s ease}
+.reveal-overlay.show{opacity:1;pointer-events:all}
+.reveal-ghost{position:fixed;z-index:601;border-radius:16px;will-change:transform,opacity;box-shadow:0 50px 140px rgba(0,0,0,0.75),0 20px 60px rgba(0,0,0,0.6)}
+.reveal-ghost .team-card{height:100%;border-color:var(--border-gold);box-shadow:0 0 0 1px rgba(201,168,76,0.25) inset}
+.reveal-caption{position:fixed;z-index:602;top:10%;left:50%;transform:translate(-50%,-12px);text-align:center;opacity:0;transition:opacity .4s ease,transform .4s ease;pointer-events:none}
+.reveal-caption.show{opacity:1;transform:translate(-50%,0)}
+.reveal-caption .rc-eyebrow{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;text-shadow:0 0 18px rgba(201,168,76,0.55);animation:rcEyebrowGlow 1.6s ease-in-out infinite}
+@keyframes rcEyebrowGlow{0%,100%{text-shadow:0 0 12px rgba(201,168,76,0.4)}50%{text-shadow:0 0 26px rgba(201,168,76,0.75)}}
+.reveal-caption .rc-title{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:0.05em;color:var(--text)}
+
+.teams-showcase.pre-reveal .team-card{opacity:0;visibility:hidden}
+.teams-showcase .team-card.card-settled{animation:cardSettle .5s ease}
+@keyframes cardSettle{from{box-shadow:0 0 0 2px rgba(201,168,76,0.5),0 0 40px rgba(201,168,76,0.25)}to{box-shadow:none}}
+
+@keyframes revealPulse{0%,100%{box-shadow:0 50px 140px rgba(0,0,0,0.75),0 0 0 1px rgba(201,168,76,0.25) inset}50%{box-shadow:0 50px 160px rgba(0,0,0,0.8),0 0 0 1px rgba(201,168,76,0.55) inset,0 0 80px rgba(201,168,76,0.18)}}
+.reveal-ghost.pulsing{animation:revealPulse 1.1s ease-in-out infinite}
+.reveal-skip-btn{position:fixed;bottom:36px;left:50%;transform:translateX(-50%);z-index:603}
+
+/* ===== TEAM VIEW MODAL (click a team to open it big) ===== */
+.team-view-box{max-width:440px;padding:2.5rem 1.25rem 1.25rem;position:relative}
+.team-view-close{position:absolute;top:12px;right:12px;z-index:5}
+.team-view-box .team-card{cursor:default}
+.team-view-box .team-card:hover{transform:none}
 
 .empty{text-align:center;padding:3rem 1rem;color:var(--text-muted)}
 .empty-icon{font-size:36px;margin-bottom:12px;opacity:.4}
 .empty p{font-size:14px}
-.md3-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.1em;padding:2px 8px;border-radius:6px;background:rgba(201,168,76,0.15);color:var(--gold);border:1px solid var(--border-gold);text-transform:uppercase}
 
 @media(max-width:640px){
   .form-grid-4{grid-template-columns:1fr 1fr}
@@ -268,7 +387,8 @@ select option{background:var(--surface2)}
     <button class="nav-tab" onclick="goTab('captains')">Capitães</button>
     <button class="nav-tab" onclick="goTab('order')">Ordem do Draft</button>
     <button class="nav-tab" onclick="goTab('draft')">Draft ao Vivo</button>
-    <button class="nav-tab" onclick="goTab('bracket')">Chaves</button>
+    <button class="nav-tab" onclick="goTab('tierlist')">Tier List</button>
+    <button class="nav-tab" onclick="goTab('edit')">Editar Nomes</button>
     <button class="nav-tab" style="margin-left:auto;color:#E05252" onclick="resetarTudo()">🗑 Resetar</button>
   </nav>
 </header>
@@ -276,7 +396,7 @@ select option{background:var(--surface2)}
 <div class="hero">
   <div class="hero-eyebrow">Copa LoL • Temporada 2026</div>
   <h1 class="hero-title">Copa <span class="accent">LoL</span></h1>
-  <p class="hero-sub">Draft · Chaves · Campeão</p>
+  <p class="hero-sub">Draft · Times Formados</p>
   <div class="hero-divider"></div>
 </div>
 
@@ -287,6 +407,7 @@ select option{background:var(--surface2)}
     <div class="card-title">Novo jogador</div>
     <div class="form-grid form-grid-4">
       <div class="field"><label>Nome</label><input id="p-name" placeholder="Nick no LoL" onkeydown="if(event.key==='Enter')addPlayer()"/></div>
+      <div class="field"><label>Tag</label><input id="p-tag" placeholder="Ex: BR1" style="width:78px" onkeydown="if(event.key==='Enter')addPlayer()"/></div>
       <div class="field"><label>Lane</label><select id="p-lane"><option>Top</option><option>Jungle</option><option>Mid</option><option>ADC</option><option>Support</option></select></div>
       <div class="field"><label>Elo</label><select id="p-elo"><option>Iron</option><option>Bronze</option><option>Silver</option><option>Gold</option><option>Platinum</option><option selected>Esmeralda</option><option>Diamond</option><option>Master</option><option>Grandmaster</option><option>Challenger</option></select></div>
       <div class="field"><label>Divisão</label><select id="p-div"><option>IV</option><option>III</option><option>II</option><option>I</option></select></div>
@@ -332,23 +453,45 @@ select option{background:var(--surface2)}
   <div id="draft-container"></div>
 </div>
 
-<!-- CHAVES -->
-<div id="panel-bracket" class="panel">
-  <div class="section-head"><h2>Chaves do Torneio</h2><p>Todos os jogos são MD1 · Apenas a grande final é MD3</p></div>
-  <div id="bracket-status-bar"></div>
-  <div style="display:flex;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap">
-    <button class="btn btn-gold" onclick="gerarChaves()">⚡ Gerar chaves</button>
-    <button class="btn btn-outline btn-sm" onclick="resetarChaves()">Resetar chaves</button>
+<!-- TIER LIST -->
+<div id="panel-tierlist" class="panel panel-wide">
+  <div class="section-head"><h2 id="tierlist-title">Tier List dos Times</h2><p id="tierlist-desc">Arraste para reordenar e para os rankings S, A, B ou C. Clique nas letras para renomear. Fica salvo automaticamente.</p></div>
+  <div class="tierlist-modes">
+    <button type="button" class="tierlist-mode-btn" data-mode="teams" onclick="setTierListMode('teams')">🛡 Times</button>
+    <button type="button" class="tierlist-mode-btn" data-mode="players" onclick="setTierListMode('players')">🎮 Jogadores</button>
   </div>
-  <div id="bracket-container"></div>
-  <div id="champion-container"></div>
+  <div id="tierlist-lane-filters" class="tierlist-lane-filters" style="display:none"></div>
+  <div id="tierlist-container"></div>
+</div>
+
+<!-- EDITAR NOMES -->
+<div id="panel-edit" class="panel">
+  <div class="section-head"><h2>Editar Nomes</h2><p>Altere o nick de qualquer jogador/capitão e o nome de exibição dos times. Tudo se atualiza automaticamente no draft, nos times e na tier list.</p></div>
+  <div id="edit-container"></div>
+</div>
+
+<!-- REVEAL OVERLAY (cinematic) -->
+<div id="reveal-overlay" class="reveal-overlay">
+  <button class="btn btn-outline reveal-skip-btn" onclick="skipRevealAnimation()">⏹ Pular apresentação</button>
+</div>
+<div id="reveal-caption" class="reveal-caption">
+  <div class="rc-eyebrow">Revelando time</div>
+  <div class="rc-title" id="reveal-caption-title"></div>
+</div>
+
+<!-- MODAL VER TIME (abre igual apresentação) -->
+<div id="team-view-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeTeamShowcase()">
+  <div class="modal-box team-view-box">
+    <button class="btn btn-outline btn-sm team-view-close" onclick="closeTeamShowcase()">✕ Fechar</button>
+    <div id="team-view-content"></div>
+  </div>
 </div>
 
 <!-- MODAL NOME DO TIME -->
 <div id="team-name-modal" class="modal-overlay" style="display:none">
   <div class="modal-box">
     <div class="modal-title">🏟 Nome dos Times</div>
-    <div class="modal-sub">Draft finalizado! Cada capitão escolhe o nome do seu time antes de ir para as chaves.</div>
+    <div class="modal-sub">Draft finalizado! Cada capitão escolhe o nome do seu time antes da revelação.</div>
     <div id="modal-teams-list" class="modal-teams-grid"></div>
     <div style="display:flex;gap:10px;margin-top:1.5rem;justify-content:flex-end">
       <button class="btn btn-gold" onclick="confirmarNomesTime()">Confirmar nomes →</button>
@@ -363,30 +506,84 @@ const DIV_VALUES={'IV':0,'III':25,'II':50,'I':75};
 function eloScore(p){return (ELO_VALUES[p.elo]||400)+(DIV_VALUES[p.div]||0);}
 function teamStrength(members){if(!members||!members.length)return 0;return Math.round(members.reduce((s,m)=>s+eloScore(m),0)/members.length);}
 
+// ===== ELO MÉDIO (texto) + BORDAS ESTILO LOL =====
+const ELO_TIER_ORDER=Object.keys(ELO_VALUES).sort((a,b)=>ELO_VALUES[a]-ELO_VALUES[b]);
+const TIER_TEXT_COLOR={Iron:'#b8b8b8',Bronze:'#d9a06a',Silver:'#e7edf2',Gold:'#ffd873',Platinum:'#8de6d2',Esmeralda:'#5fe89a',Diamond:'#9fd8ff',Master:'#cf9bff',Grandmaster:'#ff6b6b',Challenger:'#ffe89a'};
+function avgEloInfo(members){
+  if(!members||!members.length)return{text:'—',tier:'Esmeralda',color:TIER_TEXT_COLOR.Esmeralda};
+  const avg=members.reduce((s,m)=>s+eloScore(m),0)/members.length;
+  // encontra o ponto de elo válido (tier+divisão) mais próximo da média real
+  let bestTier=ELO_TIER_ORDER[0],bestDiv='',bestDiff=Infinity;
+  ELO_TIER_ORDER.forEach(t=>{
+    if(NO_DIV_ELOS.has(t)){
+      const diff=Math.abs(avg-ELO_VALUES[t]);
+      if(diff<bestDiff){bestDiff=diff;bestTier=t;bestDiv='';}
+    }else{
+      Object.keys(DIV_VALUES).forEach(d=>{
+        const diff=Math.abs(avg-(ELO_VALUES[t]+DIV_VALUES[d]));
+        if(diff<bestDiff){bestDiff=diff;bestTier=t;bestDiv=d;}
+      });
+    }
+  });
+  return{text:`${bestTier}${bestDiv?' '+bestDiv:''}`,tier:bestTier,color:TIER_TEXT_COLOR[bestTier]||'var(--gold)'};
+}
+
 // Team accent colors
 const TEAM_COLORS=['#7ab8f5','#f07a7a','#5DCAA5','#AFA9EC','#f0c07a','#f07eb0'];
 const TEAM_GLOWS=['rgba(122,184,245,0.12)','rgba(240,122,122,0.12)','rgba(93,202,165,0.12)','rgba(175,169,236,0.12)','rgba(240,192,122,0.12)','rgba(240,126,176,0.12)'];
 
 // ===== STATE =====
-let players=[], draftOrder=[], draftPicks={}, currentPickIdx=0, bracket=null, teamNames={};
+let players=[], draftOrder=[], draftPicks={}, currentPickIdx=0, teamNames={}, revealPlayed=false, teamTiers={};
+// Labels e tiers configuráveis são independentes por modo (Times x Jogadores) — cada um tem seu próprio S/A/B/C.
+let teamTierLabels={S:'S',A:'A',B:'B',C:'C'}, playerTierLabels={S:'S',A:'A',B:'B',C:'C'};
+// Ordem dentro de cada tier (arrays de IDs, na ordem visual). 'pool' = sem ranking (fila "—").
+let teamTierOrder={S:[],A:[],B:[],C:[],pool:[]};
+let playerTiers={}, playerTierOrder={S:[],A:[],B:[],C:[],pool:[]};
+let tierListMode='teams', tierListLaneFilter='Todos';
+let teamTierOrderKeys=['S','A','B','C'], playerTierOrderKeys=['S','A','B','C']; // tiers configuráveis (o usuário pode adicionar/remover); 'pool' é sempre fixo e separado.
+function getTierOrderKeys(){ return tierListMode==='teams'?teamTierOrderKeys:playerTierOrderKeys; }
+function setTierOrderKeys(arr){ if(tierListMode==='teams')teamTierOrderKeys=arr; else playerTierOrderKeys=arr; }
+function getTierLabels(){ return tierListMode==='teams'?teamTierLabels:playerTierLabels; }
 
 // ===== PERSIST =====
-function salvarEstado(){try{localStorage.setItem('cdF26',JSON.stringify({players,draftOrder,draftPicks,currentPickIdx,bracket,teamNames}));}catch(e){}}
+function salvarEstado(){try{localStorage.setItem('cdF26',JSON.stringify({players,draftOrder,draftPicks,currentPickIdx,teamNames,teamTiers,teamTierOrder,playerTiers,playerTierOrder,teamTierLabels,playerTierLabels,teamTierOrderKeys,playerTierOrderKeys}));}catch(e){}}
 function carregarEstado(){
   try{
     const raw=localStorage.getItem('cdF26');if(!raw)return;
     const s=JSON.parse(raw);
     players=s.players||[];draftOrder=s.draftOrder||[];draftPicks=s.draftPicks||{};
-    currentPickIdx=s.currentPickIdx||0;bracket=s.bracket||null;teamNames=s.teamNames||{};
+    currentPickIdx=s.currentPickIdx||0;teamNames=s.teamNames||{};teamTiers=s.teamTiers||{};
+    teamTierOrder=s.teamTierOrder||{S:[],A:[],B:[],C:[],pool:[]};
+    playerTiers=s.playerTiers||{};
+    playerTierOrder=s.playerTierOrder||{S:[],A:[],B:[],C:[],pool:[]};
+    // Migração de estados antigos (labels/tiers eram compartilhados entre Times e Jogadores).
+    if(s.teamTierLabels||s.playerTierLabels){
+      teamTierLabels=s.teamTierLabels||{S:'S',A:'A',B:'B',C:'C'};
+      playerTierLabels=s.playerTierLabels||{S:'S',A:'A',B:'B',C:'C'};
+    }else{
+      teamTierLabels=s.tierLabels||{S:'S',A:'A',B:'B',C:'C'};
+      playerTierLabels=JSON.parse(JSON.stringify(s.tierLabels||{S:'S',A:'A',B:'B',C:'C'}));
+    }
+    if(s.teamTierOrderKeys||s.playerTierOrderKeys){
+      teamTierOrderKeys=s.teamTierOrderKeys||['S','A','B','C'];
+      playerTierOrderKeys=s.playerTierOrderKeys||['S','A','B','C'];
+    }else{
+      teamTierOrderKeys=s.tierOrderKeys||['S','A','B','C'];
+      playerTierOrderKeys=[...(s.tierOrderKeys||['S','A','B','C'])];
+    }
   }catch(e){}
 }
 function resetarTudo(){
   if(!confirm('Apagar TUDO e começar do zero?'))return;
   localStorage.removeItem('cdF26');
-  players=[];draftOrder=[];draftPicks={};currentPickIdx=0;bracket=null;teamNames={};
-  renderPlayers();renderBracket();
+  players=[];draftOrder=[];draftPicks={};currentPickIdx=0;teamNames={};teamTiers={};
+  teamTierLabels={S:'S',A:'A',B:'B',C:'C'};playerTierLabels={S:'S',A:'A',B:'B',C:'C'};
+  teamTierOrderKeys=['S','A','B','C'];playerTierOrderKeys=['S','A','B','C'];
+  teamTierOrder={S:[],A:[],B:[],C:[],pool:[]};playerTiers={};playerTierOrder={S:[],A:[],B:[],C:[],pool:[]};
+  renderPlayers();
   document.getElementById('order-list-container').innerHTML='';
   document.getElementById('draft-container').innerHTML='';
+  const tl=document.getElementById('tierlist-container');if(tl)tl.innerHTML='';
   toast('Estado resetado!');
 }
 function toast(msg){
@@ -397,17 +594,20 @@ function toast(msg){
 
 // ===== NAV =====
 function goTab(t){
-  document.querySelectorAll('.nav-tab').forEach((b,i)=>b.classList.toggle('active',['register','captains','order','draft','bracket'][i]===t));
+  document.querySelectorAll('.nav-tab').forEach((b,i)=>b.classList.toggle('active',['register','captains','order','draft','tierlist','edit'][i]===t));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+t).classList.add('active');
   if(t==='captains')renderCaptains();
   if(t==='draft')renderDraft();
-  if(t==='bracket')renderBracket();
+  if(t==='tierlist')renderTierList();
+  if(t==='edit')renderEditPanel();
 }
 
 // ===== HELPERS =====
 const LANE_KEY=l=>l.toLowerCase().replace(' ','');
-function laneBadge(l){return `<span class="lane-badge lane-${LANE_KEY(l)}">${l}</span>`}
+const LANE_SHORT={Support:'SUP'};
+const LANE_ACCENT={top:'#7ab8f5',jungle:'#5DCAA5',mid:'#f07eb0',adc:'#E2C97A',support:'#AFA9EC'};
+function laneBadge(l){return `<span class="lane-badge lane-${LANE_KEY(l)}">${LANE_SHORT[l]||l}</span>`}
 function laneHeaderClass(l){return `lh-${LANE_KEY(l)}`}
 function getTeamDisplayName(capName){return teamNames[capName]||capName;}
 
@@ -419,10 +619,11 @@ function sortByLane(arr){
 // ===== REGISTER =====
 function addPlayer(){
   const name=document.getElementById('p-name').value.trim();if(!name)return;
+  const riotTag=document.getElementById('p-tag').value.trim().replace(/^#/,'');
   const eloVal=document.getElementById('p-elo').value;
   const divVal=NO_DIV_ELOS.has(eloVal)?'':document.getElementById('p-div').value;
-  players.push({id:Date.now()+Math.random(),name,lane:document.getElementById('p-lane').value,elo:eloVal,div:divVal,champs:document.getElementById('p-champs').value.trim(),captain:false});
-  document.getElementById('p-name').value='';document.getElementById('p-champs').value='';
+  players.push({id:Date.now()+Math.random(),name,riotTag,lane:document.getElementById('p-lane').value,elo:eloVal,div:divVal,champs:document.getElementById('p-champs').value.trim(),captain:false});
+  document.getElementById('p-name').value='';document.getElementById('p-tag').value='';document.getElementById('p-champs').value='';
   renderPlayers();salvarEstado();
 }
 function removePlayer(id){players=players.filter(p=>p.id!==id);renderPlayers();salvarEstado();}
@@ -485,6 +686,7 @@ function parseLaneString(str){
 function detectFieldKey(rawKey){
   const k=rawKey.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
   if(/^(nick|nome|jogador|player|ign|id|apelido)/.test(k)) return 'nick';
+  if(/^(tag|regiao|região|servidor|server)/.test(k)) return 'tag';
   if(/^(elo|rank|ranking|divisao|div|tier)/.test(k)) return 'elo';
   if(/^(lane|lana|posic|posit|pos|funcao|funcão|papel|role)/.test(k)) return 'lane';
   if(/^(camp|champ|heroi|hero|pick|personag)/.test(k)) return 'champs';
@@ -494,7 +696,7 @@ function detectFieldKey(rawKey){
 function addPlayersFromBulk(){
   const raw=document.getElementById('p-bulk').value;
   if(!raw.trim()){return;}
-  const KNOWN_FIELDS='(?:nick|nome|elo|rank|lane|lana|pos|camp(?:e(?:o|oe|oes|õ|ões)?)?|champ(?:s|eoes)?|heroi|campeoes|campeões)';
+  const KNOWN_FIELDS='(?:nick|nome|elo|rank|lane|lana|pos|tag|camp(?:e(?:o|oe|oes|õ|ões)?)?|champ(?:s|eoes)?|heroi|campeoes|campeões)';
   let rawLines=raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
   let expandedLines=[];
   rawLines.forEach(line=>{
@@ -525,7 +727,7 @@ function addPlayersFromBulk(){
     if(current.name){
       if(!current.lane){errors.push(`"${current.name}": lane não identificada — jogador não adicionado.`);}
       else{
-        players.push({id:Date.now()+Math.random()+added,name:current.name,lane:current.lane,elo:current.elo||'Esmeralda',div:current.div!==undefined?current.div:'IV',champs:current.champs||'',captain:false});
+        players.push({id:Date.now()+Math.random()+added,name:current.name,riotTag:current.riotTag||'',lane:current.lane,elo:current.elo||'Esmeralda',div:current.div!==undefined?current.div:'IV',champs:current.champs||'',captain:false});
         added++;
       }
     }
@@ -534,7 +736,7 @@ function addPlayersFromBulk(){
   expandedLines.forEach(line=>{
     if(!line.includes(':')){
       if(/—\s*(ontem|hoje|[a-z]{3,}\s+às)/i.test(line)) return;
-      if(line.includes('#')){flush();current.name=line.split('#')[0].trim();fieldIdx=1;}
+      if(line.includes('#')){flush();const parts=line.split('#');current.name=parts[0].trim();if(parts[1])current.riotTag=parts[1].trim();fieldIdx=1;}
       return;
     }
     const m=line.match(/^([^:]+):\s*(.*)$/);
@@ -546,8 +748,12 @@ function addPlayersFromBulk(){
     if(!field) return;
     if(field==='nick'){
       flush();
-      current.name=val.split('#')[0].trim();
+      const parts=val.split('#');
+      current.name=parts[0].trim();
+      if(parts[1])current.riotTag=parts[1].trim();
       fieldIdx=1;
+    } else if(field==='tag'){
+      current.riotTag=val.replace(/^#/,'').trim();
     } else if(field==='elo'){
       const {elo,div}=parseEloString(val);
       current.elo=elo;current.div=div;fieldIdx=2;
@@ -582,12 +788,32 @@ function renderPlayers(){
 
 // ===== CAPTAINS =====
 function toggleCaptain(id){const p=players.find(x=>x.id==id);if(p){p.captain=!p.captain;renderPlayers();renderCaptains();salvarEstado();}}
+function setTeamNameByCapId(id,val){
+  const cap=players.find(p=>p.id==id);
+  if(!cap)return;
+  if(val.trim())teamNames[cap.name]=val.trim();else delete teamNames[cap.name];
+  salvarEstado();
+}
 function renderCaptains(){
   const lanes=['Top','Jungle','Mid','ADC','Support'];let html='';
   lanes.forEach(lane=>{
     const ps=players.filter(p=>p.lane===lane);if(!ps.length)return;
     html+=`<div class="card"><div class="player-section-header" style="margin-bottom:10px">${laneBadge(lane)}</div>`;
-    ps.forEach(p=>{html+=`<div class="player-row" style="cursor:pointer" onclick="toggleCaptain(${JSON.stringify(p.id)})"><input type="checkbox" class="captain-check" ${p.captain?'checked':''} onchange="toggleCaptain(${JSON.stringify(p.id)})" onclick="event.stopPropagation()"/><span class="player-name">${p.name}</span><span class="elo-badge">${p.elo}${p.div?' '+p.div:''}</span><span class="player-champs">${p.champs||'—'}</span></div>`;});
+    ps.forEach(p=>{
+      const teamNameVal=teamNames[p.name]||'';
+      html+=`<div class="captain-entry ${p.captain?'is-captain-active':''}">
+        <div class="player-row" style="cursor:pointer" onclick="toggleCaptain(${JSON.stringify(p.id)})">
+          <input type="checkbox" class="captain-check" ${p.captain?'checked':''} onchange="toggleCaptain(${JSON.stringify(p.id)})" onclick="event.stopPropagation()"/>
+          <span class="player-name">${p.name}</span>
+          <span class="elo-badge">${p.elo}${p.div?' '+p.div:''}</span>
+          <span class="player-champs">${p.champs||'—'}</span>
+        </div>
+        ${p.captain?`<div class="team-name-field" onclick="event.stopPropagation()">
+          <span class="team-name-field-icon">🏷</span>
+          <input type="text" class="team-name-input" placeholder="Nome do time (ex: Os Brabos, Team Flash...)" value="${teamNameVal}" oninput="setTeamNameByCapId(${JSON.stringify(p.id)},this.value)"/>
+        </div>`:''}
+      </div>`;
+    });
     html+='</div>';
   });
   if(!html)html=`<div class="empty"><div class="empty-icon">👑</div><p>Registre jogadores primeiro.</p></div>`;
@@ -658,6 +884,258 @@ function buildTeams(){
 function teamLanes(capName,teams){
   return new Set((teams[capName]||[]).map(m=>m.lane));
 }
+function getFirstPickId(teamName){
+  let min=Infinity,pid=null;
+  Object.entries(draftPicks).forEach(([id,info])=>{
+    if(info.team===teamName&&info.pickNum<min){min=info.pickNum;pid=id;}
+  });
+  return pid;
+}
+
+// ===== OP.GG MULTISEARCH =====
+function riotIdFor(p){
+  const tag=(p.riotTag||'BR1').trim().replace(/^#/,'')||'BR1';
+  return `${p.name}#${tag}`;
+}
+function buildOpggLink(members){
+  const ids=members.map(m=>encodeURIComponent(riotIdFor(m)));
+  return 'https://op.gg/pt/lol/multisearch/br?summoners='+ids.join('%2C');
+}
+function copyOpggLink(btn){
+  const link=btn.parentElement.querySelector('a');
+  if(!link)return;
+  const url=link.href;
+  const done=()=>toast('Link do OP.GG copiado!');
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(done).catch(()=>fallbackCopy(url,done));
+  }else{
+    fallbackCopy(url,done);
+  }
+}
+function fallbackCopy(text,done){
+  try{
+    const ta=document.createElement('textarea');
+    ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();
+    done();
+  }catch(e){toast('Não foi possível copiar automaticamente.');}
+}
+
+function teamCardHTML(cap,i,teams,statusFlags){
+  const color=TEAM_COLORS[i%TEAM_COLORS.length];
+  const glow=TEAM_GLOWS[i%TEAM_GLOWS.length];
+  const members=sortByLane(teams[cap.name]||[]);
+  const displayName=getTeamDisplayName(cap.name);
+  const strength=teamStrength(members);
+  const pct=Math.round(strength/1075*100);
+  const eloAvg=avgEloInfo(teams[cap.name]||[]);
+  const firstPickId=getFirstPickId(cap.name);
+  const flags=statusFlags||{};
+
+  const boltFx=flags.isStrongest?`<div class="bolt-fx" aria-hidden="true"><span class="bolt b1">⚡</span><span class="bolt b2">⚡</span><span class="bolt b3">⚡</span><span class="bolt b4">⚡</span><span class="bolt b5">⚡</span></div>`:'';
+  const iceFx=flags.isWeakest?`<div class="ice-fx" aria-hidden="true"><span class="frost-crystal c1">❄</span><span class="frost-crystal c2">❅</span><span class="frost-crystal c3">❆</span></div>`:'';
+
+  let html=`${boltFx}${iceFx}<div class="team-card-glow" style="box-shadow:inset 0 0 40px ${glow}"></div>
+    <div class="team-card-header">
+      <div class="team-card-accent" style="background:linear-gradient(to right,transparent,${color},transparent)"></div>
+      <div class="team-card-name" style="color:${color}">${displayName}</div>
+      <div class="team-card-cap-row">
+        <span style="font-size:14px">⭐</span>
+        <span class="team-card-cap-label">Capitão:</span>
+        <span style="font-size:12px;font-weight:600;color:${color}">${cap.name}</span>
+      </div>
+      <div class="team-strength-row">
+        <span class="team-strength-label">Elo médio</span>
+        <span class="team-strength-val" style="color:${eloAvg.color}">${eloAvg.text}</span>
+      </div>
+      <div class="team-strength-track"><div class="team-strength-fill" style="width:${pct}%;background:linear-gradient(to right,${color}88,${color})"></div></div>
+    </div>
+    <div class="team-roster">`;
+
+  members.forEach(m=>{
+    const isCap=m.captain;
+    const isFirstPick=!isCap&&String(m.id)===String(firstPickId);
+    html+=`<div class="roster-row ${isCap?'is-captain':''} ${isFirstPick?'is-first-pick':''}">
+      <span class="roster-lane">${laneBadge(m.lane)}</span>
+      <span class="roster-icon">${isCap?'⭐':(isFirstPick?'<span class="first-pick-num">1</span>':'')}</span>
+      <span class="roster-name ${isCap?'cap-name':''}" style="${isCap?`color:${color}`:''}">${m.name}</span>
+      <span class="roster-elo">${m.elo}${m.div?' '+m.div:''}</span>
+    </div>`;
+  });
+
+  html+=`</div>`;
+  const opggLink=buildOpggLink(members);
+  html+=`<div class="team-opgg-row" onclick="event.stopPropagation()">
+    <a class="btn btn-outline btn-sm" href="${opggLink}" target="_blank" rel="noopener">🔎 Abrir no OP.GG</a>
+    <button type="button" class="btn btn-outline btn-sm" onclick="copyOpggLink(this)">📋 Copiar link</button>
+  </div>`;
+  return html;
+}
+
+function fitRosterNames(root){
+  if(!root)return;
+  root.querySelectorAll('.roster-name').forEach(el=>{
+    el.style.whiteSpace='nowrap';
+    let size=13;
+    el.style.fontSize=size+'px';
+    let guard=0;
+    while(el.scrollWidth>el.clientWidth&&size>9&&guard<30){
+      size-=0.5;
+      el.style.fontSize=size+'px';
+      guard++;
+    }
+  });
+}
+
+function renderDraftDone(skipAnimation){
+  const allCaps=players.filter(p=>p.captain);
+  const teams=buildTeams();
+
+  // determine strongest / weakest team (fire / ice highlight) — visual only, no text label
+  const strengths=allCaps.map(cap=>teamStrength(teams[cap.name]||[]));
+  let maxIdx=-1,minIdx=-1;
+  if(allCaps.length>1){
+    const maxVal=Math.max(...strengths);
+    const minVal=Math.min(...strengths);
+    if(maxVal!==minVal){
+      maxIdx=strengths.indexOf(maxVal);
+      minIdx=strengths.indexOf(minVal);
+    }
+  }
+
+  let html=`<div class="draft-done-header">
+    <div class="draft-done-eyebrow">Draft Encerrado</div>
+    <div class="draft-done-title">Times Formados</div>
+    <div class="draft-done-sub">${allCaps.length} times prontos para a temporada</div>
+    <div class="draft-done-divider"></div>
+    <div class="draft-done-actions">
+      <button class="btn btn-outline btn-sm" onclick="undoPick()">↩ Desfazer último pick</button>
+      <button class="btn btn-outline" onclick="abrirModalNomesTime()">✏️ Renomear times</button>
+      <button class="btn btn-gold" onclick="renderDraftDone()">🎬 Revelação novamente</button>
+    </div>
+  </div>`;
+
+  html+=`<div class="teams-showcase pre-reveal" id="teams-showcase">`;
+  allCaps.forEach((cap,i)=>{
+    const flags={isStrongest:i===maxIdx,isWeakest:i===minIdx};
+    const extraClass=flags.isStrongest?'is-strongest':(flags.isWeakest?'is-weakest':'');
+    const eloAvg=avgEloInfo(teams[cap.name]||[]);
+    html+=`<div class="team-card ${extraClass} tier-${eloAvg.tier.toLowerCase()}" data-team-idx="${i}" onclick="openTeamShowcase(${i})">${teamCardHTML(cap,i,teams,flags)}</div>`;
+  });
+  html+=`</div>`;
+
+  document.getElementById('draft-container').innerHTML=html;
+  fitRosterNames(document.getElementById('teams-showcase'));
+
+  if(skipAnimation){
+    document.getElementById('teams-showcase').classList.remove('pre-reveal');
+    return;
+  }
+  runCinematicReveal(allCaps);
+}
+
+function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+
+// ===== STOP / SKIP APRESENTAÇÃO =====
+let revealSkipRequested=false;
+function skipRevealAnimation(){revealSkipRequested=true;}
+
+// ===== ABRIR TIME EM DESTAQUE (igual apresentação) =====
+function openTeamShowcase(idx){
+  const allCaps=players.filter(p=>p.captain);
+  const cap=allCaps[idx];if(!cap)return;
+  const teams=buildTeams();
+  const strengths=allCaps.map(c=>teamStrength(teams[c.name]||[]));
+  let maxIdx=-1,minIdx=-1;
+  if(allCaps.length>1){
+    const maxVal=Math.max(...strengths),minVal=Math.min(...strengths);
+    if(maxVal!==minVal){maxIdx=strengths.indexOf(maxVal);minIdx=strengths.indexOf(minVal);}
+  }
+  const flags={isStrongest:idx===maxIdx,isWeakest:idx===minIdx};
+  const extraClass=flags.isStrongest?'is-strongest':(flags.isWeakest?'is-weakest':'');
+  const eloAvg=avgEloInfo(teams[cap.name]||[]);
+  document.getElementById('team-view-content').innerHTML=`<div class="team-card ${extraClass} tier-${eloAvg.tier.toLowerCase()}">${teamCardHTML(cap,idx,teams,flags)}</div>`;
+  const modal=document.getElementById('team-view-modal');
+  modal.style.display='flex';
+  fitRosterNames(modal);
+}
+function closeTeamShowcase(){document.getElementById('team-view-modal').style.display='none';}
+
+async function runCinematicReveal(allCaps){
+  const showcase=document.getElementById('teams-showcase');
+  const overlay=document.getElementById('reveal-overlay');
+  const caption=document.getElementById('reveal-caption');
+  const captionTitle=document.getElementById('reveal-caption-title');
+  if(!showcase||!overlay)return;
+
+  revealSkipRequested=false;
+  overlay.classList.add('show');
+  await delay(150);
+
+  const cards=[...showcase.querySelectorAll('.team-card')];
+
+  for(let i=0;i<cards.length;i++){
+    if(revealSkipRequested)break;
+    const realCard=cards[i];
+    const cap=allCaps[i];
+    const color=TEAM_COLORS[i%TEAM_COLORS.length];
+
+    captionTitle.textContent=getTeamDisplayName(cap.name);
+    captionTitle.style.color=color;
+    caption.classList.add('show');
+
+    // build ghost centered on screen, big
+    const ghost=document.createElement('div');
+    ghost.className='reveal-ghost team-card pulsing';
+    realCard.classList.forEach(c=>{ if(c!=='team-card') ghost.classList.add(c); });
+    ghost.innerHTML=realCard.innerHTML;
+    const gw=Math.min(400,window.innerWidth*0.86);
+    ghost.style.width=gw+'px';
+    ghost.style.left='50%';
+    ghost.style.top='50%';
+    ghost.style.transform='translate(-50%,-50%) scale(0.7)';
+    ghost.style.opacity='0';
+    ghost.style.transition='opacity .5s ease, transform .5s cubic-bezier(.22,1,.36,1)';
+    document.body.appendChild(ghost);
+    fitRosterNames(ghost);
+
+    await delay(30);
+    if(revealSkipRequested){ghost.remove();break;}
+    ghost.style.opacity='1';
+    ghost.style.transform='translate(-50%,-50%) scale(1)';
+
+    await delay(1700); // hold, "preenche a tela" (mais tempo)
+    if(revealSkipRequested){ghost.remove();break;}
+
+    ghost.classList.remove('pulsing');
+    caption.classList.remove('show');
+
+    // measure destination (real grid slot)
+    const rect=realCard.getBoundingClientRect();
+    ghost.style.transition='all .8s cubic-bezier(.22,1,.36,1)';
+    ghost.style.left=rect.left+'px';
+    ghost.style.top=rect.top+'px';
+    ghost.style.width=rect.width+'px';
+    ghost.style.height=rect.height+'px';
+    ghost.style.transform='none';
+
+    await delay(830);
+
+    realCard.style.opacity='1';
+    realCard.style.visibility='visible';
+    realCard.classList.add('card-settled');
+    ghost.remove();
+
+    await delay(150);
+  }
+
+  // limpeza final: garante que tudo fica visível mesmo se a apresentação foi pulada
+  document.querySelectorAll('.reveal-ghost').forEach(g=>g.remove());
+  cards.forEach(c=>{c.style.opacity='1';c.style.visibility='visible';c.classList.add('card-settled');});
+  caption.classList.remove('show');
+  overlay.classList.remove('show');
+  showcase.classList.remove('pre-reveal');
+}
 
 function renderDraft(){
   if(!draftOrder.length){
@@ -672,7 +1150,8 @@ function renderDraft(){
   if(secHead) secHead.style.display=done?'none':'block';
 
   if(done){
-    renderDraftDone();
+    renderDraftDone(revealPlayed);
+    revealPlayed=true;
     return;
   }
 
@@ -702,7 +1181,7 @@ function renderDraft(){
       const occupied=teamLanes(cur.cap.name,teams);
       const laneBlocked=occupied.has(p.lane);
       if(laneBlocked) return;
-      html+=`<div class="draft-player-card" onclick="pickPlayer(${JSON.stringify(p.id)})">
+      html+=`<div class="draft-player-card" onclick="pickPlayer(${JSON.stringify(p.id)},event)">
         <div class="dp-name">${p.name}</div>
         <div class="dp-elo">${p.elo}${p.div?' '+p.div:''}</div>
         ${p.champs?`<div class="dp-champs">${p.champs}</div>`:''}
@@ -720,7 +1199,7 @@ function renderDraft(){
   allCaps.forEach((cap,i)=>{
     const members=teams[cap.name]||[];
     const displayName=getTeamDisplayName(cap.name);
-    html+=`<div class="sidebar-team"><div class="dt-title ${capColors[i%capColors.length]}">⚑ ${displayName}</div>`;
+    html+=`<div class="sidebar-team" data-cap="${cap.name.replace(/"/g,'&quot;')}"><div class="dt-title ${capColors[i%capColors.length]}">⚑ ${displayName}</div>`;
     ALL_LANES.forEach(lane=>{
       const m=members.find(x=>x.lane===lane);
       if(m){
@@ -737,70 +1216,7 @@ function renderDraft(){
   document.getElementById('draft-container').innerHTML=html;
 }
 
-function renderDraftDone(){
-  const allCaps=players.filter(p=>p.captain);
-  const teams=buildTeams();
-
-  let html=`<div class="draft-done-header">
-    <div class="draft-done-eyebrow">Draft Encerrado</div>
-    <div class="draft-done-title">Times Formados</div>
-    <div class="draft-done-sub">${allCaps.length} times prontos para o torneio</div>
-    <div class="draft-done-divider"></div>
-    <div class="draft-done-actions">
-      <button class="btn btn-outline btn-sm" onclick="undoPick()">↩ Desfazer último pick</button>
-      <button class="btn btn-outline" onclick="abrirModalNomesTime()">✏️ Renomear times</button>
-      <button class="btn btn-gold" onclick="goTab('bracket');gerarChaves()">⚡ Gerar chaves →</button>
-    </div>
-  </div>`;
-
-  html+=`<div class="teams-showcase">`;
-
-  allCaps.forEach((cap,i)=>{
-    const color=TEAM_COLORS[i%TEAM_COLORS.length];
-    const glow=TEAM_GLOWS[i%TEAM_GLOWS.length];
-    const members=sortByLane(teams[cap.name]||[]);
-    const displayName=getTeamDisplayName(cap.name);
-    const strength=teamStrength(members);
-    const pct=Math.round(strength/1075*100);
-
-    html+=`<div class="team-card">
-      <div class="team-card-glow" style="box-shadow:inset 0 0 40px ${glow}"></div>
-      <div class="team-card-header">
-        <div class="team-card-accent" style="background:linear-gradient(to right,${color},transparent)"></div>
-        <div class="team-card-name" style="color:${color}">${displayName}</div>
-        <div class="team-card-cap-row">
-          <span style="font-size:14px">⭐</span>
-          <span class="team-card-cap-label">Capitão:</span>
-          <span style="font-size:12px;font-weight:600;color:${color}">${cap.name}</span>
-        </div>
-        <div class="team-strength-row">
-          <span class="team-strength-label">Força média</span>
-          <span class="team-strength-val">${strength}</span>
-        </div>
-        <div class="team-strength-track"><div class="team-strength-fill" style="width:${pct}%;background:linear-gradient(to right,${color}88,${color})"></div></div>
-      </div>
-      <div class="team-roster">`;
-
-    members.forEach(m=>{
-      const isCap=m.captain;
-      html+=`<div class="roster-row ${isCap?'is-captain':''}">
-        <span class="roster-star">${isCap?'⭐':''}</span>
-        <span class="roster-name ${isCap?'cap-name':''}" style="${isCap?`color:${color}`:''}">
-          ${m.name}
-        </span>
-        <span class="roster-lane">${laneBadge(m.lane)}</span>
-        <span class="roster-elo">${m.elo}${m.div?' '+m.div:''}</span>
-      </div>`;
-    });
-
-    html+=`</div></div>`;
-  });
-
-  html+=`</div>`;
-  document.getElementById('draft-container').innerHTML=html;
-}
-
-function pickPlayer(pid){
+function pickPlayer(pid,ev){
   if(currentPickIdx>=draftOrder.length)return;
   const p=players.find(x=>x.id==pid);
   if(!p||draftPicks[pid]||p.captain)return;
@@ -810,6 +1226,13 @@ function pickPlayer(pid){
   if(occupied.has(p.lane))return;
   const teamMembers=teams[cur.cap.name]||[];
   if(teamMembers.length>=5)return;
+
+  // animação: jogador "voa" até o card do time dele
+  const capIdxColor=players.filter(x=>x.captain).findIndex(c=>c.name===cur.cap.name);
+  const srcEl=ev&&ev.currentTarget?ev.currentTarget:null;
+  const destEl=document.querySelector(`.sidebar-team[data-cap="${CSS.escape(cur.cap.name)}"]`);
+  flyPickAnimation(srcEl,destEl,p.name,TEAM_COLORS[capIdxColor>=0?capIdxColor%TEAM_COLORS.length:0]);
+
   draftPicks[pid]={pickedBy:cur.cap.name,team:cur.team,pickNum:currentPickIdx+1};
   currentPickIdx++;
   while(currentPickIdx<draftOrder.length){
@@ -819,6 +1242,27 @@ function pickPlayer(pid){
     else break;
   }
   renderDraft();renderOrderList();salvarEstado();
+}
+
+function flyPickAnimation(srcEl,destEl,name,color){
+  if(!srcEl||!destEl)return;
+  const srcRect=srcEl.getBoundingClientRect();
+  const destRect=destEl.getBoundingClientRect();
+  const ghost=document.createElement('div');
+  ghost.className='pick-fly-ghost';
+  ghost.textContent=name;
+  ghost.style.cssText=`position:fixed;left:${srcRect.left}px;top:${srcRect.top}px;width:${srcRect.width}px;z-index:700;background:${color||'var(--gold)'};color:#0B0F1C;font-weight:700;font-size:12px;padding:6px 10px;border-radius:7px;box-shadow:0 6px 22px rgba(0,0,0,.45);transition:left .55s cubic-bezier(.22,1,.36,1),top .55s cubic-bezier(.22,1,.36,1),width .55s cubic-bezier(.22,1,.36,1),opacity .55s ease,transform .55s cubic-bezier(.22,1,.36,1);pointer-events:none;opacity:1;transform:scale(1)`;
+  document.body.appendChild(ghost);
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      ghost.style.left=(destRect.left+destRect.width/2-28)+'px';
+      ghost.style.top=(destRect.top+10)+'px';
+      ghost.style.width='56px';
+      ghost.style.opacity='0.1';
+      ghost.style.transform='scale(0.35)';
+    });
+  });
+  setTimeout(()=>ghost.remove(),620);
 }
 
 function undoPick(){
@@ -848,166 +1292,336 @@ function confirmarNomesTime(){
   salvarEstado();renderDraft();toast('Nomes dos times salvos!');
 }
 
-// ===== BRACKET =====
-function getTeamObjects(){
-  const caps=players.filter(p=>p.captain);
-  const teams=buildTeams();
-  return caps.map((cap,i)=>({id:'t'+i,name:getTeamDisplayName(cap.name),captain:cap.name,players:teams[cap.name]||[],strength:teamStrength(teams[cap.name]||[])}));
-}
-function balancedSeed(teams){
-  if(teams.length<=1)return teams;
-  const sorted=[...teams].sort((a,b)=>b.strength-a.strength);
-  const n=sorted.length;
-  const seeded=new Array(n);
-  let top=0,bot=n-1,goTop=true;
-  for(let i=0;i<n;i++){if(goTop){seeded[top]=sorted[i];top++;}else{seeded[bot]=sorted[i];bot--;}goTop=!goTop;}
-  return seeded;
-}
-function gerarChaves(){
-  const allTeams=getTeamObjects();
-  const filled=allTeams.filter(t=>t.players.length>0);
-  if(!filled.length){alert('Complete o draft primeiro!');return;}
-  const seeded=balancedSeed(filled);
-  let size=1;while(size<seeded.length)size*=2;
-  const padded=[...seeded];while(padded.length<size)padded.push(null);
-  const rounds=[];let matchId=0;let currentMatches=[];
-  for(let i=0;i<padded.length/2;i++){
-    const t1=padded[i],t2=padded[padded.length-1-i];
-    currentMatches.push({id:'m'+(++matchId),team1:t1,team2:t2,score1:null,score2:null,winner:null,seed1:t1?(i+1):null,seed2:t2?(padded.length-i):null});
-  }
-  const getRoundName=(total,remaining)=>{if(remaining===1)return 'Grande Final';if(remaining===2)return 'Semifinal';if(remaining===4)return 'Quartas de Final';return 'Fase '+Math.round(Math.log2(total/remaining)+1);};
-  rounds.push({name:getRoundName(size,currentMatches.length),isFinal:currentMatches.length===1,matches:currentMatches});
-  while(currentMatches.length>1){
-    const next=[];
-    for(let i=0;i<currentMatches.length;i+=2){
-      next.push({id:'m'+(++matchId),team1:currentMatches[i].winner||null,team2:currentMatches[i+1]?.winner||null,score1:null,score2:null,winner:null,seed1:null,seed2:null});
+// ===== TIER LIST (S/A/B/C, tiers extras...) — Times e Jogadores, com reordenação por arrasto =====
+const TIER_PALETTE=['#E05252','#E2A23D','#D8C23D','#5B9BD5','#5DCAA5','#AFA9EC','#f07eb0','#8a93a6','#E2913D','#3DBFA0'];
+const TIERLIST_LANES=['Todos','Top','Jungle','Mid','ADC','Support'];
+let draggingChipId=null;
+function allTierKeys(){ return [...getTierOrderKeys(),'pool']; }
+function tierColor(key,idx){ return key==='pool'?null:TIER_PALETTE[idx%TIER_PALETTE.length]; }
+
+// Garante que todo id de `ids` esteja em algum array de `order` (sem duplicar) e remove ids que não existem mais.
+function syncTierOrder(order,ids,fallbackTierMap){
+  const keys=allTierKeys();
+  keys.forEach(k=>{ if(!Array.isArray(order[k]))order[k]=[]; });
+  Object.keys(order).forEach(k=>{ if(!keys.includes(k))delete order[k]; }); // tier removido: some do objeto (itens já migrados na hora da remoção)
+  const idSet=new Set(ids.map(String));
+  keys.forEach(k=>{ order[k]=order[k].filter(id=>idSet.has(String(id))); });
+  const present=new Set(keys.flatMap(k=>order[k].map(String)));
+  ids.forEach(id=>{
+    const sid=String(id);
+    if(!present.has(sid)){
+      const t=(fallbackTierMap&&fallbackTierMap[id])||'pool';
+      (order[keys.includes(t)?t:'pool']).push(id);
     }
-    const isFinal=next.length===1;
-    rounds.push({name:getRoundName(size,next.length),isFinal,matches:next});
-    currentMatches=next;
+  });
+}
+function getDragAfterElement(container,x,y){
+  const els=[...container.querySelectorAll('.tier-chip:not(.dragging)')];
+  let best=null,bestDist=Infinity,after=null;
+  els.forEach(child=>{
+    const box=child.getBoundingClientRect();
+    const cx=box.left+box.width/2, cy=box.top+box.height/2;
+    const dist=Math.hypot(x-cx,y-cy);
+    if(dist<bestDist){bestDist=dist;best=child;after=(x>cx);}
+  });
+  if(!best)return null;
+  return after?best.nextSibling:best;
+}
+function tierSlotDragOver(ev){
+  ev.preventDefault();
+  ev.currentTarget.closest('.tier-row').classList.add('drag-over');
+  const dragging=document.querySelector('.tier-chip.dragging');
+  if(!dragging)return;
+  const slot=ev.currentTarget;
+  // Slot de lane específica (dentro da fila "—"): só aceita chip da mesma lane.
+  // Slot livre (tiers S/A/B/C e afins): aceita qualquer jogador, de qualquer lane.
+  if(slot.dataset.lane&&(dragging.dataset.lane||'')!==slot.dataset.lane)return;
+  const ref=getDragAfterElement(slot,ev.clientX,ev.clientY);
+  if(ref==null)slot.appendChild(dragging); else slot.insertBefore(dragging,ref);
+}
+function tierChipHTML(id,name,eloText,colorAccent,laneAttr){
+  const idAttr=String(id).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+  const laneDataAttr=laneAttr?` data-lane="${escAttr(laneAttr)}"`:'';
+  return `<div class="tier-chip" draggable="true" data-id="${idAttr}"${laneDataAttr} ondragstart="dragTierChip(event,'${idAttr}')" ondragend="dragTierEnd(event)" ondblclick="returnChipToPool(event,'${idAttr}')" title="Duplo clique pra voltar pra fila" style="border-color:${colorAccent}">
+    <span class="tier-chip-name" style="color:${colorAccent}">${name}</span>
+    <span class="tier-chip-elo">${eloText}</span>
+  </div>`;
+}
+function tierRowLabelHTML(t,idx,removable){
+  const color=tierColor(t,idx);
+  const isPool=t==='pool';
+  const removeBtn=removable?`<button type="button" class="tier-remove-btn" title="Remover este tier" onclick="event.stopPropagation();removeTierRow('${t}')">✕</button>`:'';
+  return `<div class="tier-label-wrap">
+    <div class="tier-label" style="${isPool?'':`background:${color}`}" contenteditable="${!isPool}" spellcheck="false" data-tier-key="${t}" oninput="updateTierLabel(this,'${t}')" onblur="salvarEstado()" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" ondragstart="event.preventDefault()" title="${isPool?'':'Clique para editar o nome deste tier'}">${isPool?'—':(getTierLabels()[t]||t)}</div>
+    ${removeBtn}
+  </div>`;
+}
+// Renderização "plana": uma fileira de chips por tier (usado para Times, e para Jogadores quando uma lane específica está selecionada).
+function tierRowsFlatHTML(order,idToHtml){
+  let html='<div class="tierlist-wrap">';
+  getTierOrderKeys().forEach((t,idx)=>{
+    html+=`<div class="tier-row" data-tier="${t}" ondragleave="this.classList.remove('drag-over')" ondrop="dropOnTier(event,'${t}')">
+      ${tierRowLabelHTML(t,idx,true)}
+      <div class="tier-slot" ondragover="tierSlotDragOver(event)">`;
+    order[t].forEach(id=>{ const h=idToHtml(id); if(h)html+=h; });
+    html+='</div></div>';
+  });
+  html+=`<div class="tier-row tier-pool" data-tier="pool" ondragleave="this.classList.remove('drag-over')" ondrop="dropOnTier(event,'pool')">
+    ${tierRowLabelHTML('pool',0,false)}
+    <div class="tier-slot" ondragover="tierSlotDragOver(event)">`;
+  order.pool.forEach(id=>{ const h=idToHtml(id); if(h)html+=h; });
+  html+='</div></div>';
+  html+=addTierRowButtonHTML();
+  html+='</div>';
+  return html;
+}
+// Renderização "pool agrupado por lane": os tiers (S/A/B/C + extras que o usuário criar) ficam totalmente livres —
+// o usuário decide quem entra em cada um e a mistura de lanes. Só a fila "—" (pool) embaixo fica separada por lane,
+// pra facilitar achar o jogador certo antes de arrastar ele pra um tier. Usado em Jogadores + filtro "Todos".
+function tierRowsPoolGroupedByLaneHTML(order,playerById){
+  const lanes=['Top','Jungle','Mid','ADC','Support'];
+  function chipFor(id){
+    const p=playerById(id);if(!p)return '';
+    const color=LANE_ACCENT[LANE_KEY(p.lane)]||'#8a93a6';
+    const eloText=`${p.elo}${p.div?' '+p.div:''} · ${LANE_SHORT[p.lane]||p.lane}${p.captain?' · ⚑':''}`;
+    return tierChipHTML(p.id,escAttr(p.name),eloText,color);
   }
-  bracket={rounds,seeded:seeded.filter(Boolean).map(t=>({name:t.name,strength:t.strength}))};
-  renderBracket();salvarEstado();
-}
-function resetarChaves(){if(!confirm('Resetar todas as chaves?'))return;bracket=null;renderBracket();}
-
-function md3AddScore(matchId,roundIdx,slot){
-  if(!bracket)return;
-  const match=bracket.rounds[roundIdx].matches.find(m=>m.id===matchId);
-  if(!match||match.winner)return;
-  if(slot===1){match.score1=(match.score1||0)+1;}else{match.score2=(match.score2||0)+1;}
-  if(match.score1>=2){match.winner=match.team1;}
-  else if(match.score2>=2){match.winner=match.team2;}
-  renderBracket();salvarEstado();
-}
-function setWinner(matchId,roundIdx,slot){
-  if(!bracket)return;
-  const match=bracket.rounds[roundIdx].matches.find(m=>m.id===matchId);
-  if(!match)return;
-  const isFinal=bracket.rounds[roundIdx].isFinal;
-  if(isFinal){md3AddScore(matchId,roundIdx,slot);return;}
-  if(slot===1){match.score1=1;match.score2=0;}else{match.score1=0;match.score2=1;}
-  match.winner=slot===1?match.team1:match.team2;
-  propagateWinner(roundIdx,match);
-  renderBracket();salvarEstado();
-}
-function propagateWinner(roundIdx,match){
-  if(!bracket.rounds[roundIdx+1])return;
-  const nextRound=bracket.rounds[roundIdx+1];
-  const mIdx=bracket.rounds[roundIdx].matches.indexOf(match);
-  const nMatch=nextRound.matches[Math.floor(mIdx/2)];
-  if(!nMatch)return;
-  if(mIdx%2===0)nMatch.team1=match.winner;else nMatch.team2=match.winner;
-  if(nMatch.winner)propagateWinner(roundIdx+1,nMatch);
-}
-
-function renderBracket(){
-  const container=document.getElementById('bracket-container');
-  const champContainer=document.getElementById('champion-container');
-  const statusBar=document.getElementById('bracket-status-bar');
-  if(!bracket){
-    container.innerHTML=`<div class="empty"><div class="empty-icon">🏆</div><p>Clique em "Gerar chaves" após o draft.</p></div>`;
-    champContainer.innerHTML='';statusBar.innerHTML='';return;
+  function laneGroupHTML(lane){
+    const ids=order.pool.filter(id=>{ const p=playerById(id); return p&&p.lane===lane; });
+    let inner='';
+    ids.forEach(id=>{
+      const p=playerById(id);if(!p)return;
+      const color=LANE_ACCENT[LANE_KEY(p.lane)]||'#8a93a6';
+      const eloText=`${p.elo}${p.div?' '+p.div:''}${p.captain?' · ⚑':''}`;
+      inner+=tierChipHTML(p.id,escAttr(p.name),eloText,color,lane);
+    });
+    return `<div class="tier-lane-row">
+      <span class="tier-lane-tag">${(LANE_SHORT[lane]||lane).toUpperCase()}</span>
+      <div class="tier-lane-chips" data-tier="pool" data-lane="${lane}" ondragover="tierSlotDragOver(event)">${inner}</div>
+    </div>`;
   }
-  const totalM=bracket.rounds.reduce((a,r)=>a+r.matches.length,0);
-  const doneM=bracket.rounds.reduce((a,r)=>a+r.matches.filter(m=>m.winner).length,0);
-  let balHtml='';
-  if(bracket.seeded&&bracket.seeded.length){
-    balHtml=`<div class="balance-info">⚖️ <strong>Chaves balanceadas por elo</strong> — Seeds: ${bracket.seeded.map((t,i)=>`<strong>#${i+1}</strong> ${t.name} (${t.strength})`).join(' · ')}</div>`;
+  let html='<div class="tierlist-wrap">';
+  getTierOrderKeys().forEach((t,idx)=>{
+    html+=`<div class="tier-row" data-tier="${t}" ondragleave="this.classList.remove('drag-over')" ondrop="dropOnTier(event,'${t}')">
+      ${tierRowLabelHTML(t,idx,true)}
+      <div class="tier-slot" ondragover="tierSlotDragOver(event)">`;
+    order[t].forEach(id=>{ html+=chipFor(id); });
+    html+='</div></div>';
+  });
+  html+=`<div class="tier-row tier-row-grouped tier-pool" data-tier="pool" ondragleave="this.classList.remove('drag-over')" ondrop="dropOnTier(event,'pool')">
+    ${tierRowLabelHTML('pool',0,false)}
+    <div class="tier-slot tier-slot-grouped">`;
+  lanes.forEach(lane=>{ html+=laneGroupHTML(lane); });
+  html+='</div></div>';
+  html+=addTierRowButtonHTML();
+  html+='</div>';
+  return html;
+}
+function addTierRowButtonHTML(){
+  return `<button type="button" class="tier-add-btn" onclick="addTierRow()">+ Adicionar tier</button>`;
+}
+function addTierRow(){
+  const keys=getTierOrderKeys(), labels=getTierLabels();
+  let n=1,key='T'+n;
+  while(keys.includes(key)){ n++; key='T'+n; }
+  keys.push(key);
+  labels[key]='NOVO';
+  salvarEstado();renderTierList();
+}
+function removeTierRow(key){
+  const keys=getTierOrderKeys(), labels=getTierLabels();
+  if(!keys.includes(key))return;
+  const order=tierListMode==='teams'?teamTierOrder:playerTierOrder;
+  const hasItems=(order[key]||[]).length>0;
+  const msg=hasItems?'Remover este tier? Os itens dele voltam para a fila "—".':'Remover este tier?';
+  if(!confirm(msg))return;
+  setTierOrderKeys(keys.filter(k=>k!==key));
+  delete labels[key];
+  if(order[key]){
+    order.pool=(order.pool||[]).concat(order[key]);
+    if(tierListMode==='teams'){ order[key].forEach(name=>delete teamTiers[name]); }
+    else{ order[key].forEach(pid=>delete playerTiers[pid]); }
+    delete order[key];
   }
-  statusBar.innerHTML=balHtml+`<div class="status-bar"><span class="status-dot"></span><span class="status-text"><strong>${doneM}/${totalM}</strong> jogo${totalM>1?'s':''} finalizado${doneM!==1?'s':''}</span></div>`;
+  salvarEstado();renderTierList();
+}
+function setTierListMode(mode){
+  tierListMode=mode;
+  renderTierList();
+}
+function renderLaneFilters(){
+  const box=document.getElementById('tierlist-lane-filters');
+  box.innerHTML=TIERLIST_LANES.map(l=>`<button type="button" class="tierlist-lane-btn ${tierListLaneFilter===l?'active':''}" onclick="setTierListLaneFilter('${l}')">${l==='Todos'?'Todos':l}</button>`).join('');
+}
+function setTierListLaneFilter(lane){ tierListLaneFilter=lane; renderTierList(); }
+function renderTierList(){
+  document.querySelectorAll('.tierlist-mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===tierListMode));
+  document.getElementById('tierlist-lane-filters').style.display=tierListMode==='players'?'flex':'none';
+  document.getElementById('tierlist-title').textContent=tierListMode==='players'?'Tier List dos Jogadores':'Tier List dos Times';
+  document.getElementById('tierlist-desc').textContent=tierListMode==='players'?'Arraste para reordenar e para os rankings. Filtre por lane. Clique nas letras para renomear, ou adicione/remova tiers.':'Arraste para reordenar e para os rankings. Clique nas letras para renomear, ou adicione/remova tiers.';
+  renderLaneFilters();
+  const container=document.getElementById('tierlist-container');
+  if(tierListMode==='teams'){
+    const allCaps=players.filter(p=>p.captain);
+    if(!allCaps.length){
+      container.innerHTML=`<div class="empty"><div class="empty-icon">🏆</div><p>Registre capitães e finalize o draft para montar a tier list.</p></div>`;
+      return;
+    }
+    const teams=buildTeams();
+    syncTierOrder(teamTierOrder,allCaps.map(c=>c.name),teamTiers);
+    const colorByName={};
+    allCaps.forEach((cap,i)=>{ colorByName[cap.name]=TEAM_COLORS[i%TEAM_COLORS.length]; });
+    container.innerHTML=tierRowsFlatHTML(teamTierOrder,name=>{
+      const cap=allCaps.find(c=>c.name===name); if(!cap)return '';
+      const eloAvg=avgEloInfo(teams[cap.name]||[]);
+      return tierChipHTML(name,getTeamDisplayName(cap.name),eloAvg.text,colorByName[cap.name]);
+    });
+  }else{
+    if(!players.length){
+      container.innerHTML=`<div class="empty"><div class="empty-icon">🎮</div><p>Registre jogadores para montar a tier list.</p></div>`;
+      return;
+    }
+    syncTierOrder(playerTierOrder,players.map(p=>p.id),playerTiers);
+    const lane=tierListLaneFilter;
+    if(lane==='Todos'){
+      container.innerHTML=tierRowsPoolGroupedByLaneHTML(playerTierOrder,id=>players.find(pl=>String(pl.id)===String(id)));
+    }else{
+      const visibleIds=new Set(players.filter(p=>p.lane===lane).map(p=>String(p.id)));
+      container.innerHTML=tierRowsFlatHTML(playerTierOrder,id=>{
+        if(!visibleIds.has(String(id)))return '';
+        const p=players.find(pl=>String(pl.id)===String(id)); if(!p)return '';
+        const color=LANE_ACCENT[LANE_KEY(p.lane)]||'#8a93a6';
+        const eloText=`${p.elo}${p.div?' '+p.div:''} · ${LANE_SHORT[p.lane]||p.lane}${p.captain?' · ⚑':''}`;
+        return tierChipHTML(p.id,escAttr(p.name),eloText,color);
+      });
+    }
+  }
+}
+function updateTierLabel(el,key){
+  getTierLabels()[key]=el.textContent.trim()||key;
+}
+function dragTierChip(ev,id){draggingChipId=id;ev.dataTransfer.effectAllowed='move';ev.dataTransfer.setData('text/plain',id);ev.target.classList.add('dragging');}
+function dragTierEnd(ev){ev.target.classList.remove('dragging');}
+// Duplo clique num chip que já está num tier (S/A/B/C etc.) manda ele de volta pra fila "—" (pool) lá embaixo.
+function returnChipToPool(ev,id){
+  if(ev)ev.stopPropagation();
+  const order=tierListMode==='teams'?teamTierOrder:playerTierOrder;
+  const keys=getTierOrderKeys();
+  let found=null;
+  keys.forEach(k=>{ if(found)return; if((order[k]||[]).some(x=>String(x)===String(id)))found=k; });
+  if(!found)return; // já está na fila, ou não encontrado
+  const properId=tierListMode==='players'?((players.find(p=>String(p.id)===String(id))||{}).id ?? id):id;
+  order[found]=order[found].filter(x=>String(x)!==String(id));
+  order.pool=order.pool||[];
+  order.pool.push(properId);
+  if(tierListMode==='teams')delete teamTiers[id]; else delete playerTiers[properId];
+  salvarEstado();
+  renderTierList();
+}
+function dropOnTier(ev,tier){
+  ev.preventDefault();
+  ev.stopPropagation();
+  ev.currentTarget.classList.remove('drag-over');
+  const id=draggingChipId||ev.dataTransfer.getData('text/plain');
+  draggingChipId=null;
+  if(!id)return;
+  const keys=allTierKeys();
+  // Reconstrói TODAS as ordens a partir da posição atual no DOM (o dragover já moveu o chip visualmente).
+  const order=tierListMode==='teams'?teamTierOrder:playerTierOrder;
+  const newOrder={};
+  keys.forEach(k=>newOrder[k]=[]);
+  document.querySelectorAll('#tierlist-container .tier-row').forEach(row=>{
+    const t=row.dataset.tier;
+    if(!newOrder[t])return;
+    row.querySelectorAll('.tier-chip').forEach(chip=>{ newOrder[t].push(chip.dataset.id); });
+  });
+  // Reinclui, na mesma tier em que já estava, os itens filtrados/ocultos que não estavam visíveis no DOM (ex: outras lanes).
+  const allIds=(tierListMode==='teams'?players.filter(p=>p.captain).map(p=>p.name):players.map(p=>p.id)).map(String);
+  const seen=new Set(keys.flatMap(k=>newOrder[k]));
+  allIds.forEach(aid=>{
+    if(!seen.has(aid)){
+      let placed=false;
+      keys.forEach(k=>{ if(!placed && order[k] && order[k].map(String).includes(aid)){ newOrder[k].push(aid); placed=true; } });
+      if(!placed)newOrder.pool.push(aid);
+    }
+  });
+  if(tierListMode==='teams'){
+    teamTierOrder=newOrder;
+    keys.forEach(k=>{ teamTierOrder[k].forEach(name=>{ if(k==='pool')delete teamTiers[name]; else teamTiers[name]=k; }); });
+  }else{
+    // ids de jogador viram string ao passar pelo DOM; converte de volta pro tipo original quando possível
+    const norm=id2=>{ const p=players.find(pl=>String(pl.id)===String(id2)); return p?p.id:id2; };
+    keys.forEach(k=>{ newOrder[k]=newOrder[k].map(norm); });
+    playerTierOrder=newOrder;
+    keys.forEach(k=>{ playerTierOrder[k].forEach(pid=>{ if(k==='pool')delete playerTiers[pid]; else playerTiers[pid]=k; }); });
+  }
+  salvarEstado();renderTierList();
+}
 
-  const maxMatches=Math.max(...bracket.rounds.map(r=>r.matches.length));
-  const bracketMinH=maxMatches*148;
-  let html=`<div class="bracket-wrap"><div class="bracket" style="min-width:${bracket.rounds.length*260}px;min-height:${bracketMinH}px">`;
-  bracket.rounds.forEach((round,rIdx)=>{
-    const growFactor=Math.pow(2,rIdx);
-    html+=`<div class="bracket-round"><div class="round-header">${round.name}</div><div class="round-matches">`;
-    round.matches.forEach(match=>{
-      const cardClass=round.isFinal?'match-card final-match-card':'match-card';
-      const labelClass=round.isFinal?'match-label final-label':'match-label';
-      const t1tbd=!match.team1,t2tbd=!match.team2;
-      const w1=match.winner&&match.winner.id===match.team1?.id;
-      const w2=match.winner&&match.winner.id===match.team2?.id;
-      const s1=match.score1!==null?match.score1:'';
-      const s2=match.score2!==null?match.score2:'';
-      const seed1=match.seed1?`<span class="seed-badge">#${match.seed1}</span>`:'';
-      const seed2=match.seed2?`<span class="seed-badge">#${match.seed2}</span>`:'';
-      let t1Action='',t2Action='';
-      if(!match.winner){
-        if(round.isFinal){
-          if(!t1tbd)t1Action=`<button class="win-btn" onclick="md3AddScore('${match.id}',${rIdx},1)">+1</button>`;
-          if(!t2tbd)t2Action=`<button class="win-btn" onclick="md3AddScore('${match.id}',${rIdx},2)">+1</button>`;
-        } else {
-          if(!t1tbd)t1Action=`<button class="win-btn" onclick="setWinner('${match.id}',${rIdx},1)">✓ Ganhou</button>`;
-          if(!t2tbd)t2Action=`<button class="win-btn" onclick="setWinner('${match.id}',${rIdx},2)">✓ Ganhou</button>`;
-        }
-      }
-      html+=`<div class="match-wrap" style="flex-grow:${growFactor}"><div class="${cardClass}">
-        <div class="match-team ${w1?'winner':''} ${match.winner&&!w1?'loser':''}">
-          <div style="flex:1;min-width:0">
-            <div class="match-team-name ${t1tbd?'tbd-team':''}" style="display:flex;align-items:center;gap:4px">${t1tbd?'A definir':match.team1?.name||'—'}${seed1}</div>
-            <div class="match-team-cap">${t1tbd?'':match.team1?.captain||''}</div>
-          </div>
-          ${t1Action}
-          <span class="match-score ${w1?'score-w':'score-l'}">${s1}</span>
-        </div>
-        <div class="match-team ${w2?'winner':''} ${match.winner&&!w2?'loser':''}" style="border-bottom:none">
-          <div style="flex:1;min-width:0">
-            <div class="match-team-name ${t2tbd?'tbd-team':''}" style="display:flex;align-items:center;gap:4px">${t2tbd?'A definir':match.team2?.name||'—'}${seed2}</div>
-            <div class="match-team-cap">${t2tbd?'':match.team2?.captain||''}</div>
-          </div>
-          ${t2Action}
-          <span class="match-score ${w2?'score-w':'score-l'}">${s2}</span>
-        </div>
-        <div class="${labelClass}">${round.isFinal?`<span class="md3-badge">MD3 — Grande Final</span>${!match.winner?' <span style="font-size:10px;color:var(--text-muted)">Primeiro a 2 vence</span>':''}` : 'MD1'}</div>
-      </div></div>`;
+// ===== EDITAR NOMES (jogadores + times) =====
+function escAttr(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function renderEditPanel(){
+  const container=document.getElementById('edit-container');
+  if(!players.length){
+    container.innerHTML=`<div class="empty"><div class="empty-icon">✏️</div><p>Nenhum jogador registrado ainda.</p></div>`;
+    return;
+  }
+  const lanes=['Top','Jungle','Mid','ADC','Support'];
+  let html='';
+  lanes.forEach(lane=>{
+    const ps=players.filter(p=>p.lane===lane);if(!ps.length)return;
+    html+=`<div class="card" style="margin-bottom:12px"><div class="player-section-header" style="margin-bottom:10px">${laneBadge(lane)}</div>`;
+    ps.forEach(p=>{
+      const teamNameVal=p.captain?(teamNames[p.name]||''):'';
+      html+=`<div class="edit-player-row">
+        <input type="text" class="edit-name-input" value="${escAttr(p.name)}" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" onblur="applyRenamePlayer(${JSON.stringify(p.id)},this)"/>
+        <input type="text" class="edit-name-input" style="max-width:90px" placeholder="Tag (ex: BR1)" value="${escAttr(p.riotTag||'')}" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" onblur="applyRiotTag(${JSON.stringify(p.id)},this)"/>
+        <span class="elo-badge">${p.elo}${p.div?' '+p.div:''}</span>
+        ${p.captain?'<span class="captain-badge">⚑ Capitão</span>':''}
+        ${p.captain?`<input type="text" class="edit-teamname-input" placeholder="Nome do time (ex: Os Brabos)" value="${escAttr(teamNameVal)}" oninput="setTeamNameByCapId(${JSON.stringify(p.id)},this.value)"/>`:''}
+      </div>`;
     });
     html+='</div>';
-    if(rIdx<bracket.rounds.length-1){
-      const N=round.matches.length;
-      for(let i=0;i<N;i+=2){
-        const top=(i+0.5)/N*100;
-        const bottom=(i+1.5)/N*100;
-        html+=`<div class="bracket-connector" style="top:${top}%;height:${bottom-top}%"></div>`;
-      }
-    }
-    html+='</div>';
   });
-  html+='</div></div>';
   container.innerHTML=html;
-
-  const finalRound=bracket.rounds[bracket.rounds.length-1];
-  const finalMatch=finalRound.matches[0];
-  if(finalMatch?.winner){
-    champContainer.innerHTML=`<div class="champion-display"><div class="champ-trophy">🏆</div><div class="champ-title">Campeã da Copa LoL</div><div class="champ-name">${finalMatch.winner.name}</div><div style="font-size:13px;color:var(--text-muted);margin-top:6px">Capitão: ${finalMatch.winner.captain}</div></div>`;
-  } else {
-    champContainer.innerHTML='';
+}
+function applyRiotTag(id,inputEl){
+  const p=players.find(x=>x.id==id);
+  if(!p)return;
+  p.riotTag=inputEl.value.trim().replace(/^#/,'');
+  salvarEstado();
+  toast('Tag atualizada!');
+}
+function applyRenamePlayer(id,inputEl){
+  const p=players.find(x=>x.id==id);
+  if(!p)return;
+  const newName=inputEl.value.trim();
+  if(!newName){inputEl.value=p.name;return;}
+  if(newName===p.name)return;
+  const dup=players.find(x=>x.id!=id&&x.name.toLowerCase()===newName.toLowerCase());
+  if(dup){alert('Já existe um jogador com esse nick!');inputEl.value=p.name;return;}
+  const oldName=p.name;
+  p.name=newName;
+  if(p.captain){
+    draftOrder.forEach(item=>{
+      if(item.cap&&item.cap.id==id)item.cap.name=newName;
+      if(item.team===oldName)item.team=newName;
+    });
+    Object.values(draftPicks).forEach(info=>{
+      if(info.pickedBy===oldName)info.pickedBy=newName;
+      if(info.team===oldName)info.team=newName;
+    });
+    if(teamNames[oldName]!==undefined){teamNames[newName]=teamNames[oldName];delete teamNames[oldName];}
+    if(teamTiers[oldName]!==undefined){teamTiers[newName]=teamTiers[oldName];delete teamTiers[oldName];}
+    allTierKeys().forEach(k=>{ if(teamTierOrder[k])teamTierOrder[k]=teamTierOrder[k].map(n=>n===oldName?newName:n); });
   }
+  salvarEstado();
+  renderPlayers();renderCaptains();renderEditPanel();
+  toast('Nick atualizado para "'+newName+'"!');
 }
 
 // Init
-carregarEstado();renderPlayers();if(bracket)renderBracket();
+carregarEstado();renderPlayers();
 </script>
 
 <footer style="text-align:center;padding:1.5rem;margin-top:2rem;border-top:1px solid rgba(200,155,60,0.15);font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.15em;color:var(--text-muted);">
