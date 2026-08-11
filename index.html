@@ -359,6 +359,17 @@ select option{background:var(--surface2)}
 .reveal-ghost.pulsing{animation:revealPulse 1.1s ease-in-out infinite}
 .reveal-skip-btn{position:fixed;bottom:36px;left:50%;transform:translateX(-50%);z-index:603}
 
+/* ===== ORDER DRAW CINEMATIC (sorteio da ordem do draft) ===== */
+.order-reveal-slots{position:fixed;top:16%;left:50%;transform:translateX(-50%);display:flex;gap:12px;z-index:602;pointer-events:none;flex-wrap:wrap;justify-content:center;max-width:90vw}
+.order-reveal-slot{width:76px;height:76px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:translateY(10px) scale(.8);transition:opacity .35s ease,transform .35s cubic-bezier(.22,1,.36,1),border-color .35s ease}
+.order-reveal-slot.show{opacity:1;transform:translateY(0) scale(1)}
+.order-reveal-slot .ors-num{font-family:'Bebas Neue',sans-serif;font-size:20px;line-height:1}
+.order-reveal-slot .ors-name{font-size:9.5px;font-weight:700;margin-top:3px;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+.order-reveal-ghost{position:fixed;z-index:601;left:50%;top:50%;transform:translate(-50%,-50%) scale(.55);opacity:0;border-radius:16px;padding:1.75rem 2.5rem;background:var(--surface);border:2px solid;text-align:center;box-shadow:0 40px 110px rgba(0,0,0,.65),0 16px 50px rgba(0,0,0,.55);transition:opacity .3s ease,transform .3s cubic-bezier(.22,1,.36,1),left .45s cubic-bezier(.22,1,.36,1),top .45s cubic-bezier(.22,1,.36,1)}
+.order-reveal-ghost .org-label{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
+.order-reveal-ghost .org-pos{font-family:'Bebas Neue',sans-serif;font-size:46px;line-height:1}
+.order-reveal-ghost .org-name{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;margin-top:6px;white-space:nowrap}
+
 /* ===== TEAM VIEW MODAL (click a team to open it big) ===== */
 .team-view-box{max-width:440px;padding:2.5rem 1.25rem 1.25rem;position:relative}
 .team-view-close{position:absolute;top:12px;right:12px;z-index:5}
@@ -823,7 +834,84 @@ function renderCaptains(){
 }
 
 // ===== ORDER =====
-function sortearOrdem(){
+function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+let revealSkipRequested=false;
+function skipRevealAnimation(){revealSkipRequested=true;}
+
+async function runOrderReveal(shuffled){
+  const overlay=document.getElementById('reveal-overlay');
+  if(!overlay)return;
+  revealSkipRequested=false;
+  overlay.classList.add('show');
+
+  let slotsRow=document.getElementById('order-reveal-slots');
+  if(slotsRow)slotsRow.remove();
+  slotsRow=document.createElement('div');
+  slotsRow.id='order-reveal-slots';
+  slotsRow.className='order-reveal-slots';
+  document.body.appendChild(slotsRow);
+  shuffled.forEach(()=>{const s=document.createElement('div');s.className='order-reveal-slot';slotsRow.appendChild(s);});
+
+  const capColorIdx=cap=>{
+    const idx=players.filter(p=>p.captain).findIndex(c=>c.name===cap.name);
+    return TEAM_COLORS[idx>=0?idx%TEAM_COLORS.length:0];
+  };
+  const settleSlot=(i,cap)=>{
+    const color=capColorIdx(cap);
+    const slotEl=slotsRow.children[i];
+    if(!slotEl)return;
+    slotEl.innerHTML=`<div class="ors-num" style="color:${color}">${i+1}º</div><div class="ors-name">${cap.name}</div>`;
+    slotEl.style.borderColor=color;
+    slotEl.classList.add('show');
+  };
+
+  await delay(120);
+
+  for(let i=0;i<shuffled.length;i++){
+    if(revealSkipRequested)break;
+    const cap=shuffled[i];
+    const color=capColorIdx(cap);
+
+    const ghost=document.createElement('div');
+    ghost.className='order-reveal-ghost';
+    ghost.style.borderColor=color;
+    ghost.innerHTML=`<div class="org-label">Posição</div><div class="org-pos" style="color:${color}">${i+1}º</div><div class="org-name" style="color:${color}">${getTeamDisplayName(cap.name)}</div>`;
+    document.body.appendChild(ghost);
+
+    await delay(20);
+    if(revealSkipRequested){ghost.remove();break;}
+    ghost.style.opacity='1';
+    ghost.style.transform='translate(-50%,-50%) scale(1)';
+
+    await delay(1480);
+    if(revealSkipRequested){ghost.remove();break;}
+
+    const slotEl=slotsRow.children[i];
+    const slotRect=slotEl.getBoundingClientRect();
+    ghost.style.left=(slotRect.left+slotRect.width/2)+'px';
+    ghost.style.top=(slotRect.top+slotRect.height/2)+'px';
+    ghost.style.transform='translate(-50%,-50%) scale(0.26)';
+    ghost.style.opacity='0.12';
+
+    await delay(300);
+    ghost.remove();
+    settleSlot(i,cap);
+
+    await delay(90);
+  }
+
+  // se pulado no meio, preenche o resto instantaneamente
+  for(let i=0;i<shuffled.length;i++){
+    if(!slotsRow.children[i].classList.contains('show'))settleSlot(i,shuffled[i]);
+  }
+
+  await delay(revealSkipRequested?150:550);
+  document.querySelectorAll('.order-reveal-ghost').forEach(g=>g.remove());
+  overlay.classList.remove('show');
+  slotsRow.remove();
+}
+
+async function sortearOrdem(){
   const caps=players.filter(p=>p.captain);
   if(caps.length<2){alert('Selecione ao menos 2 capitães!');return;}
   const nCaps=caps.length;
@@ -832,6 +920,9 @@ function sortearOrdem(){
   if(faltando.length>0){
     alert(`Cada lane precisa ter pelo menos ${nCaps} jogador(es) (1 por time). Faltam jogadores na(s) lane(s): ${faltando.join(', ')}.`);return;
   }
+  const sortBtn=document.querySelector('#panel-order .btn-gold');
+  if(sortBtn)sortBtn.disabled=true;
+
   const shuffled=[...caps].sort(()=>Math.random()-0.5);
   const nonCaps=players.filter(p=>!p.captain).length;
   draftOrder=[];draftPicks={};currentPickIdx=0;
@@ -843,6 +934,11 @@ function sortearOrdem(){
     }
     forward=!forward;
   }
+
+  document.getElementById('order-list-container').innerHTML='';
+  await runOrderReveal(shuffled);
+
+  if(sortBtn)sortBtn.disabled=false;
   renderOrderList();salvarEstado();
 }
 
@@ -1034,11 +1130,7 @@ function renderDraftDone(skipAnimation){
   runCinematicReveal(allCaps);
 }
 
-function delay(ms){return new Promise(r=>setTimeout(r,ms));}
-
 // ===== STOP / SKIP APRESENTAÇÃO =====
-let revealSkipRequested=false;
-function skipRevealAnimation(){revealSkipRequested=true;}
 
 // ===== ABRIR TIME EM DESTAQUE (igual apresentação) =====
 function openTeamShowcase(idx){
