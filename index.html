@@ -185,7 +185,7 @@ select option{background:var(--surface2)}
 .draft-live-row{display:flex;gap:1rem;align-items:flex-start}
 .draft-live-row .draft-main{flex:1}
 
-.current-team-panel{width:300px;flex-shrink:0;position:sticky;top:72px;background:linear-gradient(160deg,var(--surface),var(--surface2));border:1px solid var(--border-gold);border-radius:14px;padding:1.1rem 1.15rem;box-shadow:0 20px 50px rgba(0,0,0,.4),0 0 0 1px rgba(212,175,55,.08) inset;animation:ctpEnter .4s cubic-bezier(.22,1,.36,1)}
+.current-team-panel{width:300px;flex-shrink:0;background:linear-gradient(160deg,var(--surface),var(--surface2));border:1px solid var(--border-gold);border-radius:14px;padding:1.1rem 1.15rem;box-shadow:0 20px 50px rgba(0,0,0,.4),0 0 0 1px rgba(212,175,55,.08) inset;animation:ctpEnter .4s cubic-bezier(.22,1,.36,1)}
 .current-team-panel.hide{display:none}
 @keyframes ctpEnter{from{opacity:0;transform:translateX(14px) scale(.97)}to{opacity:1;transform:translateX(0) scale(1)}}
 .current-team-panel.closing{animation:ctpExit .26s ease forwards}
@@ -217,7 +217,7 @@ select option{background:var(--surface2)}
 .sidebar-team .lane-badge{font-size:10.5px;padding:2px 8px}
 @media(max-width:1100px){
   .draft-live-row{flex-direction:column}
-  .current-team-panel{width:100%;position:static}
+  .current-team-panel{width:100%}
 }
 @media(max-width:480px){
   .sidebar-teams-grid{grid-template-columns:1fr}
@@ -320,7 +320,7 @@ select option{background:var(--surface2)}
 }
 .card:hover,
 .team-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 25px 60px rgba(0,0,0,.7),0 0 25px rgba(212,175,55,.25),0 0 34px var(--tier-glow)}
-.team-card-glow{position:absolute;inset:0;border-radius:16px;pointer-events:none;opacity:0;transition:opacity .3s}
+.team-card-glow{position:absolute;inset:0;border-radius:16px;pointer-events:none;opacity:0;transition:opacity .3s;box-shadow:inset 0 0 40px rgba(212,175,55,.10)}
 .team-card:hover .team-card-glow{opacity:1}
 .team-card::after{
   content:'';
@@ -347,17 +347,18 @@ select option{background:var(--surface2)}
 .team-card.tier-challenger{--tier-border:linear-gradient(135deg,#48c2e0,#fff3a3,#ff9ee2,#48c2e0);--tier-glow:rgba(255,243,163,.45)}
 
 .team-card-header{padding:16px 18px 14px;position:relative;border-bottom:1px solid var(--border)}
-.team-card-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0}
-.team-card-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.05em;line-height:1;margin-bottom:4px}
+.team-card-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0;background:linear-gradient(to right,transparent,var(--gold),transparent)}
+.team-card-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.05em;line-height:1;margin-bottom:4px;color:var(--gold-light);text-shadow:0 0 14px rgba(212,175,55,.25)}
 .team-card-cap-row{display:flex;align-items:center;gap:6px;margin-top:6px}
 .team-card-cap-label{font-size:10px;letter-spacing:0.1em;color:var(--text-muted);text-transform:uppercase;font-weight:600}
+.team-card-cap-name{font-size:12px;font-weight:600;color:var(--gold)}
 
 .team-strength-row{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
 .team-strength-label{font-size:10px;color:var(--text-muted);letter-spacing:0.06em;text-transform:uppercase}
 .team-strength-val{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:5px}
 .team-strength-val .tier-emblem{font-size:13px}
 .team-strength-track{height:3px;background:var(--border);border-radius:2px;margin-top:5px;overflow:hidden}
-.team-strength-fill{height:100%;border-radius:2px;transition:width .6s ease}
+.team-strength-fill{height:100%;border-radius:2px;transition:width .6s ease;background:linear-gradient(to right,var(--gold-dark),var(--gold))}
 
 .team-roster{padding:0}
 .roster-row{display:grid;grid-template-columns:auto 20px minmax(0,1fr) auto;align-items:center;column-gap:9px;padding:9px 14px;border-bottom:1px solid var(--border);transition:background .15s}
@@ -367,7 +368,7 @@ select option{background:var(--surface2)}
 .roster-row.is-captain:hover{background:rgba(201,168,76,0.08)}
 .roster-icon{font-size:14px;text-align:center;line-height:1}
 .roster-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left;min-width:0}
-.roster-name.cap-name{font-weight:700}
+.roster-name.cap-name{font-weight:700;color:var(--gold)}
 .roster-lane{justify-self:start}
 .roster-elo{font-size:10px;color:var(--text-muted);justify-self:end;white-space:nowrap}
 
@@ -380,7 +381,7 @@ select option{background:var(--surface2)}
 .modal-sub{font-size:13px;color:var(--text-muted);margin-bottom:1.5rem}
 .modal-team-row{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
 .modal-team-label{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
-.modal-team-cap{font-size:13px;font-weight:600;margin-bottom:8px}
+.modal-team-cap{font-size:13px;font-weight:600;margin-bottom:8px;color:var(--gold)}
 .modal-team-input{width:100%;background:var(--surface3);border:1px solid var(--border);border-radius:7px;padding:8px 12px;font-size:14px;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:border-color .15s}
 .modal-team-input:focus{border-color:var(--gold-dim)}
 
@@ -628,8 +629,6 @@ function avgEloInfo(members){
 }
 
 // Team accent colors
-const TEAM_COLORS=['#7ab8f5','#f07a7a','#5DCAA5','#AFA9EC','#f0c07a','#f07eb0'];
-const TEAM_GLOWS=['rgba(122,184,245,0.12)','rgba(240,122,122,0.12)','rgba(93,202,165,0.12)','rgba(175,169,236,0.12)','rgba(240,192,122,0.12)','rgba(240,126,176,0.12)'];
 
 // ===== STATE =====
 let players=[], draftOrder=[], draftPicks={}, currentPickIdx=0, teamNames={}, revealPlayed=false, teamTiers={};
@@ -1109,8 +1108,6 @@ function fallbackCopy(text,done){
 }
 
 function teamCardHTML(cap,i,teams,statusFlags){
-  const color=TEAM_COLORS[i%TEAM_COLORS.length];
-  const glow=TEAM_GLOWS[i%TEAM_GLOWS.length];
   const members=sortByLane(teams[cap.name]||[]);
   const displayName=getTeamDisplayName(cap.name);
   const strength=teamStrength(members);
@@ -1119,20 +1116,20 @@ function teamCardHTML(cap,i,teams,statusFlags){
   const firstPickId=getFirstPickId(cap.name);
   const flags=statusFlags||{};
 
-  let html=`<div class="team-card-glow" style="box-shadow:inset 0 0 40px ${glow}"></div>
+  let html=`<div class="team-card-glow"></div>
     <div class="team-card-header">
-      <div class="team-card-accent" style="background:linear-gradient(to right,transparent,${color},transparent)"></div>
-      <div class="team-card-name" style="color:${color}">${displayName}</div>
+      <div class="team-card-accent"></div>
+      <div class="team-card-name">${displayName}</div>
       <div class="team-card-cap-row">
         <span style="font-size:14px"><i class="fa-solid fa-star"></i></span>
         <span class="team-card-cap-label">Capitão:</span>
-        <span style="font-size:12px;font-weight:600;color:${color}">${cap.name}</span>
+        <span class="team-card-cap-name">${cap.name}</span>
       </div>
       <div class="team-strength-row">
         <span class="team-strength-label">Elo médio</span>
         <span class="team-strength-val" style="color:${eloAvg.color}">${eloAvg.text}</span>
       </div>
-      <div class="team-strength-track"><div class="team-strength-fill" style="width:${pct}%;background:linear-gradient(to right,${color}88,${color})"></div></div>
+      <div class="team-strength-track"><div class="team-strength-fill" style="width:${pct}%"></div></div>
     </div>
     <div class="team-roster">`;
 
@@ -1142,7 +1139,7 @@ function teamCardHTML(cap,i,teams,statusFlags){
     html+=`<div class="roster-row ${isCap?'is-captain':''} ${isFirstPick?'is-first-pick':''}">
       <span class="roster-lane">${laneBadge(m.lane)}</span>
       <span class="roster-icon">${isCap?'<i class="fa-solid fa-star"></i>':(isFirstPick?'<span class="first-pick-num">1</span>':'')}</span>
-      <span class="roster-name ${isCap?'cap-name':''}" style="${isCap?`color:${color}`:''}">${m.name}</span>
+      <span class="roster-name ${isCap?'cap-name':''}">${m.name}</span>
       <span class="roster-elo">${m.elo}${m.div?' '+m.div:''}</span>
     </div>`;
   });
@@ -1258,10 +1255,8 @@ async function runCinematicReveal(allCaps){
     if(revealSkipRequested)break;
     const realCard=cards[i];
     const cap=allCaps[i];
-    const color=TEAM_COLORS[i%TEAM_COLORS.length];
-
     captionTitle.textContent=getTeamDisplayName(cap.name);
-    captionTitle.style.color=color;
+    captionTitle.style.color='var(--gold-light)';
     caption.classList.add('show');
 
     // build ghost centered on screen, big (ancorado no flex do overlay pra nunca "pular")
@@ -1528,8 +1523,7 @@ function abrirModalNomesTime(){
   const allCaps=players.filter(p=>p.captain);
   let html='';
   allCaps.forEach((cap,i)=>{
-    const color=TEAM_COLORS[i%TEAM_COLORS.length];
-    html+=`<div class="modal-team-row"><div class="modal-team-label">Time do capitão</div><div class="modal-team-cap" style="color:${color}"><i class="fa-solid fa-star"></i> ${cap.name}</div><input class="modal-team-input" id="tn-${i}" placeholder="Nome do time (ex: Os Brabos, Team Flash...)" value="${teamNames[cap.name]||''}"/></div>`;
+    html+=`<div class="modal-team-row"><div class="modal-team-label">Time do capitão</div><div class="modal-team-cap"><i class="fa-solid fa-star"></i> ${cap.name}</div><input class="modal-team-input" id="tn-${i}" placeholder="Nome do time (ex: Os Brabos, Team Flash...)" value="${teamNames[cap.name]||''}"/></div>`;
   });
   document.getElementById('modal-teams-list').innerHTML=html;
   document.getElementById('team-name-modal').style.display='flex';
@@ -1718,12 +1712,10 @@ function renderTierList(){
     }
     const teams=buildTeams();
     syncTierOrder(teamTierOrder,allCaps.map(c=>c.name),teamTiers);
-    const colorByName={};
-    allCaps.forEach((cap,i)=>{ colorByName[cap.name]=TEAM_COLORS[i%TEAM_COLORS.length]; });
     container.innerHTML=tierRowsFlatHTML(teamTierOrder,name=>{
       const cap=allCaps.find(c=>c.name===name); if(!cap)return '';
       const eloAvg=avgEloInfo(teams[cap.name]||[]);
-      return tierChipHTML(name,getTeamDisplayName(cap.name),eloAvg.text,colorByName[cap.name]);
+      return tierChipHTML(name,getTeamDisplayName(cap.name),eloAvg.text,'var(--gold)');
     });
   }else{
     if(!players.length){
