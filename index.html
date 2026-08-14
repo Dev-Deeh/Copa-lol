@@ -1224,19 +1224,18 @@ async function runCinematicReveal(allCaps){
     captionTitle.style.color=color;
     caption.classList.add('show');
 
-    // build ghost centered on screen, big
+    // build ghost centered on screen, big (ancorado no flex do overlay pra nunca "pular")
     const ghost=document.createElement('div');
     ghost.className='reveal-ghost team-card pulsing';
     realCard.classList.forEach(c=>{ if(c!=='team-card') ghost.classList.add(c); });
     ghost.innerHTML=realCard.innerHTML;
     const gw=Math.min(400,window.innerWidth*0.86);
+    ghost.style.position='relative';
     ghost.style.width=gw+'px';
-    ghost.style.left='50%';
-    ghost.style.top='50%';
-    ghost.style.transform='translate(-50%,-50%) scale(0.7)';
+    ghost.style.transform='scale(0.7)';
     ghost.style.opacity='0';
     ghost.style.transition='opacity .5s ease, transform .5s cubic-bezier(.22,1,.36,1)';
-    document.body.appendChild(ghost);
+    overlay.appendChild(ghost);
     fitRosterNames(ghost);
 
     await delay(30);
@@ -1250,7 +1249,7 @@ async function runCinematicReveal(allCaps){
     ],{duration:400});
 
     ghost.style.opacity='1';
-    ghost.style.transform='translate(-50%,-50%) scale(1)';
+    ghost.style.transform='scale(1)';
 
     await delay(1700); // hold, "preenche a tela" (mais tempo)
     if(revealSkipRequested){ghost.remove();break;}
@@ -1258,14 +1257,24 @@ async function runCinematicReveal(allCaps){
     ghost.classList.remove('pulsing');
     caption.classList.remove('show');
 
-    // measure destination (real grid slot)
+    // measure onde o ghost está agora (centralizado pelo flex) antes de soltá-lo do overlay
+    const ghostRect=ghost.getBoundingClientRect();
     const rect=realCard.getBoundingClientRect();
+    ghost.style.position='fixed';
+    ghost.style.left=ghostRect.left+'px';
+    ghost.style.top=ghostRect.top+'px';
+    ghost.style.width=ghostRect.width+'px';
+    ghost.style.height=ghostRect.height+'px';
+    ghost.style.margin='0';
+    ghost.style.transform='none';
+    document.body.appendChild(ghost); // sai do flex, mantém a posição visual atual
+    void ghost.offsetWidth; // força reflow pra travar o ponto de partida antes da transição
+
     ghost.style.transition='all .8s cubic-bezier(.22,1,.36,1)';
     ghost.style.left=rect.left+'px';
     ghost.style.top=rect.top+'px';
     ghost.style.width=rect.width+'px';
     ghost.style.height=rect.height+'px';
-    ghost.style.transform='none';
 
     await delay(830);
 
