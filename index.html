@@ -59,6 +59,7 @@ select option{background:var(--surface2)}
 .btn-outline{background:transparent;color:var(--text-muted);border:1px solid var(--border)}.btn-outline:hover{border-color:var(--text-muted);color:var(--text)}
 .btn-danger{background:rgba(224,82,82,0.12);color:var(--red);border:1px solid rgba(224,82,82,0.2)}.btn-danger:hover{background:rgba(224,82,82,0.2)}
 .btn-sm{padding:5px 12px;font-size:12px;border-radius:6px}
+.btn-icon{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border-radius:7px;font-size:14px;flex-shrink:0}
 
 .lane-top{background:rgba(55,138,221,0.12);color:#7ab8f5;border:1px solid rgba(55,138,221,0.2)}
 .lane-jungle{background:rgba(29,158,117,0.12);color:#5DCAA5;border:1px solid rgba(29,158,117,0.2)}
@@ -158,6 +159,13 @@ select option{background:var(--surface2)}
 .edit-teamname-input{width:220px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--gold);font-size:12.5px;font-family:inherit;transition:border-color .15s}
 .edit-teamname-input:focus{outline:none;border-color:var(--gold-dim);background:var(--surface3)}
 .edit-teamname-input::placeholder{color:var(--text-muted)}
+.edit-elo-select{width:120px;flex-shrink:0;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:7px 8px;color:var(--text);font-size:12.5px;font-family:inherit;transition:border-color .15s}
+.edit-elo-select:focus{outline:none;border-color:var(--gold-dim)}
+.edit-div-select{width:64px;flex-shrink:0;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:7px 6px;color:var(--text);font-size:12.5px;font-family:inherit;transition:border-color .15s}
+.edit-div-select:focus{outline:none;border-color:var(--gold-dim)}
+.edit-div-select:disabled{opacity:.35;cursor:not-allowed}
+.opgg-link-btn{color:var(--text-muted);border:1px solid var(--border);text-decoration:none}
+.opgg-link-btn:hover{color:var(--gold);border-color:var(--gold-dim)}
 
 /* ===== TIER LIST ===== */
 .tierlist-wrap{display:flex;flex-direction:column;gap:10px}
@@ -477,7 +485,7 @@ select option{background:var(--surface2)}
 
 <!-- EDITAR NOMES -->
 <div id="panel-edit" class="panel">
-  <div class="section-head"><h2>Editar Nomes</h2><p>Altere o nick de qualquer jogador/capitão e o nome de exibição dos times. Tudo se atualiza automaticamente no draft, nos times e na tier list.</p></div>
+  <div class="section-head"><h2>Editar Nomes</h2><p>Altere o nick, tag, elo e o nome de exibição dos times. Tudo se atualiza automaticamente no draft, nos times e na tier list.</p></div>
   <div id="edit-container"></div>
 </div>
 
@@ -621,6 +629,13 @@ const LANE_ACCENT={top:'#7ab8f5',jungle:'#5DCAA5',mid:'#f07eb0',adc:'#E2C97A',su
 function laneBadge(l){return `<span class="lane-badge lane-${LANE_KEY(l)}">${LANE_SHORT[l]||l}</span>`}
 function laneHeaderClass(l){return `lh-${LANE_KEY(l)}`}
 function getTeamDisplayName(capName){return teamNames[capName]||capName;}
+
+// ===== OP.GG =====
+function opggUrl(name,tag){
+  const t=(tag||'BR1').trim().replace(/^#/,'')||'BR1';
+  const q=encodeURIComponent(`${name} #${t}`);
+  return `https://op.gg/pt/lol/summoners/search?q=${q}&region=br`;
+}
 
 const LANE_ORDER={Top:1,Jungle:2,Mid:3,ADC:4,Support:5};
 function sortByLane(arr){
@@ -790,7 +805,7 @@ function renderPlayers(){
   lanes.forEach(lane=>{
     const ps=players.filter(p=>p.lane===lane);if(!ps.length)return;
     html+=`<div class="player-section"><div class="player-section-header">${laneBadge(lane)}<span style="font-size:12px;color:var(--text-muted)">${ps.length} jogador${ps.length>1?'es':''}</span></div>`;
-    ps.forEach(p=>{html+=`<div class="player-row"><span class="player-name">${p.name}</span><span class="elo-badge">${p.elo}${p.div?' '+p.div:''}</span>${p.captain?'<span class="captain-badge">⚑ Capitão</span>':''}<span class="player-champs">${p.champs||'—'}</span><div class="player-actions"><button class="btn btn-danger btn-sm" onclick="removePlayer(${JSON.stringify(p.id)})">Remover</button></div></div>`;});
+    ps.forEach(p=>{html+=`<div class="player-row"><span class="player-name">${p.name}</span><span class="elo-badge">${p.elo}${p.div?' '+p.div:''}</span>${p.captain?'<span class="captain-badge">⚑ Capitão</span>':''}<span class="player-champs">${p.champs||'—'}</span><div class="player-actions"><a class="btn btn-outline btn-sm btn-icon opgg-link-btn" href="${opggUrl(p.name,p.riotTag)}" target="_blank" rel="noopener" title="Consultar ${p.name}#${p.riotTag||'BR1'} no OP.GG" onclick="event.stopPropagation()">🔍</a><button class="btn btn-danger btn-sm" onclick="removePlayer(${JSON.stringify(p.id)})">Remover</button></div></div>`;});
     html+='</div>';
   });
   if(!html)html=`<div class="empty"><div class="empty-icon">🎮</div><p>Nenhum jogador registrado ainda.</p></div>`;
@@ -1652,6 +1667,35 @@ function dropOnTier(ev,tier){
 
 // ===== EDITAR NOMES (jogadores + times) =====
 function escAttr(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function eloSelectHTML(p){
+  const elos=Object.keys(ELO_VALUES);
+  const opts=elos.map(e=>`<option value="${e}" ${p.elo===e?'selected':''}>${e}</option>`).join('');
+  return `<select class="edit-elo-select" onchange="applyEditElo(${JSON.stringify(p.id)},this.value)">${opts}</select>`;
+}
+function divSelectHTML(p){
+  const divs=['IV','III','II','I'];
+  const disabled=NO_DIV_ELOS.has(p.elo);
+  const opts=divs.map(d=>`<option value="${d}" ${p.div===d?'selected':''}>${d}</option>`).join('');
+  return `<select class="edit-div-select" ${disabled?'disabled':''} onchange="applyEditDiv(${JSON.stringify(p.id)},this.value)">${opts}</select>`;
+}
+function applyEditElo(id,val){
+  const p=players.find(x=>x.id==id);
+  if(!p)return;
+  p.elo=val;
+  if(NO_DIV_ELOS.has(val)){p.div='';}
+  else if(!p.div){p.div='IV';}
+  salvarEstado();
+  renderEditPanel();renderPlayers();
+  toast('Elo de '+p.name+' atualizado!');
+}
+function applyEditDiv(id,val){
+  const p=players.find(x=>x.id==id);
+  if(!p)return;
+  p.div=val;
+  salvarEstado();
+  renderPlayers();
+  toast('Divisão de '+p.name+' atualizada!');
+}
 function renderEditPanel(){
   const container=document.getElementById('edit-container');
   if(!players.length){
@@ -1668,7 +1712,9 @@ function renderEditPanel(){
       html+=`<div class="edit-player-row">
         <input type="text" class="edit-name-input" value="${escAttr(p.name)}" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" onblur="applyRenamePlayer(${JSON.stringify(p.id)},this)"/>
         <input type="text" class="edit-name-input" style="max-width:90px" placeholder="Tag (ex: BR1)" value="${escAttr(p.riotTag||'')}" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" onblur="applyRiotTag(${JSON.stringify(p.id)},this)"/>
-        <span class="elo-badge">${p.elo}${p.div?' '+p.div:''}</span>
+        ${eloSelectHTML(p)}
+        ${divSelectHTML(p)}
+        <a class="btn btn-outline btn-sm btn-icon opgg-link-btn" href="${opggUrl(p.name,p.riotTag)}" target="_blank" rel="noopener" title="Consultar ${escAttr(p.name)}#${escAttr(p.riotTag||'BR1')} no OP.GG">🔍</a>
         ${p.captain?'<span class="captain-badge">⚑ Capitão</span>':''}
         ${p.captain?`<input type="text" class="edit-teamname-input" placeholder="Nome do time (ex: Os Brabos)" value="${escAttr(teamNameVal)}" oninput="setTeamNameByCapId(${JSON.stringify(p.id)},this.value)"/>`:''}
       </div>`;
@@ -1682,6 +1728,7 @@ function applyRiotTag(id,inputEl){
   if(!p)return;
   p.riotTag=inputEl.value.trim().replace(/^#/,'');
   salvarEstado();
+  renderEditPanel();
   toast('Tag atualizada!');
 }
 function applyRenamePlayer(id,inputEl){
