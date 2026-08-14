@@ -201,6 +201,8 @@ select option{background:var(--surface2)}
 .ctp-pick:last-child{border-bottom:none}
 .ctp-pick.ctp-filled .ctp-pick-name{color:var(--text);font-weight:700}
 .ctp-pick-name{font-style:italic;color:var(--text-muted);font-size:12.5px}
+.ctp-pick-right{display:flex;align-items:center;gap:7px}
+.ctp-pick-elo{font-size:10.5px;font-weight:600;color:var(--gold-light);letter-spacing:.02em;white-space:nowrap}
 
 /* full-width "Times" tab */
 .draft-teams-full{display:none}
@@ -211,6 +213,7 @@ select option{background:var(--surface2)}
 .sidebar-team .dt-title{font-size:13.5px;margin-bottom:8px}
 .sidebar-team .dt-pick{padding:6px 0;font-size:13.5px;line-height:1.35}
 .sidebar-team .dt-pick-right{font-size:11px}
+.dt-pick-elo{font-size:11px;font-weight:600;color:var(--gold-light);letter-spacing:.02em;white-space:nowrap}
 .sidebar-team .lane-badge{font-size:10.5px;padding:2px 8px}
 @media(max-width:1100px){
   .draft-live-row{flex-direction:column}
@@ -1407,7 +1410,7 @@ function renderDraft(){
   lanes.forEach(lane=>{
     const m=curMembers.find(x=>x.lane===lane);
     if(m){
-      html+=`<div class="ctp-pick ctp-filled"><span class="ctp-pick-name">${m.name}${m.captain?' <span style="font-size:10px;color:var(--gold)">(cap)</span>':''}</span>${laneBadge(m.lane)}</div>`;
+      html+=`<div class="ctp-pick ctp-filled"><span class="ctp-pick-name">${m.name}${m.captain?' <span style="font-size:10px;color:var(--gold)">(cap)</span>':''}</span><div class="ctp-pick-right"><span class="ctp-pick-elo">${m.elo}</span>${laneBadge(m.lane)}</div></div>`;
     }else{
       html+=`<div class="ctp-pick"><span class="ctp-pick-name">Vazio</span>${laneBadge(lane)}</div>`;
     }
@@ -1426,7 +1429,7 @@ function renderDraft(){
     ALL_LANES.forEach(lane=>{
       const m=members.find(x=>x.lane===lane);
       if(m){
-        html+=`<div class="dt-pick"><span>${m.name}${m.captain?' <span style="font-size:10px;color:var(--gold)">(cap)</span>':''}</span><div class="dt-pick-right">${laneBadge(m.lane)}</div></div>`;
+        html+=`<div class="dt-pick"><span>${m.name}${m.captain?' <span style="font-size:10px;color:var(--gold)">(cap)</span>':''}</span><div class="dt-pick-right"><span class="dt-pick-elo">${m.elo}</span>${laneBadge(m.lane)}</div></div>`;
       }else{
         html+=`<div class="dt-pick" style="opacity:0.35"><span style="font-style:italic">Vazio</span><div class="dt-pick-right">${laneBadge(lane)}</div></div>`;
       }
