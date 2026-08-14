@@ -6,20 +6,48 @@
 <title>Copa LoL</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
 <style>
 :root{
-  --bg:#0B0F1C;--surface:#131929;--surface2:#1A2238;--surface3:#212d45;
-  --gold:#C9A84C;--gold-light:#E2C97A;--gold-dim:#7a6430;
-  --teal:#5DCAA5;--teal-dim:#2a6b56;
-  --text:#E8EAED;--text-muted:#7a8499;--text-dim:#3d4a62;
-  --red:#E05252;--border:#232e47;--border-gold:rgba(201,168,76,0.25);
+  --bg:#050505;--surface:#0B0B0B;--surface2:#121212;--surface3:#1A1A1A;
+  --gold:#D4AF37;--gold-light:#F8E28A;--gold-dark:#8B6A1E;
+  --silver:#D7DCE2;--silver-dark:#AEB6C2;
+  --text:#F5F5F5;--text-muted:#8B8B8B;
+  --border:rgba(255,255,255,.08);--border-gold:rgba(212,175,55,.25);
+  /* aliases kept for compatibility with the rest of the stylesheet */
+  --gold-dim:var(--gold-dark);--text-dim:#4A4A4A;
+  --teal:#5DCAA5;--teal-dim:#2a6b56;--red:#E05252;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden;position:relative}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(212,175,55,.08), transparent 30%),
+    radial-gradient(circle at 80% 40%, rgba(255,255,255,.03), transparent 25%),
+    radial-gradient(circle at 50% 90%, rgba(212,175,55,.05), transparent 35%);
+  animation:bgMove 60s ease-in-out infinite alternate;
+  pointer-events:none;
+  z-index:-2;
+}
+@keyframes bgMove{
+  from{transform:scale(1)}
+  to{transform:scale(1.04) translateY(-14px)}
+}
+.gold-particles{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden}
+.gold-particle{position:absolute;bottom:-10px;border-radius:50%;background:radial-gradient(circle,var(--gold-light),var(--gold) 60%,transparent 100%);opacity:0;box-shadow:0 0 6px rgba(212,175,55,.8);animation-name:particleRise;animation-timing-function:linear;animation-iteration-count:infinite}
+@keyframes particleRise{
+  0%{transform:translateY(0) translateX(0);opacity:0}
+  8%{opacity:.9}
+  92%{opacity:.6}
+  100%{transform:translateY(-110vh) translateX(var(--drift,20px));opacity:0}
+}
 
-.topbar{position:sticky;top:0;z-index:100;background:rgba(11,15,28,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;height:56px}
+.topbar{position:sticky;top:0;z-index:999;display:flex;align-items:center;height:56px;padding:0 2rem;background:rgba(5,5,5,.85);backdrop-filter:blur(24px);border-bottom:1px solid rgba(212,175,55,.15);box-shadow:0 10px 40px rgba(0,0,0,.6)}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.08em;color:var(--gold);margin-right:2rem;white-space:nowrap}
 .logo span{color:var(--text-muted);font-size:13px;font-family:'Inter',sans-serif;font-weight:400;letter-spacing:normal;margin-left:8px;vertical-align:middle}
 .nav-tabs{display:flex;gap:0;flex:1}
@@ -27,23 +55,32 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .nav-tab:hover{color:var(--text)}
 .nav-tab.active{color:var(--gold);border-bottom:2px solid var(--gold)}
 
-.hero{text-align:center;padding:3.5rem 2rem 2.5rem;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(201,168,76,0.08) 0%,transparent 70%);pointer-events:none}
-.hero-eyebrow{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;margin-bottom:12px}
-.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,8vw,96px);letter-spacing:0.06em;color:var(--text);line-height:1;margin-bottom:8px}
-.hero-title .accent{color:var(--gold)}
-.hero-sub{font-size:14px;color:var(--text-muted);letter-spacing:0.05em}
-.hero-divider{width:80px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);margin:1.5rem auto 0}
+.hero{text-align:center;padding:3.25rem 2rem 2.5rem;position:relative;overflow:hidden;transition:max-height .4s ease,opacity .3s ease,padding .4s ease;max-height:400px}
+.hero.hero-collapsed{max-height:0;padding-top:0;padding-bottom:0;opacity:0;pointer-events:none}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(212,175,55,.14) 0%,transparent 70%);filter:blur(2px);pointer-events:none;animation:heroFog 8s ease-in-out infinite alternate}
+@keyframes heroFog{from{opacity:.7;transform:scale(1)}to{opacity:1;transform:scale(1.08)}}
+.hero-eyebrow{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:14px;text-shadow:0 0 16px rgba(212,175,55,.4)}
+.hero-title{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(38px,5.5vw,72px);letter-spacing:0.08em;line-height:1.1;margin-bottom:10px;position:relative;
+  background:linear-gradient(180deg,#ffffff 0%,#F8E28A 45%,#D4AF37 75%,#8B6A1E 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  text-shadow:0 0 30px rgba(212,175,55,.2);
+  filter:drop-shadow(0 4px 14px rgba(0,0,0,.6));
+}
+.hero-title .accent{background:linear-gradient(180deg,#ffffff 0%,#D4AF37 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:14px;color:var(--text-muted);letter-spacing:0.08em;position:relative}
+.hero-divider{width:80px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);margin:1.5rem auto 0;box-shadow:0 0 12px rgba(212,175,55,.5)}
 
 .panel{display:none;max-width:1100px;margin:0 auto;padding:2rem 1.5rem 4rem}
 .panel.panel-wide{max-width:1920px;padding-left:1rem;padding-right:1rem}
+#panel-draft.panel-wide{padding-top:1.25rem}
 .panel.active{display:block}
 
 .section-head{margin-bottom:1.5rem}
 .section-head h2{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;letter-spacing:0.05em;color:var(--text)}
 .section-head p{font-size:13px;color:var(--text-muted);margin-top:4px}
 
-.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:12px}
+.card{background:rgba(15,15,15,.75);backdrop-filter:blur(20px);border:1px solid rgba(212,175,55,.12);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:12px;box-shadow:0 15px 40px rgba(0,0,0,.5);transition:transform .4s cubic-bezier(.22,1,.36,1),box-shadow .4s ease}
+.card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 25px 60px rgba(0,0,0,.7),0 0 25px rgba(212,175,55,.25)}
 .card-title{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
 
 .form-grid{display:grid;gap:10px;margin-bottom:10px}
@@ -54,8 +91,9 @@ input:focus,select:focus{border-color:var(--gold-dim)}
 input::placeholder{color:var(--text-dim)}
 select option{background:var(--surface2)}
 
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;letter-spacing:0.02em;transition:all .15s}
-.btn-gold{background:var(--gold);color:#0B0F1C}.btn-gold:hover{background:var(--gold-light)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;letter-spacing:0.02em;transition:all .25s cubic-bezier(.22,1,.36,1)}
+.btn-gold{background:linear-gradient(135deg,var(--gold-light),var(--gold) 55%,var(--gold-dark));color:#0B0B0B;box-shadow:0 6px 20px rgba(212,175,55,.25)}
+.btn-gold:hover{filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 10px 30px rgba(212,175,55,.4)}
 .btn-outline{background:transparent;color:var(--text-muted);border:1px solid var(--border)}.btn-outline:hover{border-color:var(--text-muted);color:var(--text)}
 .btn-danger{background:rgba(224,82,82,0.12);color:var(--red);border:1px solid rgba(224,82,82,0.2)}.btn-danger:hover{background:rgba(224,82,82,0.2)}
 .btn-sm{padding:5px 12px;font-size:12px;border-radius:6px}
@@ -108,7 +146,8 @@ select option{background:var(--surface2)}
 .draft-area{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
 .draft-turn{background:linear-gradient(135deg,var(--surface2),var(--surface3));padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px}
 .draft-turn-label{font-size:12px;letter-spacing:0.1em;color:var(--text-muted);text-transform:uppercase;font-weight:500}
-.draft-turn-name{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;color:var(--gold)}
+.draft-turn-name{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;color:var(--gold);text-shadow:0 0 18px rgba(212,175,55,.55);animation:captainGlow 1.8s ease-in-out infinite}
+@keyframes captainGlow{0%,100%{text-shadow:0 0 10px rgba(212,175,55,.35)}50%{text-shadow:0 0 24px rgba(212,175,55,.75)}}
 .draft-turn-sub{font-size:12px;color:var(--text-muted);margin-top:1px}
 .draft-progress{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
 .draft-progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .3s}
@@ -121,8 +160,8 @@ select option{background:var(--surface2)}
 .draft-lane-header.lh-mid{background:rgba(212,83,126,0.08);color:#f07eb0}
 .draft-lane-header.lh-adc{background:rgba(186,117,23,0.08);color:#E2C97A}
 .draft-lane-header.lh-support{background:rgba(127,119,221,0.08);color:#AFA9EC}
-.draft-player-card{margin:4px;border-radius:8px;padding:9px 11px;cursor:pointer;transition:all .15s;border:1px solid var(--border);background:var(--surface2)}
-.draft-player-card:hover:not(.dp-blocked){border-color:var(--gold-dim);background:var(--surface3);transform:translateY(-1px)}
+.draft-player-card{margin:4px;border-radius:8px;padding:9px 11px;cursor:pointer;transition:all .2s cubic-bezier(.22,1,.36,1);border:1px solid var(--border);background:var(--surface2);box-shadow:0 6px 16px rgba(0,0,0,.35)}
+.draft-player-card:hover:not(.dp-blocked){border-color:var(--gold-dim);background:var(--surface3);transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.55),0 0 18px rgba(212,175,55,.2)}
 .draft-player-card.dp-blocked{opacity:0.22;cursor:default;filter:grayscale(1)}
 .dp-tag{font-size:11px;letter-spacing:0.05em;font-weight:600;margin-bottom:2px}
 .dp-tag-cap{color:var(--gold)}
@@ -230,15 +269,27 @@ select option{background:var(--surface2)}
 .team-card{
   --tier-border:linear-gradient(135deg,var(--border),var(--border));
   --tier-glow:rgba(0,0,0,0);
-  background-image:linear-gradient(var(--surface),var(--surface)),var(--tier-border);
+  background-image:linear-gradient(rgba(8,8,8,.96),rgba(8,8,8,.96)),var(--tier-border);
   background-origin:border-box;background-clip:padding-box,border-box;
   border:2px solid transparent;border-radius:18px;overflow:hidden;
-  transition:transform .2s,box-shadow .35s;position:relative;cursor:pointer;
-  box-shadow:0 6px 26px rgba(0,0,0,.32),0 0 24px var(--tier-glow);
+  transition:transform .4s cubic-bezier(.22,1,.36,1),box-shadow .4s ease;position:relative;cursor:pointer;
+  box-shadow:0 15px 40px rgba(0,0,0,.5),0 0 24px var(--tier-glow);
 }
-.team-card:hover{transform:translateY(-4px);box-shadow:0 10px 34px rgba(0,0,0,.4),0 0 34px var(--tier-glow)}
+.card:hover,
+.team-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 25px 60px rgba(0,0,0,.7),0 0 25px rgba(212,175,55,.25),0 0 34px var(--tier-glow)}
 .team-card-glow{position:absolute;inset:0;border-radius:16px;pointer-events:none;opacity:0;transition:opacity .3s}
 .team-card:hover .team-card-glow{opacity:1}
+.team-card::after{
+  content:'';
+  position:absolute;
+  top:-100%;left:-100%;
+  width:250%;height:250%;
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,.08),transparent);
+  transform:rotate(25deg);
+  transition:1.2s;
+  pointer-events:none;
+}
+.team-card:hover::after{left:100%}
 
 /* ===== LEAGUE-STYLE RANK BORDERS (per team average elo) ===== */
 .team-card.tier-iron{--tier-border:linear-gradient(135deg,#3c3c3c,#8f8f8f,#3c3c3c);--tier-glow:rgba(150,150,150,.28)}
@@ -306,47 +357,28 @@ select option{background:var(--surface2)}
 .roster-row.is-first-pick .roster-name{color:var(--teal);font-weight:700}
 .first-pick-num{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:rgba(93,202,165,0.18);border:1px solid rgba(93,202,165,0.45);color:var(--teal);font-size:10px;font-weight:800;line-height:1}
 
-/* ===== STRONGEST (RAIO/LIGHTNING) / WEAKEST (ICE) TEAM HIGHLIGHT — visual only, no discouraging text tags ===== */
-.team-card.is-strongest,.team-card.is-weakest{overflow:visible}
+/* ===== STRONGEST (OURO) / WEAKEST (PRATA) TEAM HIGHLIGHT — efeito só de luz, sem ícones ===== */
+.team-card.is-strongest{border-color:rgba(248,226,138,.55)}
+.team-card.is-strongest .team-card-accent{background:linear-gradient(to right,transparent,var(--gold-light),transparent)!important}
+.team-card.is-strongest .team-card-name{text-shadow:0 0 16px rgba(248,226,138,.55)}
+.team-card.is-strongest .team-card-glow{background:radial-gradient(circle at 50% 0%,rgba(212,175,55,.32),transparent 70%)}
+.team-card.is-strongest::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;z-index:4;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(248,226,138,.95),transparent);background-size:200% 100%;
+  animation:shimmerSweep 3s linear infinite}
+@keyframes goldPulse{0%,100%{box-shadow:0 15px 40px rgba(0,0,0,.5),0 0 18px rgba(212,175,55,.22)}50%{box-shadow:0 15px 40px rgba(0,0,0,.5),0 0 36px rgba(212,175,55,.48)}}
+.team-card.is-strongest{animation:goldPulse 2.8s ease-in-out infinite}
 
-.team-card.is-strongest{border-color:rgba(255,225,90,0.5)}
-.team-card.is-strongest .team-card-accent{background:linear-gradient(to right,transparent,#ffe066,transparent)!important}
-.team-card.is-strongest .team-card-name{text-shadow:0 0 14px rgba(255,225,90,0.6),0 0 26px rgba(130,205,255,0.35)}
-.team-card.is-strongest .team-card-glow{background:radial-gradient(circle at 50% 0%,rgba(255,220,90,0.28),transparent 70%)}
-@keyframes boltFlicker{
-  0%,17%,19%,52%,54%,100%{box-shadow:0 0 16px rgba(255,225,90,0.16),inset 0 0 20px rgba(255,225,90,0.04)}
-  18%,53%{box-shadow:0 0 40px rgba(255,235,140,0.6),inset 0 0 34px rgba(160,215,255,0.2)}
-}
-.team-card.is-strongest{animation:boltFlicker 2.6s ease-in-out infinite}
+.team-card.is-weakest{border-color:rgba(215,220,226,.4)}
+.team-card.is-weakest .team-card-accent{background:linear-gradient(to right,transparent,var(--silver),transparent)!important}
+.team-card.is-weakest .team-card-name{text-shadow:0 0 14px rgba(215,220,226,.4)}
+.team-card.is-weakest .team-card-glow{background:radial-gradient(circle at 50% 0%,rgba(174,182,194,.24),transparent 70%)}
+.team-card.is-weakest::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;z-index:4;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(215,220,226,.75),transparent);background-size:200% 100%;
+  animation:shimmerSweep 3.6s linear infinite}
+@keyframes silverPulse{0%,100%{box-shadow:0 15px 40px rgba(0,0,0,.5),0 0 14px rgba(174,182,194,.14)}50%{box-shadow:0 15px 40px rgba(0,0,0,.5),0 0 26px rgba(174,182,194,.3)}}
+.team-card.is-weakest{animation:silverPulse 3.4s ease-in-out infinite}
 
-.team-card.is-weakest{border-color:rgba(120,190,255,0.4)}
-.team-card.is-weakest .team-card-accent{background:linear-gradient(to right,transparent,#6fc1ff,transparent)!important}
-.team-card.is-weakest .team-card-name{text-shadow:0 0 14px rgba(120,190,255,0.45)}
-.team-card.is-weakest .team-card-glow{background:radial-gradient(circle at 50% 0%,rgba(90,180,255,0.24),transparent 70%)}
-@keyframes frostShimmer{0%,100%{box-shadow:0 0 16px rgba(90,180,255,0.16),inset 0 0 20px rgba(90,180,255,0.04)}50%{box-shadow:0 0 28px rgba(130,205,255,0.3),inset 0 0 32px rgba(90,180,255,0.1)}}
-.team-card.is-weakest{animation:frostShimmer 2.6s ease-in-out infinite}
-
-/* raios crepitando sobre o card do time mais forte */
-.bolt-fx{position:absolute;left:6px;right:6px;top:-19px;height:30px;display:flex;justify-content:space-around;align-items:flex-end;pointer-events:none;z-index:3;overflow:visible}
-.bolt-fx .bolt{display:block;font-size:18px;line-height:1;color:#ffe066;text-shadow:0 0 6px rgba(255,225,90,0.95),0 0 16px rgba(130,205,255,0.7);opacity:.9;transform-origin:bottom center;animation:boltJitter .85s steps(3,end) infinite}
-.bolt-fx .b1{animation-delay:0s;font-size:16px}
-.bolt-fx .b2{animation-delay:.14s;font-size:22px}
-.bolt-fx .b3{animation-delay:.28s;font-size:26px}
-.bolt-fx .b4{animation-delay:.09s;font-size:20px}
-.bolt-fx .b5{animation-delay:.21s;font-size:15px}
-@keyframes boltJitter{
-  0%,100%{opacity:.35;transform:translateY(0) scale(0.9) rotate(-3deg)}
-  35%{opacity:1;transform:translateY(-3px) scale(1.15) rotate(4deg)}
-  70%{opacity:.6;transform:translateY(-1px) scale(0.98) rotate(-2deg)}
-}
-
-/* frost creeping off the weakest team's card */
-.ice-fx{position:absolute;left:6px;right:6px;top:-12px;height:22px;display:flex;justify-content:space-around;align-items:flex-end;pointer-events:none;z-index:3}
-.ice-fx .frost-crystal{font-size:14px;color:#bfe6ff;text-shadow:0 0 8px rgba(150,210,255,0.85);opacity:.85;animation:frostTwinkle 2.3s ease-in-out infinite}
-.ice-fx .c1{animation-delay:0s}
-.ice-fx .c2{animation-delay:.55s;font-size:11px}
-.ice-fx .c3{animation-delay:1.05s;font-size:17px}
-@keyframes frostTwinkle{0%,100%{opacity:.45;transform:translateY(0) scale(1)}50%{opacity:1;transform:translateY(-3px) scale(1.18)}}
+@keyframes shimmerSweep{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
 /* ===== CINEMATIC REVEAL ===== */
 .reveal-overlay{position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(201,168,76,0.05),transparent 70%),rgba(2,3,7,0.95);backdrop-filter:blur(16px);opacity:0;pointer-events:none;transition:opacity .35s ease}
@@ -379,8 +411,9 @@ select option{background:var(--surface2)}
 .order-reveal-ghost .org-name{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;margin-top:6px;white-space:nowrap}
 
 /* ===== TEAM VIEW MODAL (click a team to open it big) ===== */
-.team-view-box{max-width:440px;padding:2.5rem 1.25rem 1.25rem;position:relative}
-.team-view-close{position:absolute;top:12px;right:12px;z-index:5}
+.team-view-box{max-width:440px;padding:0;position:relative;background:transparent;border:none;box-shadow:none;overflow:visible;max-height:none}
+.team-view-close{position:absolute;top:-14px;right:-14px;z-index:5;width:34px;height:34px;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;background:rgba(11,11,11,.92);backdrop-filter:blur(10px);border:1px solid rgba(212,175,55,.3);box-shadow:0 8px 20px rgba(0,0,0,.5)}
+.team-view-close:hover{border-color:var(--gold);color:var(--gold)}
 .team-view-box .team-card{cursor:default}
 .team-view-box .team-card:hover{transform:none}
 
@@ -398,6 +431,7 @@ select option{background:var(--surface2)}
 </style>
 </head>
 <body>
+<div class="gold-particles" id="gold-particles" aria-hidden="true"></div>
 
 <header class="topbar">
   <div class="logo">Copa LoL <span>League of Legends</span></div>
@@ -408,11 +442,11 @@ select option{background:var(--surface2)}
     <button class="nav-tab" onclick="goTab('draft')">Draft ao Vivo</button>
     <button class="nav-tab" onclick="goTab('tierlist')">Tier List</button>
     <button class="nav-tab" onclick="goTab('edit')">Editar Nomes</button>
-    <button class="nav-tab" style="margin-left:auto;color:#E05252" onclick="resetarTudo()">🗑 Resetar</button>
+    <button class="nav-tab" style="margin-left:auto;color:#E05252" onclick="resetarTudo()"><i class="fa-solid fa-trash"></i> Resetar</button>
   </nav>
 </header>
 
-<div class="hero">
+<div class="hero" id="hero-block">
   <div class="hero-eyebrow">Copa LoL • Temporada 2026</div>
   <h1 class="hero-title">Copa <span class="accent">LoL</span></h1>
   <p class="hero-sub">Draft · Times Formados</p>
@@ -439,7 +473,7 @@ select option{background:var(--surface2)}
     <div class="card-title">Colar do Discord (registro rápido)</div>
     <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px">Cole o(s) bloco(s) no formato abaixo (um jogador por bloco de 3 linhas):<br><span style="color:var(--text-dim)">Nick: Faker#BR1<br>Elo: Esmeralda IV<br>Lane: Mid<br>Campeões: Ahri, Syndra, Orianna</span></p>
     <textarea id="p-bulk" rows="6" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--text);font-family:'Inter',sans-serif;outline:none;resize:vertical;margin-bottom:10px" placeholder="Cole aqui os blocos copiados do Discord..."></textarea>
-    <button class="btn btn-gold" onclick="addPlayersFromBulk()">📋 Processar e adicionar</button>
+    <button class="btn btn-gold" onclick="addPlayersFromBulk()"><i class="fa-solid fa-clipboard-list"></i> Processar e adicionar</button>
     <div id="bulk-feedback" style="font-size:12px;color:var(--text-muted);margin-top:8px"></div>
   </div>
   <div id="player-list-container"></div>
@@ -459,7 +493,7 @@ select option{background:var(--surface2)}
   </div>
   <div class="card">
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-      <button class="btn btn-gold" onclick="sortearOrdem()">🎲 Sortear ordem</button>
+      <button class="btn btn-gold" onclick="sortearOrdem()"><i class="fa-solid fa-dice"></i> Sortear ordem</button>
       <span style="font-size:13px;color:var(--text-muted)" id="order-cap-count"></span>
     </div>
   </div>
@@ -476,8 +510,8 @@ select option{background:var(--surface2)}
 <div id="panel-tierlist" class="panel panel-wide">
   <div class="section-head"><h2 id="tierlist-title">Tier List dos Times</h2><p id="tierlist-desc">Arraste para reordenar e para os rankings S, A, B ou C. Clique nas letras para renomear. Fica salvo automaticamente.</p></div>
   <div class="tierlist-modes">
-    <button type="button" class="tierlist-mode-btn" data-mode="teams" onclick="setTierListMode('teams')">🛡 Times</button>
-    <button type="button" class="tierlist-mode-btn" data-mode="players" onclick="setTierListMode('players')">🎮 Jogadores</button>
+    <button type="button" class="tierlist-mode-btn" data-mode="teams" onclick="setTierListMode('teams')"><i class="fa-solid fa-shield-halved"></i> Times</button>
+    <button type="button" class="tierlist-mode-btn" data-mode="players" onclick="setTierListMode('players')"><i class="fa-solid fa-gamepad"></i> Jogadores</button>
   </div>
   <div id="tierlist-lane-filters" class="tierlist-lane-filters" style="display:none"></div>
   <div id="tierlist-container"></div>
@@ -501,7 +535,7 @@ select option{background:var(--surface2)}
 <!-- MODAL VER TIME (abre igual apresentação) -->
 <div id="team-view-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeTeamShowcase()">
   <div class="modal-box team-view-box">
-    <button class="btn btn-outline btn-sm team-view-close" onclick="closeTeamShowcase()">✕ Fechar</button>
+    <button class="btn btn-outline btn-sm team-view-close" onclick="closeTeamShowcase()" title="Fechar"><i class="fa-solid fa-xmark"></i></button>
     <div id="team-view-content"></div>
   </div>
 </div>
@@ -509,11 +543,11 @@ select option{background:var(--surface2)}
 <!-- MODAL NOME DO TIME -->
 <div id="team-name-modal" class="modal-overlay" style="display:none">
   <div class="modal-box">
-    <div class="modal-title">🏟 Nome dos Times</div>
+    <div class="modal-title"><i class="fa-solid fa-shield-halved"></i> Nome dos Times</div>
     <div class="modal-sub">Draft finalizado! Cada capitão escolhe o nome do seu time antes da revelação.</div>
     <div id="modal-teams-list" class="modal-teams-grid"></div>
     <div style="display:flex;gap:10px;margin-top:1.5rem;justify-content:flex-end">
-      <button class="btn btn-gold" onclick="confirmarNomesTime()">Confirmar nomes →</button>
+      <button class="btn btn-gold" onclick="confirmarNomesTime()">Confirmar nomes <i class="fa-solid fa-arrow-right"></i></button>
     </div>
   </div>
 </div>
@@ -607,7 +641,7 @@ function resetarTudo(){
 }
 function toast(msg){
   let t=document.getElementById('_toast');
-  if(!t){t=document.createElement('div');t.id='_toast';t.style.cssText='position:fixed;bottom:24px;right:24px;background:#1A2238;border:1px solid rgba(201,168,76,0.4);color:#C9A84C;font-size:13px;padding:10px 18px;border-radius:8px;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none';document.body.appendChild(t);}
+  if(!t){t=document.createElement('div');t.id='_toast';t.style.cssText='position:fixed;bottom:24px;right:24px;background:rgba(11,11,11,.92);backdrop-filter:blur(16px);border:1px solid rgba(212,175,55,.4);color:#D4AF37;font-size:13px;padding:10px 18px;border-radius:8px;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;box-shadow:0 15px 40px rgba(0,0,0,.5),0 0 20px rgba(212,175,55,.15)';document.body.appendChild(t);}
   t.textContent=msg;t.style.opacity='1';clearTimeout(t._timer);t._timer=setTimeout(()=>{t.style.opacity='0';},2500);
 }
 
@@ -616,6 +650,8 @@ function goTab(t){
   document.querySelectorAll('.nav-tab').forEach((b,i)=>b.classList.toggle('active',['register','captains','order','draft','tierlist','edit'][i]===t));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+t).classList.add('active');
+  const hero=document.getElementById('hero-block');
+  if(hero)hero.classList.toggle('hero-collapsed',t==='draft');
   if(t==='captains')renderCaptains();
   if(t==='draft')renderDraft();
   if(t==='tierlist')renderTierList();
@@ -805,10 +841,10 @@ function renderPlayers(){
   lanes.forEach(lane=>{
     const ps=players.filter(p=>p.lane===lane);if(!ps.length)return;
     html+=`<div class="player-section"><div class="player-section-header">${laneBadge(lane)}<span style="font-size:12px;color:var(--text-muted)">${ps.length} jogador${ps.length>1?'es':''}</span></div>`;
-    ps.forEach(p=>{html+=`<div class="player-row"><span class="player-name">${p.name}</span><span class="elo-badge">${p.elo}${p.div?' '+p.div:''}</span>${p.captain?'<span class="captain-badge">⚑ Capitão</span>':''}<span class="player-champs">${p.champs||'—'}</span><div class="player-actions"><a class="btn btn-outline btn-sm btn-icon opgg-link-btn" href="${opggUrl(p.name,p.riotTag)}" target="_blank" rel="noopener" title="Consultar ${p.name}#${p.riotTag||'BR1'} no OP.GG" onclick="event.stopPropagation()">🔍</a><button class="btn btn-danger btn-sm" onclick="removePlayer(${JSON.stringify(p.id)})">Remover</button></div></div>`;});
+    ps.forEach(p=>{html+=`<div class="player-row"><span class="player-name">${p.name}</span><span class="elo-badge">${p.elo}${p.div?' '+p.div:''}</span>${p.captain?'<span class="captain-badge"><i class="fa-solid fa-flag"></i> Capitão</span>':''}<span class="player-champs">${p.champs||'—'}</span><div class="player-actions"><a class="btn btn-outline btn-sm btn-icon opgg-link-btn" href="${opggUrl(p.name,p.riotTag)}" target="_blank" rel="noopener" title="Consultar ${p.name}#${p.riotTag||'BR1'} no OP.GG" onclick="event.stopPropagation()"><i class="fa-solid fa-magnifying-glass"></i></a><button class="btn btn-danger btn-sm" onclick="removePlayer(${JSON.stringify(p.id)})">Remover</button></div></div>`;});
     html+='</div>';
   });
-  if(!html)html=`<div class="empty"><div class="empty-icon">🎮</div><p>Nenhum jogador registrado ainda.</p></div>`;
+  if(!html)html=`<div class="empty"><div class="empty-icon"><i class="fa-solid fa-gamepad"></i></div><p>Nenhum jogador registrado ainda.</p></div>`;
   document.getElementById('player-list-container').innerHTML=html;
 }
 
@@ -842,7 +878,7 @@ function renderCaptains(){
     });
     html+='</div>';
   });
-  if(!html)html=`<div class="empty"><div class="empty-icon">👑</div><p>Registre jogadores primeiro.</p></div>`;
+  if(!html)html=`<div class="empty"><div class="empty-icon"><i class="fa-solid fa-crown"></i></div><p>Registre jogadores primeiro.</p></div>`;
   document.getElementById('captain-container').innerHTML=html;
   const caps=players.filter(p=>p.captain);
   document.getElementById('order-cap-count').textContent=caps.length?`${caps.length} capitão${caps.length>1?'s':''} selecionado${caps.length>1?'s':''}` : '';
@@ -971,9 +1007,9 @@ function renderOrderList(){
       <div class="order-info">
         <div class="order-name">${item.cap.name}</div>
         <div class="order-tags">
-          <span class="tag tag-cap">⚑ Capitão</span>
-          ${isDouble?'<span class="tag tag-double">🔁 virada da serpente</span>':''}
-          ${isDone?'<span class="tag tag-done">✓ concluído</span>':''}
+          <span class="tag tag-cap"><i class="fa-solid fa-flag"></i> Capitão</span>
+          ${isDouble?'<span class="tag tag-double"><i class="fa-solid fa-rotate"></i> virada da serpente</span>':''}
+          ${isDone?'<span class="tag tag-done"><i class="fa-solid fa-check"></i> concluído</span>':''}
         </div>
       </div>
     </div>`;
@@ -1043,15 +1079,12 @@ function teamCardHTML(cap,i,teams,statusFlags){
   const firstPickId=getFirstPickId(cap.name);
   const flags=statusFlags||{};
 
-  const boltFx=flags.isStrongest?`<div class="bolt-fx" aria-hidden="true"><span class="bolt b1">⚡</span><span class="bolt b2">⚡</span><span class="bolt b3">⚡</span><span class="bolt b4">⚡</span><span class="bolt b5">⚡</span></div>`:'';
-  const iceFx=flags.isWeakest?`<div class="ice-fx" aria-hidden="true"><span class="frost-crystal c1">❄</span><span class="frost-crystal c2">❅</span><span class="frost-crystal c3">❆</span></div>`:'';
-
-  let html=`${boltFx}${iceFx}<div class="team-card-glow" style="box-shadow:inset 0 0 40px ${glow}"></div>
+  let html=`<div class="team-card-glow" style="box-shadow:inset 0 0 40px ${glow}"></div>
     <div class="team-card-header">
       <div class="team-card-accent" style="background:linear-gradient(to right,transparent,${color},transparent)"></div>
       <div class="team-card-name" style="color:${color}">${displayName}</div>
       <div class="team-card-cap-row">
-        <span style="font-size:14px">⭐</span>
+        <span style="font-size:14px"><i class="fa-solid fa-star"></i></span>
         <span class="team-card-cap-label">Capitão:</span>
         <span style="font-size:12px;font-weight:600;color:${color}">${cap.name}</span>
       </div>
@@ -1068,7 +1101,7 @@ function teamCardHTML(cap,i,teams,statusFlags){
     const isFirstPick=!isCap&&String(m.id)===String(firstPickId);
     html+=`<div class="roster-row ${isCap?'is-captain':''} ${isFirstPick?'is-first-pick':''}">
       <span class="roster-lane">${laneBadge(m.lane)}</span>
-      <span class="roster-icon">${isCap?'⭐':(isFirstPick?'<span class="first-pick-num">1</span>':'')}</span>
+      <span class="roster-icon">${isCap?'<i class="fa-solid fa-star"></i>':(isFirstPick?'<span class="first-pick-num">1</span>':'')}</span>
       <span class="roster-name ${isCap?'cap-name':''}" style="${isCap?`color:${color}`:''}">${m.name}</span>
       <span class="roster-elo">${m.elo}${m.div?' '+m.div:''}</span>
     </div>`;
@@ -1077,8 +1110,8 @@ function teamCardHTML(cap,i,teams,statusFlags){
   html+=`</div>`;
   const opggLink=buildOpggLink(members);
   html+=`<div class="team-opgg-row" onclick="event.stopPropagation()">
-    <a class="btn btn-outline btn-sm" href="${opggLink}" target="_blank" rel="noopener">🔎 Abrir no OP.GG</a>
-    <button type="button" class="btn btn-outline btn-sm" onclick="copyOpggLink(this)">📋 Copiar link</button>
+    <a class="btn btn-outline btn-sm" href="${opggLink}" target="_blank" rel="noopener"><i class="fa-solid fa-magnifying-glass"></i> Abrir no OP.GG</a>
+    <button type="button" class="btn btn-outline btn-sm" onclick="copyOpggLink(this)"><i class="fa-solid fa-clipboard"></i> Copiar link</button>
   </div>`;
   return html;
 }
@@ -1120,9 +1153,9 @@ function renderDraftDone(skipAnimation){
     <div class="draft-done-sub">${allCaps.length} times prontos para a temporada</div>
     <div class="draft-done-divider"></div>
     <div class="draft-done-actions">
-      <button class="btn btn-outline btn-sm" onclick="undoPick()">↩ Desfazer último pick</button>
-      <button class="btn btn-outline" onclick="abrirModalNomesTime()">✏️ Renomear times</button>
-      <button class="btn btn-gold" onclick="renderDraftDone()">🎬 Revelação novamente</button>
+      <button class="btn btn-outline btn-sm" onclick="undoPick()"><i class="fa-solid fa-rotate-left"></i> Desfazer último pick</button>
+      <button class="btn btn-outline" onclick="abrirModalNomesTime()"><i class="fa-solid fa-pen"></i> Renomear times</button>
+      <button class="btn btn-gold" onclick="renderDraftDone()"><i class="fa-solid fa-clapperboard"></i> Revelação novamente</button>
     </div>
   </div>`;
 
@@ -1208,6 +1241,14 @@ async function runCinematicReveal(allCaps){
 
     await delay(30);
     if(revealSkipRequested){ghost.remove();break;}
+
+    // explosão dourada / flash luminoso antes do card aparecer
+    document.body.animate([
+      {filter:'brightness(1)'},
+      {filter:'brightness(1.8)'},
+      {filter:'brightness(1)'}
+    ],{duration:400});
+
     ghost.style.opacity='1';
     ghost.style.transform='translate(-50%,-50%) scale(1)';
 
@@ -1246,7 +1287,7 @@ async function runCinematicReveal(allCaps){
 
 function renderDraft(){
   if(!draftOrder.length){
-    document.getElementById('draft-container').innerHTML=`<div class="empty"><div class="empty-icon">⚔️</div><p>Sorteie a ordem do draft primeiro.</p></div>`;
+    document.getElementById('draft-container').innerHTML=`<div class="empty"><div class="empty-icon"><i class="fa-solid fa-swords"></i></div><p>Sorteie a ordem do draft primeiro.</p></div>`;
     return;
   }
   const totalPicks=draftOrder.length;
@@ -1276,7 +1317,7 @@ function renderDraft(){
         <div class="draft-turn-sub">Pick ${currentPickIdx+1} de ${totalPicks}</div>
       </div>
       <div class="draft-progress" style="flex:1"><div class="draft-progress-fill" style="width:${pct}%"></div></div>
-      ${currentPickIdx>0?'<button class="btn btn-outline btn-sm" onclick="undoPick()" style="white-space:nowrap;flex-shrink:0">↩ Desfazer</button>':''}
+      ${currentPickIdx>0?'<button class="btn btn-outline btn-sm" onclick="undoPick()" style="white-space:nowrap;flex-shrink:0"><i class="fa-solid fa-rotate-left"></i> Desfazer</button>':''}
     </div>
     <div class="draft-lanes">`;
 
@@ -1306,7 +1347,7 @@ function renderDraft(){
   allCaps.forEach((cap,i)=>{
     const members=teams[cap.name]||[];
     const displayName=getTeamDisplayName(cap.name);
-    html+=`<div class="sidebar-team" data-cap="${cap.name.replace(/"/g,'&quot;')}"><div class="dt-title ${capColors[i%capColors.length]}">⚑ ${displayName}</div>`;
+    html+=`<div class="sidebar-team" data-cap="${cap.name.replace(/"/g,'&quot;')}"><div class="dt-title ${capColors[i%capColors.length]}"><i class="fa-solid fa-flag"></i> ${displayName}</div>`;
     ALL_LANES.forEach(lane=>{
       const m=members.find(x=>x.lane===lane);
       if(m){
@@ -1365,7 +1406,8 @@ function flyPickAnimation(srcEl,destEl,name,color){
       ghost.style.left=(destRect.left+destRect.width/2-28)+'px';
       ghost.style.top=(destRect.top+10)+'px';
       ghost.style.width='56px';
-      ghost.style.opacity='0.1';
+      ghost.style.opacity='0';
+      ghost.style.filter='blur(8px)';
       ghost.style.transform='scale(0.35)';
     });
   });
@@ -1387,7 +1429,7 @@ function abrirModalNomesTime(){
   let html='';
   allCaps.forEach((cap,i)=>{
     const color=TEAM_COLORS[i%TEAM_COLORS.length];
-    html+=`<div class="modal-team-row"><div class="modal-team-label">Time do capitão</div><div class="modal-team-cap" style="color:${color}">⭐ ${cap.name}</div><input class="modal-team-input" id="tn-${i}" placeholder="Nome do time (ex: Os Brabos, Team Flash...)" value="${teamNames[cap.name]||''}"/></div>`;
+    html+=`<div class="modal-team-row"><div class="modal-team-label">Time do capitão</div><div class="modal-team-cap" style="color:${color}"><i class="fa-solid fa-star"></i> ${cap.name}</div><input class="modal-team-input" id="tn-${i}" placeholder="Nome do time (ex: Os Brabos, Team Flash...)" value="${teamNames[cap.name]||''}"/></div>`;
   });
   document.getElementById('modal-teams-list').innerHTML=html;
   document.getElementById('team-name-modal').style.display='flex';
@@ -1457,7 +1499,7 @@ function tierChipHTML(id,name,eloText,colorAccent,laneAttr){
 function tierRowLabelHTML(t,idx,removable){
   const color=tierColor(t,idx);
   const isPool=t==='pool';
-  const removeBtn=removable?`<button type="button" class="tier-remove-btn" title="Remover este tier" onclick="event.stopPropagation();removeTierRow('${t}')">✕</button>`:'';
+  const removeBtn=removable?`<button type="button" class="tier-remove-btn" title="Remover este tier" onclick="event.stopPropagation();removeTierRow('${t}')"><i class="fa-solid fa-xmark"></i></button>`:'';
   return `<div class="tier-label-wrap">
     <div class="tier-label" style="${isPool?'':`background:${color}`}" contenteditable="${!isPool}" spellcheck="false" data-tier-key="${t}" oninput="updateTierLabel(this,'${t}')" onblur="salvarEstado()" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" ondragstart="event.preventDefault()" title="${isPool?'':'Clique para editar o nome deste tier'}">${isPool?'—':(getTierLabels()[t]||t)}</div>
     ${removeBtn}
@@ -1490,7 +1532,7 @@ function tierRowsPoolGroupedByLaneHTML(order,playerById){
   function chipFor(id){
     const p=playerById(id);if(!p)return '';
     const color=LANE_ACCENT[LANE_KEY(p.lane)]||'#8a93a6';
-    const eloText=`${p.elo}${p.div?' '+p.div:''} · ${LANE_SHORT[p.lane]||p.lane}${p.captain?' · ⚑':''}`;
+    const eloText=`${p.elo}${p.div?' '+p.div:''} · ${LANE_SHORT[p.lane]||p.lane}${p.captain?' · <i class="fa-solid fa-flag"></i>':''}`;
     return tierChipHTML(p.id,escAttr(p.name),eloText,color);
   }
   function laneGroupHTML(lane){
@@ -1499,7 +1541,7 @@ function tierRowsPoolGroupedByLaneHTML(order,playerById){
     ids.forEach(id=>{
       const p=playerById(id);if(!p)return;
       const color=LANE_ACCENT[LANE_KEY(p.lane)]||'#8a93a6';
-      const eloText=`${p.elo}${p.div?' '+p.div:''}${p.captain?' · ⚑':''}`;
+      const eloText=`${p.elo}${p.div?' '+p.div:''}${p.captain?' · <i class="fa-solid fa-flag"></i>':''}`;
       inner+=tierChipHTML(p.id,escAttr(p.name),eloText,color,lane);
     });
     return `<div class="tier-lane-row">
@@ -1571,7 +1613,7 @@ function renderTierList(){
   if(tierListMode==='teams'){
     const allCaps=players.filter(p=>p.captain);
     if(!allCaps.length){
-      container.innerHTML=`<div class="empty"><div class="empty-icon">🏆</div><p>Registre capitães e finalize o draft para montar a tier list.</p></div>`;
+      container.innerHTML=`<div class="empty"><div class="empty-icon"><i class="fa-solid fa-trophy"></i></div><p>Registre capitães e finalize o draft para montar a tier list.</p></div>`;
       return;
     }
     const teams=buildTeams();
@@ -1585,7 +1627,7 @@ function renderTierList(){
     });
   }else{
     if(!players.length){
-      container.innerHTML=`<div class="empty"><div class="empty-icon">🎮</div><p>Registre jogadores para montar a tier list.</p></div>`;
+      container.innerHTML=`<div class="empty"><div class="empty-icon"><i class="fa-solid fa-gamepad"></i></div><p>Registre jogadores para montar a tier list.</p></div>`;
       return;
     }
     syncTierOrder(playerTierOrder,players.map(p=>p.id),playerTiers);
@@ -1598,7 +1640,7 @@ function renderTierList(){
         if(!visibleIds.has(String(id)))return '';
         const p=players.find(pl=>String(pl.id)===String(id)); if(!p)return '';
         const color=LANE_ACCENT[LANE_KEY(p.lane)]||'#8a93a6';
-        const eloText=`${p.elo}${p.div?' '+p.div:''} · ${LANE_SHORT[p.lane]||p.lane}${p.captain?' · ⚑':''}`;
+        const eloText=`${p.elo}${p.div?' '+p.div:''} · ${LANE_SHORT[p.lane]||p.lane}${p.captain?' · <i class="fa-solid fa-flag"></i>':''}`;
         return tierChipHTML(p.id,escAttr(p.name),eloText,color);
       });
     }
@@ -1699,7 +1741,7 @@ function applyEditDiv(id,val){
 function renderEditPanel(){
   const container=document.getElementById('edit-container');
   if(!players.length){
-    container.innerHTML=`<div class="empty"><div class="empty-icon">✏️</div><p>Nenhum jogador registrado ainda.</p></div>`;
+    container.innerHTML=`<div class="empty"><div class="empty-icon"><i class="fa-solid fa-pen"></i></div><p>Nenhum jogador registrado ainda.</p></div>`;
     return;
   }
   const lanes=['Top','Jungle','Mid','ADC','Support'];
@@ -1714,8 +1756,8 @@ function renderEditPanel(){
         <input type="text" class="edit-name-input" style="max-width:90px" placeholder="Tag (ex: BR1)" value="${escAttr(p.riotTag||'')}" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" onblur="applyRiotTag(${JSON.stringify(p.id)},this)"/>
         ${eloSelectHTML(p)}
         ${divSelectHTML(p)}
-        <a class="btn btn-outline btn-sm btn-icon opgg-link-btn" href="${opggUrl(p.name,p.riotTag)}" target="_blank" rel="noopener" title="Consultar ${escAttr(p.name)}#${escAttr(p.riotTag||'BR1')} no OP.GG">🔍</a>
-        ${p.captain?'<span class="captain-badge">⚑ Capitão</span>':''}
+        <a class="btn btn-outline btn-sm btn-icon opgg-link-btn" href="${opggUrl(p.name,p.riotTag)}" target="_blank" rel="noopener" title="Consultar ${escAttr(p.name)}#${escAttr(p.riotTag||'BR1')} no OP.GG"><i class="fa-solid fa-magnifying-glass"></i></a>
+        ${p.captain?'<span class="captain-badge"><i class="fa-solid fa-flag"></i> Capitão</span>':''}
         ${p.captain?`<input type="text" class="edit-teamname-input" placeholder="Nome do time (ex: Os Brabos)" value="${escAttr(teamNameVal)}" oninput="setTeamNameByCapId(${JSON.stringify(p.id)},this.value)"/>`:''}
       </div>`;
     });
@@ -1759,12 +1801,30 @@ function applyRenamePlayer(id,inputEl){
   toast('Nick atualizado para "'+newName+'"!');
 }
 
+// ===== PARTÍCULAS DOURADAS (fundo premium) =====
+function spawnGoldParticles(){
+  const box=document.getElementById('gold-particles');
+  if(!box)return;
+  const n=28;
+  let html='';
+  for(let i=0;i<n;i++){
+    const size=(Math.random()*3+1.5).toFixed(1);
+    const left=(Math.random()*100).toFixed(2);
+    const dur=(Math.random()*18+22).toFixed(1);
+    const delay=(Math.random()*-30).toFixed(1);
+    const drift=(Math.random()*60-30).toFixed(0);
+    html+=`<span class="gold-particle" style="width:${size}px;height:${size}px;left:${left}%;--drift:${drift}px;animation-duration:${dur}s;animation-delay:${delay}s"></span>`;
+  }
+  box.innerHTML=html;
+}
+spawnGoldParticles();
+
 // Init
 carregarEstado();renderPlayers();
 </script>
 
-<footer style="text-align:center;padding:1.5rem;margin-top:2rem;border-top:1px solid rgba(200,155,60,0.15);font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.15em;color:var(--text-muted);">
-  Desenvolvido por <span style="color:var(--gold);">Deeh</span>
+<footer style="text-align:center;padding:2rem;margin-top:2rem;border-top:1px solid rgba(212,175,55,.15);font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.2em;color:var(--text-muted);position:relative;">
+  Desenvolvido por <span style="color:var(--gold);text-shadow:0 0 12px rgba(212,175,55,.4);">Deeh</span>
 </footer>
 </body>
 </html>
