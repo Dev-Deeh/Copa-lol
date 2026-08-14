@@ -170,25 +170,65 @@ select option{background:var(--surface2)}
 .dp-elo{font-size:13px;color:var(--text-muted);margin-top:2px;font-weight:600}
 .dp-champs{font-size:11.5px;color:var(--teal);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .draft-teams{display:grid;border-top:1px solid var(--border)}
-.draft-layout{display:flex;gap:1rem;align-items:flex-start}
-.draft-main{flex:1;min-width:0}
-.draft-sidebar{width:420px;flex-shrink:0;position:sticky;top:72px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem;max-height:calc(100vh - 90px);overflow-y:auto}
-.draft-sidebar-title{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;grid-column:1/-1}
-.sidebar-teams-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.sidebar-team{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:9px 10px}
-.sidebar-team .dt-title{font-size:12px;margin-bottom:6px}
-.sidebar-team .dt-pick{padding:4px 0;font-size:12.5px;line-height:1.3}
-.sidebar-team .dt-pick-right{font-size:10px}
-.sidebar-team .lane-badge{font-size:10px;padding:2px 7px}
+.draft-layout{display:flex;flex-direction:column;gap:.75rem}
+.draft-main{min-width:0}
+
+/* view toggle (Board / Times) */
+.draft-view-toggle{display:flex;gap:8px;margin-bottom:.75rem}
+.dv-btn{display:flex;align-items:center;gap:8px;padding:9px 18px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);font-size:13px;font-weight:700;letter-spacing:.03em;cursor:pointer;transition:all .15s;font-family:'Rajdhani',sans-serif}
+.dv-btn:hover{color:var(--text);border-color:var(--gold-dim)}
+.dv-btn.active{background:var(--gold);color:#0B0F1C;border-color:var(--gold)}
+.dv-btn .dv-count{font-size:11px;font-weight:700;padding:1px 7px;border-radius:10px;background:rgba(0,0,0,.18);color:inherit}
+.dv-btn:not(.active) .dv-count{background:rgba(212,175,55,.12);color:var(--gold)}
+
+/* board + contextual "time atual" panel side by side */
+.draft-live-row{display:flex;gap:1rem;align-items:flex-start}
+.draft-live-row .draft-main{flex:1}
+
+.current-team-panel{width:300px;flex-shrink:0;position:sticky;top:72px;background:linear-gradient(160deg,var(--surface),var(--surface2));border:1px solid var(--border-gold);border-radius:14px;padding:1.1rem 1.15rem;box-shadow:0 20px 50px rgba(0,0,0,.4),0 0 0 1px rgba(212,175,55,.08) inset;animation:ctpEnter .4s cubic-bezier(.22,1,.36,1)}
+.current-team-panel.hide{display:none}
+@keyframes ctpEnter{from{opacity:0;transform:translateX(14px) scale(.97)}to{opacity:1;transform:translateX(0) scale(1)}}
+.current-team-panel.closing{animation:ctpExit .26s ease forwards}
+@keyframes ctpExit{to{opacity:0;transform:translateX(10px) scale(.95)}}
+.current-team-panel.panel-impact{animation:panelImpact .5s cubic-bezier(.22,1,.36,1)}
+@keyframes panelImpact{0%{box-shadow:0 20px 50px rgba(0,0,0,.4),0 0 0 1px rgba(212,175,55,.08) inset}30%{box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 0 1px rgba(212,175,55,.7) inset,0 0 44px rgba(212,175,55,.4);transform:translateX(-4px)}55%{transform:translateX(3px)}100%{box-shadow:0 20px 50px rgba(0,0,0,.4),0 0 0 1px rgba(212,175,55,.08) inset;transform:translateX(0)}}
+.ctp-eyebrow{font-family:'Rajdhani',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);text-shadow:0 0 10px rgba(212,175,55,.4);margin-bottom:6px}
+.ctp-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.03em;color:var(--text);line-height:1.05}
+.ctp-progress{font-size:11.5px;color:var(--text-muted);margin-top:3px;font-weight:600}
+.ctp-divider{height:1px;background:linear-gradient(to right,var(--gold-dim),transparent);margin:.8rem 0}
+.ctp-lanes{display:flex;flex-direction:column;gap:2px}
+.ctp-pick{display:flex;justify-content:space-between;align-items:center;padding:7px 2px;border-bottom:1px solid var(--border);font-size:13px}
+.ctp-pick:last-child{border-bottom:none}
+.ctp-pick.ctp-filled .ctp-pick-name{color:var(--text);font-weight:700}
+.ctp-pick-name{font-style:italic;color:var(--text-muted);font-size:12.5px}
+
+/* full-width "Times" tab */
+.draft-teams-full{display:none}
+.draft-teams-full.show{display:block}
+.draft-main.hide{display:none}
+.sidebar-teams-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.sidebar-team{background:linear-gradient(160deg,var(--surface2),var(--surface3));border:1px solid var(--border);border-radius:12px;padding:14px 15px}
+.sidebar-team .dt-title{font-size:13.5px;margin-bottom:8px}
+.sidebar-team .dt-pick{padding:6px 0;font-size:13.5px;line-height:1.35}
+.sidebar-team .dt-pick-right{font-size:11px}
+.sidebar-team .lane-badge{font-size:10.5px;padding:2px 8px}
 @media(max-width:1100px){
-  .draft-layout{flex-direction:column}
-  .draft-sidebar{width:100%;position:static;max-height:none}
-  .sidebar-teams-grid{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+  .draft-live-row{flex-direction:column}
+  .current-team-panel{width:100%;position:static}
 }
 @media(max-width:480px){
   .sidebar-teams-grid{grid-template-columns:1fr}
 }
 .pick-fly-ghost{font-family:'Inter',sans-serif}
+
+/* ===== PICK REVEAL (aparece no centro e depois "soca" pro time) ===== */
+.pick-reveal-card{position:fixed;z-index:700;left:50%;top:42%;transform:translate(-50%,-50%) scale(.4) rotate(-6deg);opacity:0;background:radial-gradient(ellipse 130% 110% at 50% -10%,rgba(212,175,55,.14),transparent 60%),var(--surface);border:1px solid var(--border-gold);border-radius:16px;padding:1.4rem 2.2rem;text-align:center;box-shadow:0 40px 110px rgba(0,0,0,.7),0 16px 50px rgba(0,0,0,.6),0 0 0 1px rgba(212,175,55,.16) inset;pointer-events:none;transition:opacity .28s ease,transform .5s cubic-bezier(.34,1.56,.64,1)}
+.pick-reveal-card.show{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0deg)}
+.pick-reveal-card .prc-eyebrow{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;text-shadow:0 0 12px rgba(212,175,55,.5)}
+.pick-reveal-card .prc-name{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:.04em;color:var(--text);line-height:1}
+.pick-reveal-card .prc-meta{margin-top:9px;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--gold-light)}
+.pick-reveal-card.flying{transition:opacity .3s ease .2s,transform .5s cubic-bezier(.6,-0.28,.74,.05);transform:translate(calc(-50% + var(--dx,0px)),calc(-50% + var(--dy,0px))) scale(.2) rotate(10deg);opacity:0}
+.pick-reveal-card.flying::after{content:'';position:absolute;inset:0;border-radius:16px;box-shadow:0 0 60px 10px rgba(212,175,55,.35)}
 
 /* ===== EDITAR NOMES ===== */
 .edit-player-row{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid var(--border);flex-wrap:wrap}
@@ -249,7 +289,7 @@ select option{background:var(--surface2)}
   .tier-label{font-size:15px}
 }
 .draft-team{padding:1rem 1.25rem}
-.dt-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:0.08em;margin-bottom:10px;text-transform:uppercase}
+.dt-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:0.08em;margin-bottom:10px;text-transform:uppercase;color:var(--gold)}
 .dt-t1{color:#7ab8f5}.dt-t2{color:#f07a7a}.dt-t3{color:#5DCAA5}.dt-t4{color:#AFA9EC}
 .dt-pick{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:13px}
 .dt-pick:last-child{border-bottom:none}
@@ -401,14 +441,17 @@ select option{background:var(--surface2)}
 
 /* ===== ORDER DRAW CINEMATIC (sorteio da ordem do draft) ===== */
 .order-reveal-slots{position:fixed;top:16%;left:50%;transform:translateX(-50%);display:flex;gap:12px;z-index:602;pointer-events:none;flex-wrap:wrap;justify-content:center;max-width:90vw}
-.order-reveal-slot{width:76px;height:76px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:translateY(10px) scale(.8);transition:opacity .35s ease,transform .35s cubic-bezier(.22,1,.36,1),border-color .35s ease}
-.order-reveal-slot.show{opacity:1;transform:translateY(0) scale(1)}
-.order-reveal-slot .ors-num{font-family:'Bebas Neue',sans-serif;font-size:20px;line-height:1}
+.order-reveal-slot{width:76px;height:76px;border-radius:12px;background:linear-gradient(160deg,var(--surface2),var(--surface3));border:1px solid var(--border-gold);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:translateY(10px) scale(.8);transition:opacity .35s ease,transform .35s cubic-bezier(.22,1,.36,1),border-color .35s ease,box-shadow .35s ease}
+.order-reveal-slot.show{opacity:1;transform:translateY(0) scale(1);box-shadow:0 0 0 1px rgba(212,175,55,.18) inset,0 10px 24px rgba(0,0,0,.4)}
+.order-reveal-slot .ors-num{font-family:'Bebas Neue',sans-serif;font-size:20px;line-height:1;color:var(--gold);text-shadow:0 0 12px rgba(212,175,55,.45)}
 .order-reveal-slot .ors-name{font-size:9.5px;font-weight:700;margin-top:3px;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
-.order-reveal-ghost{position:fixed;z-index:601;left:50%;top:50%;transform:translate(-50%,-50%) scale(.55);opacity:0;border-radius:16px;padding:1.75rem 2.5rem;background:var(--surface);border:2px solid;text-align:center;box-shadow:0 40px 110px rgba(0,0,0,.65),0 16px 50px rgba(0,0,0,.55);transition:opacity .3s ease,transform .3s cubic-bezier(.22,1,.36,1),left .45s cubic-bezier(.22,1,.36,1),top .45s cubic-bezier(.22,1,.36,1)}
-.order-reveal-ghost .org-label{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
-.order-reveal-ghost .org-pos{font-family:'Bebas Neue',sans-serif;font-size:46px;line-height:1}
-.order-reveal-ghost .org-name{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;margin-top:6px;white-space:nowrap}
+.order-reveal-ghost{position:fixed;z-index:601;left:50%;top:50%;transform:translate(-50%,-50%) scale(.55);opacity:0;border-radius:16px;padding:1.75rem 2.5rem;background:radial-gradient(ellipse 120% 100% at 50% -10%,rgba(212,175,55,.10),transparent 60%),var(--surface);border:1px solid var(--border-gold);text-align:center;box-shadow:0 40px 110px rgba(0,0,0,.65),0 16px 50px rgba(0,0,0,.55),0 0 0 1px rgba(212,175,55,.14) inset;transition:opacity .3s ease,transform .3s cubic-bezier(.22,1,.36,1),left .45s cubic-bezier(.22,1,.36,1),top .45s cubic-bezier(.22,1,.36,1);animation:orderGhostPulse 1.3s ease-in-out infinite}
+@keyframes orderGhostPulse{0%,100%{box-shadow:0 40px 110px rgba(0,0,0,.65),0 16px 50px rgba(0,0,0,.55),0 0 0 1px rgba(212,175,55,.14) inset}50%{box-shadow:0 40px 130px rgba(0,0,0,.7),0 16px 60px rgba(0,0,0,.6),0 0 0 1px rgba(212,175,55,.4) inset,0 0 60px rgba(212,175,55,.16)}}
+.order-reveal-ghost .org-label{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;text-shadow:0 0 10px rgba(212,175,55,.4)}
+.order-reveal-ghost .org-pos{font-family:'Bebas Neue',sans-serif;font-size:46px;line-height:1;color:var(--text);letter-spacing:.03em}
+.order-reveal-ghost .org-pos.is-first{color:var(--gold);text-shadow:0 0 22px rgba(212,175,55,.65)}
+.order-reveal-ghost .org-name{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;margin-top:6px;white-space:nowrap;color:var(--gold-light)}
+.order-reveal-ghost .org-divider{width:34px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);margin:10px auto}
 
 /* ===== TEAM VIEW MODAL (click a team to open it big) ===== */
 .team-view-box{max-width:440px;padding:0;position:relative;background:transparent;border:none;box-shadow:none;overflow:visible;max-height:none}
@@ -587,6 +630,8 @@ const TEAM_GLOWS=['rgba(122,184,245,0.12)','rgba(240,122,122,0.12)','rgba(93,202
 
 // ===== STATE =====
 let players=[], draftOrder=[], draftPicks={}, currentPickIdx=0, teamNames={}, revealPlayed=false, teamTiers={};
+let draftPanelView='board';
+function setDraftView(v){draftPanelView=v;renderDraft();}
 // Labels e tiers configuráveis são independentes por modo (Times x Jogadores) — cada um tem seu próprio S/A/B/C.
 let teamTierLabels={S:'S',A:'A',B:'B',C:'C'}, playerTierLabels={S:'S',A:'A',B:'B',C:'C'};
 // Ordem dentro de cada tier (arrays de IDs, na ordem visual). 'pool' = sem ranking (fila "—").
@@ -903,16 +948,10 @@ async function runOrderReveal(shuffled){
   document.body.appendChild(slotsRow);
   shuffled.forEach(()=>{const s=document.createElement('div');s.className='order-reveal-slot';slotsRow.appendChild(s);});
 
-  const capColorIdx=cap=>{
-    const idx=players.filter(p=>p.captain).findIndex(c=>c.name===cap.name);
-    return TEAM_COLORS[idx>=0?idx%TEAM_COLORS.length:0];
-  };
   const settleSlot=(i,cap)=>{
-    const color=capColorIdx(cap);
     const slotEl=slotsRow.children[i];
     if(!slotEl)return;
-    slotEl.innerHTML=`<div class="ors-num" style="color:${color}">${i+1}º</div><div class="ors-name">${cap.name}</div>`;
-    slotEl.style.borderColor=color;
+    slotEl.innerHTML=`<div class="ors-num">${i+1}º</div><div class="ors-name">${cap.name}</div>`;
     slotEl.classList.add('show');
   };
 
@@ -921,12 +960,10 @@ async function runOrderReveal(shuffled){
   for(let i=0;i<shuffled.length;i++){
     if(revealSkipRequested)break;
     const cap=shuffled[i];
-    const color=capColorIdx(cap);
 
     const ghost=document.createElement('div');
     ghost.className='order-reveal-ghost';
-    ghost.style.borderColor=color;
-    ghost.innerHTML=`<div class="org-label">Posição</div><div class="org-pos" style="color:${color}">${i+1}º</div><div class="org-name" style="color:${color}">${getTeamDisplayName(cap.name)}</div>`;
+    ghost.innerHTML=`<div class="org-label">Posição</div><div class="org-pos${i===0?' is-first':''}">${i+1}º</div><div class="org-divider"></div><div class="org-name">${getTeamDisplayName(cap.name)}</div>`;
     document.body.appendChild(ghost);
 
     await delay(20);
@@ -1317,8 +1354,18 @@ function renderDraft(){
   const pct=Math.round(currentPickIdx/totalPicks*100);
   const allCaps=players.filter(p=>p.captain);
   const teams=buildTeams();
+  const totalSlots=allCaps.length*5;
+  const filledSlots=Object.keys(draftPicks).length;
+  const boardActive=draftPanelView!=='teams';
 
-  let html=`<div class="draft-layout"><div class="draft-main"><div class="draft-area">
+  let html=`<div class="draft-layout">
+    <div class="draft-view-toggle">
+      <button class="dv-btn ${boardActive?'active':''}" onclick="setDraftView('board')"><i class="fa-solid fa-swords"></i> Board de picks</button>
+      <button class="dv-btn ${boardActive?'':'active'}" onclick="setDraftView('teams')"><i class="fa-solid fa-users"></i> Times <span class="dv-count">${filledSlots}/${totalSlots}</span></button>
+    </div>
+    <div class="draft-live-row">`;
+
+  html+=`<div class="draft-main${boardActive?'':' hide'}"><div class="draft-area">
     <div class="draft-turn">
       <div>
         <div class="draft-turn-label">Vez de escolher</div>
@@ -1349,14 +1396,33 @@ function renderDraft(){
 
   html+='</div></div></div>';
 
-  // Sidebar
-  const capColors=['dt-t1','dt-t2','dt-t3','dt-t4'];
+  // Painel do time do capitão da vez (abre ao lado do board, some quando o próximo entra)
+  const curMembers=teams[cur.cap.name]||[];
+  html+=`<div class="current-team-panel${boardActive?'':' hide'}" id="current-team-panel" data-cap="${cur.cap.name.replace(/"/g,'&quot;')}">
+    <div class="ctp-eyebrow"><i class="fa-solid fa-flag"></i> Time em ação</div>
+    <div class="ctp-name">${getTeamDisplayName(cur.cap.name)}</div>
+    <div class="ctp-progress">${curMembers.length}/5 posições preenchidas</div>
+    <div class="ctp-divider"></div>
+    <div class="ctp-lanes">`;
+  lanes.forEach(lane=>{
+    const m=curMembers.find(x=>x.lane===lane);
+    if(m){
+      html+=`<div class="ctp-pick ctp-filled"><span class="ctp-pick-name">${m.name}${m.captain?' <span style="font-size:10px;color:var(--gold)">(cap)</span>':''}</span>${laneBadge(m.lane)}</div>`;
+    }else{
+      html+=`<div class="ctp-pick"><span class="ctp-pick-name">Vazio</span>${laneBadge(lane)}</div>`;
+    }
+  });
+  html+=`</div></div>`;
+
+  html+=`</div>`; // fecha draft-live-row
+
+  // Aba "Times" (tela cheia, para consultar como cada time está durante o draft)
   const ALL_LANES=['Top','Jungle','Mid','ADC','Support'];
-  html+=`<div class="draft-sidebar"><div class="draft-sidebar-title">Times em formação</div><div class="sidebar-teams-grid">`;
+  html+=`<div class="draft-teams-full${boardActive?'':' show'}"><div class="draft-sidebar-title">Times em formação</div><div class="sidebar-teams-grid">`;
   allCaps.forEach((cap,i)=>{
     const members=teams[cap.name]||[];
     const displayName=getTeamDisplayName(cap.name);
-    html+=`<div class="sidebar-team" data-cap="${cap.name.replace(/"/g,'&quot;')}"><div class="dt-title ${capColors[i%capColors.length]}"><i class="fa-solid fa-flag"></i> ${displayName}</div>`;
+    html+=`<div class="sidebar-team" data-cap="${cap.name.replace(/"/g,'&quot;')}"><div class="dt-title"><i class="fa-solid fa-flag"></i> ${displayName}</div>`;
     ALL_LANES.forEach(lane=>{
       const m=members.find(x=>x.lane===lane);
       if(m){
@@ -1373,7 +1439,10 @@ function renderDraft(){
   document.getElementById('draft-container').innerHTML=html;
 }
 
-function pickPlayer(pid,ev){
+let pickInProgress=false;
+
+async function pickPlayer(pid,ev){
+  if(pickInProgress)return;
   if(currentPickIdx>=draftOrder.length)return;
   const p=players.find(x=>x.id==pid);
   if(!p||draftPicks[pid]||p.captain)return;
@@ -1384,11 +1453,13 @@ function pickPlayer(pid,ev){
   const teamMembers=teams[cur.cap.name]||[];
   if(teamMembers.length>=5)return;
 
-  // animação: jogador "voa" até o card do time dele
-  const capIdxColor=players.filter(x=>x.captain).findIndex(c=>c.name===cur.cap.name);
+  pickInProgress=true;
   const srcEl=ev&&ev.currentTarget?ev.currentTarget:null;
-  const destEl=document.querySelector(`.sidebar-team[data-cap="${CSS.escape(cur.cap.name)}"]`);
-  flyPickAnimation(srcEl,destEl,p.name,TEAM_COLORS[capIdxColor>=0?capIdxColor%TEAM_COLORS.length:0]);
+  if(srcEl)srcEl.style.pointerEvents='none';
+  const panelEl=document.getElementById('current-team-panel');
+
+  // 1) revela o jogador no centro da tela, depois "soca" com força até o time dele
+  await playPickRevealAnimation(p,cur,srcEl,panelEl);
 
   draftPicks[pid]={pickedBy:cur.cap.name,team:cur.team,pickNum:currentPickIdx+1};
   currentPickIdx++;
@@ -1398,29 +1469,46 @@ function pickPlayer(pid,ev){
     if((nt[next.cap.name]||[]).length>=5)currentPickIdx++;
     else break;
   }
+  pickInProgress=false;
   renderDraft();renderOrderList();salvarEstado();
 }
 
-function flyPickAnimation(srcEl,destEl,name,color){
-  if(!srcEl||!destEl)return;
-  const srcRect=srcEl.getBoundingClientRect();
-  const destRect=destEl.getBoundingClientRect();
-  const ghost=document.createElement('div');
-  ghost.className='pick-fly-ghost';
-  ghost.textContent=name;
-  ghost.style.cssText=`position:fixed;left:${srcRect.left}px;top:${srcRect.top}px;width:${srcRect.width}px;z-index:700;background:${color||'var(--gold)'};color:#0B0F1C;font-weight:700;font-size:12px;padding:6px 10px;border-radius:7px;box-shadow:0 6px 22px rgba(0,0,0,.45);transition:left .55s cubic-bezier(.22,1,.36,1),top .55s cubic-bezier(.22,1,.36,1),width .55s cubic-bezier(.22,1,.36,1),opacity .55s ease,transform .55s cubic-bezier(.22,1,.36,1);pointer-events:none;opacity:1;transform:scale(1)`;
-  document.body.appendChild(ghost);
-  requestAnimationFrame(()=>{
-    requestAnimationFrame(()=>{
-      ghost.style.left=(destRect.left+destRect.width/2-28)+'px';
-      ghost.style.top=(destRect.top+10)+'px';
-      ghost.style.width='56px';
-      ghost.style.opacity='0';
-      ghost.style.filter='blur(8px)';
-      ghost.style.transform='scale(0.35)';
-    });
-  });
-  setTimeout(()=>ghost.remove(),620);
+async function playPickRevealAnimation(p,cur,srcEl,panelEl){
+  // etapa 1: card grande aparece no centro da tela com o jogador escolhido
+  const card=document.createElement('div');
+  card.className='pick-reveal-card';
+  card.innerHTML=`<div class="prc-eyebrow">Escolhido</div><div class="prc-name">${p.name}</div><div class="prc-meta">${laneBadge(p.lane)}<span>${getTeamDisplayName(cur.cap.name)}</span></div>`;
+  document.body.appendChild(card);
+  await delay(20);
+  card.classList.add('show');
+  await delay(650);
+
+  // etapa 2: voa com força até o painel do time dele (efeito bruto, sem suavidade)
+  const cardRect=card.getBoundingClientRect();
+  let dx=0,dy=window.innerHeight*0.4;
+  if(panelEl){
+    const destRect=panelEl.getBoundingClientRect();
+    dx=(destRect.left+destRect.width/2)-(cardRect.left+cardRect.width/2);
+    dy=(destRect.top+46)-(cardRect.top+cardRect.height/2);
+  }
+  card.style.setProperty('--dx',dx+'px');
+  card.style.setProperty('--dy',dy+'px');
+  card.classList.add('flying');
+
+  await delay(300);
+  // etapa 3: impacto no card do time
+  if(panelEl){
+    panelEl.classList.add('panel-impact');
+    setTimeout(()=>panelEl&&panelEl.classList.remove('panel-impact'),480);
+  }
+  await delay(220);
+  card.remove();
+
+  // etapa 4: o card do time da vez fecha antes do próximo capitão abrir
+  if(panelEl){
+    panelEl.classList.add('closing');
+    await delay(230);
+  }
 }
 
 function undoPick(){
