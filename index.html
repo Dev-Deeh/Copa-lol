@@ -488,6 +488,7 @@ select option{background:var(--surface2)}
     <button class="nav-tab" onclick="goTab('captains')">Capitães</button>
     <button class="nav-tab" onclick="goTab('order')">Ordem do Draft</button>
     <button class="nav-tab" onclick="goTab('draft')">Draft ao Vivo</button>
+    <button class="nav-tab" onclick="goTab('reserves')">Reservas</button>
     <button class="nav-tab" onclick="goTab('tierlist')">Tier List</button>
     <button class="nav-tab" onclick="goTab('edit')">Editar Nomes</button>
     <button class="nav-tab" style="margin-left:auto;color:#E05252" onclick="resetarTudo()"><i class="fa-solid fa-trash"></i> Resetar</button>
@@ -552,6 +553,12 @@ select option{background:var(--surface2)}
 <div id="panel-draft" class="panel panel-wide">
   <div id="draft-section-head" class="section-head"><h2>Draft ao Vivo</h2><p>Clique no jogador para confirmar o pick. Cada time só pode ter 1 jogador por lane.</p></div>
   <div id="draft-container"></div>
+</div>
+
+<!-- RESERVAS -->
+<div id="panel-reserves" class="panel">
+  <div class="section-head"><h2>Reservas</h2><p>Jogadores que não entraram em nenhum time porque a lane deles já foi preenchida em todos os times formados.</p></div>
+  <div id="reserves-container"></div>
 </div>
 
 <!-- TIER LIST -->
@@ -695,13 +702,14 @@ function toast(msg){
 
 // ===== NAV =====
 function goTab(t){
-  document.querySelectorAll('.nav-tab').forEach((b,i)=>b.classList.toggle('active',['register','captains','order','draft','tierlist','edit'][i]===t));
+  document.querySelectorAll('.nav-tab').forEach((b,i)=>b.classList.toggle('active',['register','captains','order','draft','reserves','tierlist','edit'][i]===t));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+t).classList.add('active');
   const hero=document.getElementById('hero-block');
   if(hero)hero.classList.toggle('hero-collapsed',t==='draft');
   if(t==='captains')renderCaptains();
   if(t==='draft')renderDraft();
+  if(t==='reserves')renderReserves();
   if(t==='tierlist')renderTierList();
   if(t==='edit')renderEditPanel();
 }
@@ -1079,6 +1087,47 @@ function getFirstPickId(teamName){
   return pid;
 }
 
+// ===== RESERVAS (jogadores que não coube em nenhum time) =====
+// Um jogador não-capitão vira "reserva" quando a lane dele já está preenchida em TODOS os times
+// formados e ele ainda não foi escolhido — ou seja, não há mais nenhuma vaga possível pra ele.
+function getReservePlayers(){
+  const allCaps=players.filter(p=>p.captain);
+  if(!allCaps.length)return [];
+  const teams=buildTeams();
+  return players.filter(p=>{
+    if(p.captain||draftPicks[p.id])return false;
+    return allCaps.every(cap=>teamLanes(cap.name,teams).has(p.lane));
+  });
+}
+function renderReserves(){
+  const container=document.getElementById('reserves-container');
+  if(!container)return;
+  const allCaps=players.filter(p=>p.captain);
+  if(!allCaps.length){
+    container.innerHTML=`<div class="empty"><div class="empty-icon"><i class="fa-solid fa-user-clock"></i></div><p>Selecione os capitães e faça o draft para ver quem fica de reserva.</p></div>`;
+    return;
+  }
+  const reserves=getReservePlayers();
+  if(!reserves.length){
+    container.innerHTML=`<div class="empty"><div class="empty-icon"><i class="fa-solid fa-user-clock"></i></div><p>Nenhum jogador de reserva no momento.</p></div>`;
+    return;
+  }
+  const lanes=['Top','Jungle','Mid','ADC','Support'];
+  let html=`<div class="card" style="margin-bottom:16px">
+    <div class="card-title"><i class="fa-solid fa-user-clock"></i> ${reserves.length} jogador${reserves.length>1?'es':''} de reserva</div>
+    <p style="font-size:12.5px;color:var(--text-muted)">Esses jogadores ficaram sem vaga porque a lane deles já foi preenchida em todos os times formados.</p>
+  </div>`;
+  lanes.forEach(lane=>{
+    const ps=reserves.filter(p=>p.lane===lane);if(!ps.length)return;
+    html+=`<div class="player-section"><div class="player-section-header">${laneBadge(lane)}<span style="font-size:12px;color:var(--text-muted)">${ps.length} jogador${ps.length>1?'es':''}</span></div>`;
+    ps.forEach(p=>{
+      html+=`<div class="player-row"><span class="player-name">${p.name}</span><span class="elo-badge">${p.elo}${p.div?' '+p.div:''}</span><span class="player-champs">${p.champs||'—'}</span><div class="player-actions"><a class="btn btn-outline btn-sm btn-icon opgg-link-btn" href="${opggUrl(p.name,p.riotTag)}" target="_blank" rel="noopener" title="Consultar ${p.name}#${p.riotTag||'BR1'} no OP.GG"><i class="fa-solid fa-magnifying-glass"></i></a></div></div>`;
+    });
+    html+='</div>';
+  });
+  container.innerHTML=html;
+}
+
 // ===== OP.GG MULTISEARCH =====
 function riotIdFor(p){
   const tag=(p.riotTag||'BR1').trim().replace(/^#/,'')||'BR1';
@@ -1185,14 +1234,17 @@ function renderDraftDone(skipAnimation){
     }
   }
 
+  const reserves=getReservePlayers();
+
   let html=`<div class="draft-done-header">
     <div class="draft-done-eyebrow">Draft Encerrado</div>
     <div class="draft-done-title">Times Formados</div>
-    <div class="draft-done-sub">${allCaps.length} times prontos para a temporada</div>
+    <div class="draft-done-sub">${allCaps.length} times prontos para a temporada${reserves.length?` · ${reserves.length} jogador${reserves.length>1?'es':''} de reserva`:''}</div>
     <div class="draft-done-divider"></div>
     <div class="draft-done-actions">
       <button class="btn btn-outline btn-sm" onclick="undoPick()"><i class="fa-solid fa-rotate-left"></i> Desfazer último pick</button>
       <button class="btn btn-outline" onclick="abrirModalNomesTime()"><i class="fa-solid fa-pen"></i> Renomear times</button>
+      ${reserves.length?`<button class="btn btn-outline" onclick="goTab('reserves')"><i class="fa-solid fa-user-clock"></i> Ver reservas (${reserves.length})</button>`:''}
       <button class="btn btn-gold" onclick="renderDraftDone()"><i class="fa-solid fa-clapperboard"></i> Revelação novamente</button>
     </div>
   </div>`;
@@ -1544,6 +1596,8 @@ function allTierKeys(){ return [...getTierOrderKeys(),'pool']; }
 function tierColor(key,idx){ return key==='pool'?null:TIER_PALETTE[idx%TIER_PALETTE.length]; }
 
 // Garante que todo id de `ids` esteja em algum array de `order` (sem duplicar) e remove ids que não existem mais.
+// IMPORTANTE: só filtra e adiciona itens ausentes — nunca reordena os arrays já existentes, pra não
+// bagunçar a ordem que a pessoa organizou manualmente ao trocar de aba / mudar o filtro de lane.
 function syncTierOrder(order,ids,fallbackTierMap){
   const keys=allTierKeys();
   keys.forEach(k=>{ if(!Array.isArray(order[k]))order[k]=[]; });
@@ -1559,17 +1613,37 @@ function syncTierOrder(order,ids,fallbackTierMap){
     }
   });
 }
+// Acha o elemento mais próximo do ponteiro respeitando as LINHAS (flex-wrap). Antes, a busca usava só
+// a distância euclidiana ao centro de cada chip + comparação em X, então quando os chips quebravam em
+// mais de uma linha o cálculo comparava itens de linhas diferentes e a ordem "invertia"/embaralhava.
+// Agora primeiro descobrimos em qual linha o ponteiro está (pela posição Y) e só then comparamos em X
+// dentro dela — isso corrige a inversão de ordem ao arrastar/soltar.
 function getDragAfterElement(container,x,y){
   const els=[...container.querySelectorAll('.tier-chip:not(.dragging)')];
-  let best=null,bestDist=Infinity,after=null;
-  els.forEach(child=>{
-    const box=child.getBoundingClientRect();
-    const cx=box.left+box.width/2, cy=box.top+box.height/2;
-    const dist=Math.hypot(x-cx,y-cy);
-    if(dist<bestDist){bestDist=dist;best=child;after=(x>cx);}
+  if(!els.length)return null;
+  const rows=[];
+  els.forEach(el=>{
+    const box=el.getBoundingClientRect();
+    let row=rows.find(r=>Math.abs(r.top-box.top)<14);
+    if(!row){row={top:box.top,items:[]};rows.push(row);}
+    row.items.push({el,box});
   });
-  if(!best)return null;
-  return after?best.nextSibling:best;
+  rows.sort((a,b)=>a.top-b.top);
+  rows.forEach(r=>r.items.sort((a,b)=>a.box.left-b.box.left));
+  let rowIdx=0,bestDist=Infinity;
+  rows.forEach((r,i)=>{
+    const rowCenterY=r.items[0].box.top+r.items[0].box.height/2;
+    const dist=Math.abs(y-rowCenterY);
+    if(dist<bestDist){bestDist=dist;rowIdx=i;}
+  });
+  const row=rows[rowIdx];
+  for(const item of row.items){
+    const cx=item.box.left+item.box.width/2;
+    if(x<cx) return item.el;
+  }
+  // passou do último item dessa linha: insere antes do primeiro item da próxima linha (se houver)
+  if(rows[rowIdx+1]) return rows[rowIdx+1].items[0].el;
+  return null;
 }
 function tierSlotDragOver(ev){
   ev.preventDefault();
@@ -1777,16 +1851,22 @@ function dropOnTier(ev,tier){
     if(!newOrder[t])return;
     row.querySelectorAll('.tier-chip').forEach(chip=>{ newOrder[t].push(chip.dataset.id); });
   });
-  // Reinclui, na mesma tier em que já estava, os itens filtrados/ocultos que não estavam visíveis no DOM (ex: outras lanes).
+  // Reinclui, na mesma posição relativa em que já estavam, os itens filtrados/ocultos que não estavam
+  // visíveis no DOM (ex: outras lanes num filtro específico) — preserva a ordem original deles dentro
+  // do tier em vez de simplesmente jogar tudo pro final.
   const allIds=(tierListMode==='teams'?players.filter(p=>p.captain).map(p=>p.name):players.map(p=>p.id)).map(String);
-  const seen=new Set(keys.flatMap(k=>newOrder[k]));
-  allIds.forEach(aid=>{
-    if(!seen.has(aid)){
-      let placed=false;
-      keys.forEach(k=>{ if(!placed && order[k] && order[k].map(String).includes(aid)){ newOrder[k].push(aid); placed=true; } });
-      if(!placed)newOrder.pool.push(aid);
-    }
+  const seenInNewOrder=new Set(keys.flatMap(k=>newOrder[k]));
+  keys.forEach(k=>{
+    const oldTierIds=(order[k]||[]).map(String);
+    oldTierIds.forEach(oid=>{
+      if(seenInNewOrder.has(oid))return; // já está posicionado (era visível e foi movido/mantido)
+      if(!allIds.includes(oid))return; // não existe mais
+      newOrder[k].push(oid);
+      seenInNewOrder.add(oid);
+    });
   });
+  // Qualquer id que nunca apareceu em nenhum tier (novo jogador registrado nesse meio tempo) vai pro pool.
+  allIds.forEach(aid=>{ if(!seenInNewOrder.has(aid)) newOrder.pool.push(aid); });
   if(tierListMode==='teams'){
     teamTierOrder=newOrder;
     keys.forEach(k=>{ teamTierOrder[k].forEach(name=>{ if(k==='pool')delete teamTiers[name]; else teamTiers[name]=k; }); });
